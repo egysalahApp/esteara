@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تدريبات الاستعارة | العربية السهلة</title>
     
-    <!-- تضمين خط نوتو نسخ العربي -->
+    <!-- تضمين الخطوط من جوجل -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700;800&family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- مكتبات React الأساسية -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -19,19 +19,23 @@
     <style>
         body { 
             font-family: 'Noto Naskh Arabic', serif; 
-            background-color: #fdfaf6; /* خلفية كريمي فاتحة ومريحة */
-            color: #1f2937; 
+            background-color: #fcfbf9; /* خلفية كريمي فاتحة ومريحة جدًا */
+            color: #1e293b; 
         }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .font-readex { font-family: 'Readex Pro', sans-serif; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        button { font-family: 'Noto Naskh Arabic', serif; outline: none; }
+        button { outline: none; }
+        
+        /* شريط التمرير */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #fdfaf6; }
-        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="selection:bg-violet-200 min-h-screen">
@@ -41,7 +45,7 @@
     <script type="text/babel">
         const { useState } = React;
 
-        // ================= الأيقونات =================
+        // ================= الأيقونات (SVG نقية) =================
         const IconPlay = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>;
         const IconCheckCircle = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;
         const IconXCircle = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>;
@@ -55,30 +59,41 @@
         const IconGrid = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>;
         const IconCheckSquare = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>;
 
-        // ================= البيانات =================
+        // ================= البيانات المحدثة (40 تدريبًا) =================
         const QUIZ_QUESTIONS = [
-            { text: "«ابتسمت الفرصة للشاب الطموح»\nما نوع الاستعارة هنا؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه (الفرصة) بإنسان يبتسم، وحذف المشبه به (الإنسان) وأبقى صفة من صفاته (الابتسام)." },
-            { text: "في مباراة كرة القدم، قال المعلق: «سجل الصقر هدف الفوز لفريقنا» (يقصد اللاعب السريع).\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه (اللاعب) بالصقر، وحذف المشبه وصرّح بلفظ المشبه به (الصقر)." },
-            { text: "عندما ترى شخصًا يبذل جهدًا في إقناع شخص عنيد يرفض الفهم، فتقول له: «أنت تنفخ في رماد!»\nهذه الصورة تسمى:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه (حالة من يبذل جهدًا بلا فائدة) بـ(حالة من ينفخ في الرماد ليشعله)، فهو تشبيه موقف بموقف." },
-            { text: "«غردت هواتفنا برسائل النجاح والتبريكات»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه (الهواتف) بطيور تغرد، وحذف المشبه به وأبقى صفة التغريد." },
-            { text: "أثناء حفل التخرج قال المدير: «ودعنا أقمارًا تخرجوا من جامعتنا اليوم» (يقصد الطلاب).\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه (الطلاب) بالأقمار، وحذف المشبه وصرّح بالمشبه به." },
-            { text: "صديقك عاد لعادة سيئة كان قد تركها منذ زمن، فقلت له: «رجعت حليمة لعادتها القديمة»\nهذه الصورة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه موقف (من يعود لفعل تركه) بموقف المرأة (حليمة) في المثل الشعبي الشهير." },
+            { text: "«ابتسمت الفرصة للشاب الطموح»\nما نوع الاستعارة هنا؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه (الفرصة) بإنسان يبتسم، وحذف المشبه به وأبقى صفة من صفاته (الابتسام)." },
+            { text: "قال المعلق: «سجل الصقر هدف الفوز لفريقنا» (يقصد اللاعب السريع).\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه (اللاعب) بالصقر، وحذف المشبه وصرّح بلفظ المشبه به (الصقر)." },
+            { text: "لمن يبذل جهدًا بلا فائدة: «أنت تنفخ في رماد!»\nهذه الصورة تسمى:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه (حالة من يبذل جهدًا بلا فائدة) بـ(حالة من ينفخ في الرماد ليشعله)، فهو تشبيه موقف بموقف." },
+            { text: "«غردت هواتفنا برسائل النجاح»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه (الهواتف) بطيور تغرد، وحذف المشبه به وأبقى صفة التغريد." },
+            { text: "قال المدير في حفل التخرج: «ودعنا أقمارًا تخرجوا من جامعتنا اليوم»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه (الطلاب) بالأقمار، وحذف المشبه وصرّح بالمشبه به." },
+            { text: "لمن يعود لعادة سيئة تركها: «رجعت حليمة لعادتها القديمة»\nهذه الصورة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه موقف (من يعود لفعل تركه) بموقف المرأة (حليمة) في المثل الشهير." },
             { text: "«طارت الأخبار السعيدة في أرجاء المدينة»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه الأخبار السعيدة بطيور تطير، وحذف المشبه به (الطيور) وأبقى الطيران." },
-            { text: "ذهبت إلى المستشفى، فتحدثت مع بحر في الطب (تقصد طبيبًا بارعًا جدًا).\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه الطبيب العظيم بالبحر في علمه، فصرّح بالمشبه به (بحر)." },
-            { text: "لمن يقدم خدمة لشخص لا يستحقها ولا يشكر عليها: «أنت تزرع في البحر»\nهذه الصورة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه حالة من يصنع الخير في غير أهله بمن يزرع في ماء البحر فلا يحصد شيئًا." },
-            { text: "«افترس المرض جسد الرجل الضعيف»\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه المرض بحيوان مفترس، وحذف الحيوان وأبقى صفة الافتراس." }
+            { text: "تحدثت مع بحر في الطب (تقصد طبيبًا بارعًا جدًا).\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه الطبيب العظيم بالبحر في علمه، فصرّح بالمشبه به (بحر)." },
+            { text: "لمن يصنع الخير في غير أهله: «أنت تزرع في البحر»\nهذه الصورة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه حالة من يصنع الخير في غير أهله بمن يزرع في ماء البحر فلا يحصد شيئًا." },
+            { text: "«افترس المرض جسد الرجل الضعيف»\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه المرض بحيوان مفترس، وحذف الحيوان وأبقى صفة الافتراس." },
+            { text: "«أطلت الحرية بوجهها المشرق على بلادنا»\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه الحرية بإنسان له وجه يطل به، وحذف المشبه به وأبقى صفة الإطلال والوجه." },
+            { text: "«أمطر الخطيب الحاضرين بلؤلؤ من كلماته»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه (الكلمات) باللؤلؤ، وحذف المشبه وصرّح بلفظ المشبه به (لؤلؤ)." },
+            { text: "لمن يحاول إخفاء الحقيقة الواضحة: «أنت تحجب الشمس بغربال!»\nهذه الصورة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه موقف (من يحاول إخفاء حقيقة جلية) بموقف (من يحاول تغطية نور الشمس بغربال)." },
+            { text: "«ابتلعت الأمواج السفينة في عرض البحر»\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه الأمواج بوحش يبتلع، وحذف المشبه به وأبقى صفة الابتلاع." },
+            { text: "«رأيت أسدًا يطلق النار على الأعداء» (يقصد جنديًا شجاعًا)\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه الجندي بالأسد، وحذف المشبه وصرح بالمشبه به." }
         ];
 
         const CLASSIFY_PHRASES = [
-            { id: 1, text: "بكى السحاب على الأرض العطشى", type: "makneya", explanation: "استعارة مكنية: شبه السحاب بإنسان يبكي، وحذف المشبه به (الإنسان)." },
-            { id: 2, text: "شاهدت أسدًا يقود الطائرة الحربية ببراعة", type: "tasreheya", explanation: "استعارة تصريحية: صرح بـ (أسد) وحذف المشبه وقصد الطيار الشجاع." },
-            { id: 3, text: "لمن يشتري شيئًا مجهولًا: «أنت تشتري سمكًا في ماء»", type: "tamtheleya", explanation: "استعارة تمثيلية: شبه الموقف بموقف من يدفع المال في سمك لم يُصطَد بعد." },
-            { id: 4, text: "عضتنا الأيام بنابها القاسي", type: "makneya", explanation: "استعارة مكنية: شبه الأيام بحيوان مفترس، وحذفه وأبقى صفة العض والناب." },
-            { id: 5, text: "قابلت كوكبًا في علوم الحاسوب", type: "tasreheya", explanation: "استعارة تصريحية: صرح بـ (كوكب) وقصد العالِم البارع." },
-            { id: 6, text: "لمن يتردد في قراره: «أراك تقدم رجلًا وتؤخر أخرى»", type: "tamtheleya", explanation: "استعارة تمثيلية: تشبيه حالة المتردد بهذه الصورة التمثيلية." },
-            { id: 7, text: "زأر الجندي في وجه الأعداء فهربوا", type: "makneya", explanation: "استعارة مكنية: شبه الجندي بأسد، وحذف المشبه به وأبقى صفة الزئير." },
-            { id: 8, text: "«نسورنا تحمي سماء الوطن في كل وقت» (يقصد الطيارين)", type: "tasreheya", explanation: "استعارة تصريحية: شبه (الطيارين) بالنسور، وحذف المشبه وصرّح بلفظ المشبه به." },
-            { id: 9, text: "بعد سنوات من الخصام، «عادت المياه إلى مجاريها»", type: "tamtheleya", explanation: "استعارة تمثيلية: شبه حالة عودة العلاقات الطيبة بحالة عودة المياه لمسارها الطبيعي." }
+            { text: "بكى السحاب على الأرض العطشى", type: "makneya", explanation: "استعارة مكنية: شبه السحاب بإنسان يبكي، وحذف المشبه به (الإنسان)." },
+            { text: "شاهدت أسدًا يقود الطائرة الحربية ببراعة", type: "tasreheya", explanation: "استعارة تصريحية: صرح بـ (أسد) وحذف المشبه وقصد الطيار الشجاع." },
+            { text: "لمن يشتري شيئًا مجهولًا: «أنت تشتري سمكًا في ماء»", type: "tamtheleya", explanation: "استعارة تمثيلية: تشبيه حالة بحالة (من يدفع المال في سمك لم يُصطَد بعد)." },
+            { text: "عضتنا الأيام بنابها القاسي", type: "makneya", explanation: "استعارة مكنية: شبه الأيام بحيوان مفترس، وحذفه وأبقى صفة العض والناب." },
+            { text: "قابلت كوكبًا في علوم الحاسوب", type: "tasreheya", explanation: "استعارة تصريحية: صرح بـ (كوكب) وقصد العالِم البارع." },
+            { text: "لمن يتردد في قراره: «أراك تقدم رجلًا وتؤخر أخرى»", type: "tamtheleya", explanation: "استعارة تمثيلية: تشبيه حالة المتردد بهذه الصورة التمثيلية." },
+            { text: "زأر الجندي في وجه الأعداء فهربوا", type: "makneya", explanation: "استعارة مكنية: شبه الجندي بأسد، وحذف المشبه به وأبقى صفة الزئير." },
+            { text: "«نسورنا تحمي سماء الوطن في كل وقت» (يقصد الطيارين)", type: "tasreheya", explanation: "استعارة تصريحية: شبه (الطيارين) بالنسور، وحذف المشبه وصرّح بلفظ المشبه به." },
+            { text: "بعد سنوات من الخصام، «عادت المياه إلى مجاريها»", type: "tamtheleya", explanation: "استعارة تمثيلية: شبه حالة عودة العلاقات الطيبة بحالة عودة المياه لمسارها الطبيعي." },
+            { text: "«عضنا الفقر بنابه»", type: "makneya", explanation: "استعارة مكنية: شبه الفقر بوحش له ناب، وحذف المشبه به وأبقى صفة من صفاته." },
+            { text: "شاهدتُ بدرًا يسير في الطريق (يقصد فتاة جميلة)", type: "tasreheya", explanation: "استعارة تصريحية: شبه الفتاة بالبدر، وصرح بالمشبه به." },
+            { text: "لمن يتدخل فيما لا يعنيه: «من تدخل فيما لا يعنيه لقي ما لا يرضيه»", type: "tamtheleya", explanation: "استعارة تمثيلية: تشبيه موقف المتطفل بموقف من يلقى الأذى بسبب فضوله." },
+            { text: "«بكى اليتيم فبكت معه الجدران»", type: "makneya", explanation: "استعارة مكنية: شبه الجدران بإنسان يبكي، وحذف الإنسان." },
+            { text: "«أضاءت النجوم سماء التفوق» (يقصد الطلاب الأوائل)", type: "tasreheya", explanation: "استعارة تصريحية: شبه الطلاب بالنجوم وصرح بالمشبه به." },
+            { text: "لمن يبحث عن شيء مستحيل: «أنت تبحث عن إبرة في كومة قش»", type: "tamtheleya", explanation: "استعارة تمثيلية: شبه حالة من يبحث عن المستحيل بهذه الصورة المعقدة." }
         ];
 
         const TF_QUESTIONS = [
@@ -86,44 +101,43 @@
             { text: "الاستعارة التصريحية هي التي نُصرح فيها بلفظ المشبه، ونحذف المشبه به.", answer: false, explanation: "العكس هو الصحيح، فنحن نُصرح بلفظ (المشبه به) ونحذف (المشبه)." },
             { text: "عبارة «ألقى الخطيب دررًا» (ويقصد كلمات رائعة) تُعد استعارة مكنية.", answer: false, explanation: "هي استعارة تصريحية، لأنه صرّح بالمشبه به (دررًا) وحذف المشبه (الكلمات)." },
             { text: "الاستعارة التمثيلية غالبًا ما نجدها في الأمثال الشعبية والمواقف الحياتية.", answer: true, explanation: "لأنها تشبيه صورة كاملة بصورة وموقف بموقف، مثل: (تنفخ في رماد)." },
-            { text: "في عبارة «طار قلبي من الفرح»، نوع الاستعارة هو استعارة مكنية.", answer: true, explanation: "لأنه شبه القلب بطائر يطير، وحذف الطائر وأبقى صفة الطيران." }
+            { text: "في عبارة «طار قلبي من الفرح»، نوع الاستعارة هو استعارة مكنية.", answer: true, explanation: "لأنه شبه القلب بطائر يطير، وحذف الطائر وأبقى صفة الطيران." },
+            { text: "الاستعارة التصريحية تُبنى على الإبقاء على المشبه وحذف المشبه به.", answer: false, explanation: "هذا تعريف الاستعارة المكنية، أما التصريحية فنحذف المشبه ونصرح بالمشبه به." },
+            { text: "عبارة «تبتسم الزهور في الربيع» تعتبر استعارة مكنية.", answer: true, explanation: "لأنه شبه الزهور بإنسان يبتسم، وحذف المشبه به وأبقى صفة الابتسام." },
+            { text: "في الاستعارة التمثيلية، نشبه كلمة واحدة بكلمة أخرى.", answer: false, explanation: "الاستعارة التمثيلية نشبه فيها (حالة كاملة) بـ (حالة كاملة) وليس كلمة بكلمة." },
+            { text: "«رأيت بحرًا يتصدق على الفقراء» (ويقصد الرجل الكريم) هي استعارة تصريحية.", answer: true, explanation: "لأنه صرح بالمشبه به (بحرًا) وحذف المشبه (الرجل الكريم)." },
+            { text: "الاستعارة المكنية والتصريحية هما في الأصل تشبيه بليغ حُذف أحد طرفيه.", answer: true, explanation: "فالاستعارة هي تشبيه بليغ حذفنا منه المشبه (فتصبح تصريحية) أو المشبه به (فتصبح مكنية)." }
         ];
 
-        // ================= المكونات المستقلة =================
+        // ================= المكونات المستقلة للأقسام =================
         
-        // 1. شريط التنقل
+        // 1. شريط التنقل العلوي الدائم
         const NavigationBar = ({ activeTab, changeTab }) => {
             const navItems = [
-                { id: 'welcome', label: 'الرئيسية', icon: <IconHome className="w-6 h-6" /> },
-                { id: 'quiz', label: 'اختر الإجابة', icon: <IconList className="w-6 h-6" /> },
-                { id: 'classify', label: 'التصنيف', icon: <IconGrid className="w-6 h-6" /> },
-                { id: 'tf', label: 'صواب وخطأ', icon: <IconCheckSquare className="w-6 h-6" /> }
+                { id: 'welcome', label: 'الرئيسية', icon: <IconHome className="w-5 h-5 md:w-6 md:h-6" />, theme: 'violet' },
+                { id: 'quiz', label: 'اختر الإجابة', icon: <IconList className="w-5 h-5 md:w-6 md:h-6" />, theme: 'violet' },
+                { id: 'classify', label: 'التصنيف', icon: <IconGrid className="w-5 h-5 md:w-6 md:h-6" />, theme: 'cyan' },
+                { id: 'tf', label: 'صواب وخطأ', icon: <IconCheckSquare className="w-5 h-5 md:w-6 md:h-6" />, theme: 'rose' }
             ];
 
             return (
-                <div className="bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200 sticky top-0 z-50 mb-8">
+                <div className="bg-white/80 backdrop-blur-lg shadow-sm border-b border-gray-200 sticky top-0 z-50 mb-8 font-readex">
                     <div className="container mx-auto px-4">
-                        <div className="flex justify-center md:justify-start gap-3 overflow-x-auto py-3 no-scrollbar">
+                        <div className="flex justify-start md:justify-center gap-2 overflow-x-auto py-3 no-scrollbar">
                             {navItems.map(item => {
-                                let activeClass = "bg-violet-500 text-white shadow-md";
-                                let hoverClass = "bg-gray-50 text-gray-600 hover:bg-violet-50 hover:text-violet-600 border border-gray-100";
+                                let baseClass = "flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-full font-bold text-base md:text-xl whitespace-nowrap transition-all cursor-pointer ";
+                                let activeClass = "";
                                 
-                                if (item.id === 'classify') {
-                                    activeClass = "bg-cyan-500 text-white shadow-md";
-                                    hoverClass = "bg-gray-50 text-gray-600 hover:bg-cyan-50 hover:text-cyan-600 border border-gray-100";
-                                } else if (item.id === 'tf') {
-                                    activeClass = "bg-pink-500 text-white shadow-md";
-                                    hoverClass = "bg-gray-50 text-gray-600 hover:bg-pink-50 hover:text-pink-600 border border-gray-100";
+                                if (item.theme === 'violet') {
+                                    activeClass = activeTab === item.id ? "bg-violet-600 text-white shadow-md" : "bg-gray-50 text-gray-600 hover:bg-violet-50 hover:text-violet-700";
+                                } else if (item.theme === 'cyan') {
+                                    activeClass = activeTab === item.id ? "bg-cyan-600 text-white shadow-md" : "bg-gray-50 text-gray-600 hover:bg-cyan-50 hover:text-cyan-700";
+                                } else if (item.theme === 'rose') {
+                                    activeClass = activeTab === item.id ? "bg-rose-500 text-white shadow-md" : "bg-gray-50 text-gray-600 hover:bg-rose-50 hover:text-rose-600";
                                 }
 
                                 return (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => changeTab(item.id)}
-                                        className={`flex items-center gap-2 px-5 py-3 rounded-full font-bold text-lg md:text-xl whitespace-nowrap transition-all cursor-pointer ${
-                                            activeTab === item.id ? activeClass : hoverClass
-                                        }`}
-                                    >
+                                    <button key={item.id} type="button" onClick={() => changeTab(item.id)} className={baseClass + activeClass}>
                                         <div className={activeTab === item.id ? 'text-white' : 'text-gray-400'}>
                                             {item.icon}
                                         </div>
@@ -137,7 +151,7 @@
             );
         };
 
-        // 2. مكون عرض النتيجة
+        // 2. مكون التقييم النهائي
         const SectionResult = ({ score, maxScore, onReset, sectionTitle, theme }) => {
             const percentage = Math.round((score / maxScore) * 100);
             let message = "";
@@ -147,45 +161,42 @@
 
             if (percentage < 50) {
                 message = "لا بأس، التدريب المستمر يصنع المستحيل! حاول مرة أخرى.";
-                colorClass = "text-rose-500";
+                colorClass = "text-rose-600";
                 iconColor = "text-rose-400";
             } else if (percentage < 85) {
                 message = "جيد جدًا! أنت تفهم البلاغة بشكل جميل.";
-                colorClass = theme === 'violet' ? 'text-violet-600' : theme === 'cyan' ? 'text-cyan-600' : 'text-pink-600';
-                iconColor = theme === 'violet' ? 'text-violet-400' : theme === 'cyan' ? 'text-cyan-400' : 'text-pink-400';
+                colorClass = theme === 'violet' ? 'text-violet-600' : theme === 'cyan' ? 'text-cyan-600' : 'text-rose-600';
+                iconColor = theme === 'violet' ? 'text-violet-400' : theme === 'cyan' ? 'text-cyan-400' : 'text-rose-400';
             } else {
-                message = "ممتاز ومذهل! أنت خبير حقيقي في البلاغة والاستعارة!";
-                colorClass = "text-emerald-500";
+                message = "ممتاز ومذهل! أنت خبير حقيقي في البلاغة!";
+                colorClass = "text-emerald-600";
                 iconColor = "text-emerald-400";
             }
 
-            if (theme === 'violet') btnClass = "bg-violet-500 hover:bg-violet-600 text-white";
-            if (theme === 'cyan') btnClass = "bg-cyan-500 hover:bg-cyan-600 text-white";
-            if (theme === 'pink') btnClass = "bg-pink-500 hover:bg-pink-600 text-white";
+            if (theme === 'violet') btnClass = "bg-violet-600 hover:bg-violet-700 text-white";
+            if (theme === 'cyan') btnClass = "bg-cyan-600 hover:bg-cyan-700 text-white";
+            if (theme === 'rose') btnClass = "bg-rose-500 hover:bg-rose-600 text-white";
 
             return (
-                <div className="text-center space-y-8 fade-in flex flex-col items-center justify-center py-6 mb-12">
+                <div className="text-center space-y-6 fade-in flex flex-col items-center justify-center py-6 mb-12 font-readex">
                     <h2 className="text-3xl font-bold text-gray-800 mb-2">نتيجة قسم: {sectionTitle}</h2>
                     
                     <div className="relative mb-4 mt-4">
                         <IconTrophy className={`w-32 h-32 md:w-36 md:h-36 ${iconColor} drop-shadow-xl`} />
-                        <div className="absolute -top-2 -right-6 bg-amber-300 text-gray-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl shadow-xl transform rotate-12 border-4 border-white">
+                        <div className="absolute -top-2 -right-6 bg-amber-400 text-white w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl shadow-xl transform rotate-12 border-4 border-white">
                             {percentage}%
                         </div>
                     </div>
                     
                     <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-lg w-full relative overflow-hidden">
-                        <h3 className="text-2xl font-bold text-gray-400 mb-4">النقاط التي حصلت عليها</h3>
+                        <h3 className="text-2xl font-bold text-gray-500 mb-4">النقاط التي حصلت عليها</h3>
                         <div className="text-7xl font-black text-gray-800 mb-4 tracking-tighter" style={{ direction: 'ltr' }}>
                             {score} <span className="text-3xl text-gray-300 font-medium mx-2">/</span> {maxScore}
                         </div>
-                        <p className={`text-xl font-bold mt-6 px-2 leading-loose ${colorClass}`}>{message}</p>
+                        <p className={`text-xl font-bold mt-4 px-2 leading-loose ${colorClass}`}>{message}</p>
                     </div>
 
-                    <button
-                        onClick={onReset}
-                        className={`${btnClass} text-xl font-bold py-4 px-10 rounded-2xl shadow-md flex items-center gap-4 transition-all hover:-translate-y-1 mt-2 cursor-pointer`}
-                    >
+                    <button type="button" onClick={onReset} className={`${btnClass} text-xl font-bold py-4 px-10 rounded-2xl shadow-md flex items-center gap-4 transition-all hover:-translate-y-1 mt-2 cursor-pointer`}>
                         <IconRefresh className="w-6 h-6" />
                         <span>إعادة هذا التدريب</span>
                     </button>
@@ -196,17 +207,18 @@
         // 3. الشاشة الرئيسية
         const WelcomeSection = ({ changeTab }) => (
             <div className="flex flex-col items-center justify-center py-6 w-full max-w-5xl mx-auto fade-in">
-                <div className="text-center mb-10 flex flex-col items-center gap-3">
-                    <h2 className="text-xl md:text-2xl font-bold text-gray-600 bg-white px-8 py-3 rounded-full border border-gray-100 shadow-sm inline-block">
-                        إعداد / محمود صلاح
-                    </h2>
-                    <a href="https://www.youtube.com/egysalah" target="_blank" rel="noopener noreferrer" className="text-3xl font-bold text-violet-600 hover:text-violet-800 transition-colors flex items-center gap-3 underline decoration-violet-200 hover:decoration-violet-400 underline-offset-8 mt-2">
-                        <IconYoutube className="text-rose-500 w-9 h-9" /> العربية السهلة
+                <div className="text-center mb-10 flex flex-col items-center gap-3 font-readex">
+                    <a href="https://www.youtube.com/egysalah" target="_blank" rel="noopener noreferrer" className="text-3xl md:text-4xl font-bold text-violet-700 hover:text-violet-900 transition-colors flex items-center gap-3 decoration-violet-200 mt-2">
+                        <IconYoutube className="text-rose-600 w-10 h-10" />
+                        العربية السهلة
                     </a>
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-600 bg-white px-8 py-2 rounded-full border border-gray-200 shadow-sm mt-2">
+                        محمود صلاح
+                    </h2>
                 </div>
                 
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-800 tracking-tight text-center leading-normal mb-6">
-                    أسرار البلاغة: <span className="text-violet-500">الاستعارة</span>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-800 tracking-tight text-center leading-normal mb-6 font-readex">
+                    أسرار البلاغة: <span className="text-violet-600">الاستعارة</span>
                 </h1>
                 
                 <p className="text-xl md:text-2xl text-gray-600 max-w-3xl leading-loose text-center mb-12 bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
@@ -214,26 +226,26 @@
                     اختر أحد التدريبات التالية للبدء في اختبار معلوماتك حول الاستعارة:
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-                    <button onClick={() => changeTab('quiz')} className="flex flex-col items-center justify-center bg-white hover:bg-violet-50 border-2 border-violet-100 hover:border-violet-300 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all transform hover:-translate-y-2 group cursor-pointer">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl font-readex">
+                    <button onClick={() => changeTab('quiz')} className="flex flex-col items-center justify-center bg-white hover:bg-violet-50 border-2 border-violet-100 hover:border-violet-300 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all transform hover:-translate-y-1 group cursor-pointer">
                         <div className="bg-violet-100 p-4 rounded-full mb-4 group-hover:bg-violet-200 transition-colors">
-                            <IconList className="w-12 h-12 text-violet-500" />
+                            <IconList className="w-12 h-12 text-violet-600" />
                         </div>
                         <span className="text-2xl font-bold text-gray-700 group-hover:text-violet-700">الاختيار من متعدد</span>
                     </button>
 
-                    <button onClick={() => changeTab('classify')} className="flex flex-col items-center justify-center bg-white hover:bg-cyan-50 border-2 border-cyan-100 hover:border-cyan-300 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all transform hover:-translate-y-2 group cursor-pointer">
+                    <button onClick={() => changeTab('classify')} className="flex flex-col items-center justify-center bg-white hover:bg-cyan-50 border-2 border-cyan-100 hover:border-cyan-300 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all transform hover:-translate-y-1 group cursor-pointer">
                         <div className="bg-cyan-100 p-4 rounded-full mb-4 group-hover:bg-cyan-200 transition-colors">
-                            <IconGrid className="w-12 h-12 text-cyan-500" />
+                            <IconGrid className="w-12 h-12 text-cyan-600" />
                         </div>
                         <span className="text-2xl font-bold text-gray-700 group-hover:text-cyan-700">تصنيف العبارات</span>
                     </button>
 
-                    <button onClick={() => changeTab('tf')} className="flex flex-col items-center justify-center bg-white hover:bg-pink-50 border-2 border-pink-100 hover:border-pink-300 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all transform hover:-translate-y-2 group cursor-pointer">
-                        <div className="bg-pink-100 p-4 rounded-full mb-4 group-hover:bg-pink-200 transition-colors">
-                            <IconCheckSquare className="w-12 h-12 text-pink-500" />
+                    <button onClick={() => changeTab('tf')} className="flex flex-col items-center justify-center bg-white hover:bg-rose-50 border-2 border-rose-100 hover:border-rose-300 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all transform hover:-translate-y-1 group cursor-pointer">
+                        <div className="bg-rose-100 p-4 rounded-full mb-4 group-hover:bg-rose-200 transition-colors">
+                            <IconCheckSquare className="w-12 h-12 text-rose-600" />
                         </div>
-                        <span className="text-2xl font-bold text-gray-700 group-hover:text-pink-700">صواب وخطأ</span>
+                        <span className="text-2xl font-bold text-gray-700 group-hover:text-rose-700">صواب وخطأ</span>
                     </button>
                 </div>
             </div>
@@ -256,16 +268,16 @@
             
             return (
                 <div className="fade-in max-w-3xl mx-auto py-6">
-                    <div className="flex justify-between items-center mb-6 text-violet-400 font-bold px-2 text-xl">
+                    <div className="flex justify-between items-center mb-6 text-violet-500 font-bold px-2 text-xl font-readex">
                         <span>قسم الاختيار من متعدد</span>
                         <span>السؤال {currentQ + 1} من {QUIZ_QUESTIONS.length}</span>
                     </div>
                     <div className="w-full bg-violet-100 h-3 rounded-full mb-10 overflow-hidden shadow-inner">
-                        <div className="bg-violet-400 h-full transition-all duration-500 ease-out" style={{width: `${((currentQ + 1) / QUIZ_QUESTIONS.length) * 100}%`}}></div>
+                        <div className="bg-violet-500 h-full transition-all duration-500 ease-out" style={{width: `${((currentQ + 1) / QUIZ_QUESTIONS.length) * 100}%`}}></div>
                     </div>
 
                     <div className="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-violet-100 mb-8">
-                        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-10 leading-loose whitespace-pre-line text-center bg-violet-50 p-8 rounded-2xl border border-violet-100">
+                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 leading-loose whitespace-pre-line text-center bg-violet-50 p-8 rounded-2xl border border-violet-100 font-readex">
                             {q.text}
                         </h2>
 
@@ -273,35 +285,36 @@
                             {q.options.map((opt, idx) => {
                                 let btnClass = "w-full text-right p-5 rounded-2xl border-2 transition-all duration-200 text-xl md:text-2xl font-bold flex justify-between items-center outline-none ";
                                 if (!answered) {
-                                    btnClass += "border-gray-100 hover:border-violet-300 hover:bg-violet-50 text-gray-600 bg-white shadow-sm cursor-pointer";
+                                    btnClass += "border-gray-200 hover:border-violet-400 hover:bg-violet-50 text-gray-700 bg-white shadow-sm cursor-pointer";
                                 } else {
-                                    if (idx === q.correct) btnClass += "border-emerald-400 bg-emerald-50 text-emerald-800 shadow-sm";
-                                    else if (idx === selectedOpt) btnClass += "border-rose-400 bg-rose-50 text-rose-800 shadow-sm";
-                                    else btnClass += "border-gray-50 bg-gray-50 opacity-50 text-gray-400";
+                                    if (idx === q.correct) btnClass += "border-emerald-500 bg-emerald-50 text-emerald-800 shadow-md";
+                                    else if (idx === selectedOpt) btnClass += "border-rose-500 bg-rose-50 text-rose-800 shadow-md";
+                                    else btnClass += "border-gray-100 bg-gray-50 opacity-50 text-gray-400";
                                 }
                                 return (
-                                    <button key={idx} disabled={answered} onClick={() => { setSelectedOpt(idx); setAnswered(true); if (idx === q.correct) setScore(s => s + 1); }} className={btnClass}>
+                                    <button key={idx} type="button" disabled={answered} onClick={() => { setSelectedOpt(idx); setAnswered(true); if (idx === q.correct) setScore(s => s + 1); }} className={btnClass}>
                                         <span>{opt}</span>
-                                        {answered && idx === q.correct && <div className="text-emerald-500"><IconCheckCircle className="w-8 h-8" /></div>}
-                                        {answered && idx === selectedOpt && idx !== q.correct && <div className="text-rose-400"><IconXCircle className="w-8 h-8" /></div>}
+                                        {answered && idx === q.correct && <div className="text-emerald-600"><IconCheckCircle className="w-8 h-8" /></div>}
+                                        {answered && idx === selectedOpt && idx !== q.correct && <div className="text-rose-500"><IconXCircle className="w-8 h-8" /></div>}
                                     </button>
                                 );
                             })}
                         </div>
 
+                        {/* التغذية الراجعة الفورية */}
                         {answered && (
-                            <div className={`mt-8 p-6 border rounded-2xl fade-in shadow-sm ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
+                            <div className={`mt-8 p-6 border rounded-2xl fade-in shadow-sm ${isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}`}>
                                 <div className="flex items-center gap-3 mb-4 border-b pb-4" style={{borderColor: isCorrect ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)'}}>
-                                    <div className={isCorrect ? "text-emerald-500" : "text-rose-500"}>
+                                    <div className={isCorrect ? "text-emerald-600" : "text-rose-600"}>
                                         {isCorrect ? <IconCheckCircle className="w-8 h-8" /> : <IconXCircle className="w-8 h-8" />}
                                     </div>
-                                    <span className={`text-2xl font-bold ${isCorrect ? 'text-emerald-700' : 'text-rose-700'}`}>
+                                    <span className={`text-2xl font-bold font-readex ${isCorrect ? 'text-emerald-800' : 'text-rose-800'}`}>
                                         {isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}
                                     </span>
                                 </div>
                                 <div className="flex items-start gap-4 mt-2">
-                                    <div className={isCorrect ? "text-emerald-500 mt-1" : "text-rose-500 mt-1"}><IconSparkles className="w-8 h-8" /></div>
-                                    <span className={`text-xl md:text-2xl font-bold leading-loose ${isCorrect ? 'text-emerald-800' : 'text-rose-800'}`}>{q.explanation}</span>
+                                    <div className={isCorrect ? "text-emerald-600 mt-1" : "text-rose-600 mt-1"}><IconSparkles className="w-8 h-8" /></div>
+                                    <span className={`text-xl md:text-2xl font-bold leading-loose ${isCorrect ? 'text-emerald-900' : 'text-rose-900'}`}>{q.explanation}</span>
                                 </div>
                             </div>
                         )}
@@ -309,11 +322,10 @@
 
                     {answered && (
                         <div className="flex justify-end fade-in px-2 pb-10">
-                            <button onClick={() => {
-                                if (currentQ < QUIZ_QUESTIONS.length - 1) { setCurrentQ(q => q + 1); setAnswered(false); setSelectedOpt(null); }
-                                else { setCompleted(true); }
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }} className="bg-violet-500 hover:bg-violet-600 text-white text-xl md:text-2xl font-bold py-4 px-10 rounded-2xl shadow-md transition-all flex items-center gap-3 hover:-translate-x-2 cursor-pointer">
+                            <button type="button" onClick={() => {
+                                if (currentQ < QUIZ_QUESTIONS.length - 1) { setCurrentQ(q => q + 1); setAnswered(false); setSelectedOpt(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                                else { setCompleted(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                            }} className="bg-violet-600 hover:bg-violet-700 text-white text-xl md:text-2xl font-bold py-4 px-10 rounded-2xl shadow-md transition-all flex items-center gap-3 hover:-translate-x-2 cursor-pointer font-readex">
                                 <span>{currentQ < QUIZ_QUESTIONS.length - 1 ? 'السؤال التالي' : 'عرض نتيجة القسم'}</span>
                                 <IconArrowLeft className="w-6 h-6" />
                             </button>
@@ -323,107 +335,82 @@
             );
         };
 
-        // 5. قسم التصنيف
+        // 5. قسم التصنيف (تم تحويله لنظام تغذية راجعة فورية خطوة بخطوة كما طلبت)
         const ClassifySection = () => {
-            const [answers, setAnswers] = useState({});
-            const [submitted, setSubmitted] = useState(false);
-            const [error, setError] = useState(false);
             const [score, setScore] = useState(0);
+            const [currentQ, setCurrentQ] = useState(0);
+            const [answered, setAnswered] = useState(false);
+            const [selected, setSelected] = useState(null);
+            const [completed, setCompleted] = useState(false);
 
+            const reset = () => { setScore(0); setCurrentQ(0); setAnswered(false); setSelected(null); setCompleted(false); window.scrollTo({top: 0, behavior: 'smooth'}); };
+
+            if (completed) return <SectionResult score={score} maxScore={CLASSIFY_PHRASES.length} onReset={reset} sectionTitle="تصنيف الاستعارات" theme="cyan" />;
+
+            const q = CLASSIFY_PHRASES[currentQ];
+            const isCorrect = selected === q.type;
             const typeLabels = { makneya: 'مكنية', tasreheya: 'تصريحية', tamtheleya: 'تمثيلية' };
 
-            const handleSelect = (id, type) => {
-                if (submitted) return;
-                setAnswers(p => ({ ...p, [id]: type }));
-                setError(false);
-            };
-
-            const submit = () => {
-                if (Object.keys(answers).length < CLASSIFY_PHRASES.length) { setError(true); return; }
-                let correct = 0;
-                CLASSIFY_PHRASES.forEach(p => { if (answers[p.id] === p.type) correct++; });
-                setScore(correct);
-                setSubmitted(true);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            };
-
-            const reset = () => { setAnswers({}); setSubmitted(false); setError(false); setScore(0); window.scrollTo({top: 0, behavior: 'smooth'}); };
-
             return (
-                <div className="fade-in max-w-4xl mx-auto py-6">
-                    {submitted && <SectionResult score={score} maxScore={CLASSIFY_PHRASES.length} onReset={reset} sectionTitle="تصنيف الاستعارات" theme="cyan" />}
-
-                    {!submitted && (
-                        <div className="mb-10 text-center bg-white p-8 rounded-3xl shadow-sm border border-cyan-100">
-                            <h2 className="text-3xl md:text-4xl font-bold text-cyan-700 mb-4">قسم تصنيف العبارات</h2>
-                            <p className="text-gray-500 text-xl md:text-2xl">اقرأ العبارة، ثم انقر على نوع الاستعارة المناسب لها لجميع الأسئلة.</p>
-                        </div>
-                    )}
-
-                    {error && (
-                        <div className="bg-rose-50 text-rose-700 p-5 rounded-2xl mb-8 text-center font-bold text-xl md:text-2xl fade-in shadow-sm border border-rose-200">
-                            ⚠️ الرجاء اختيار إجابة لجميع العبارات قبل التحقق!
-                        </div>
-                    )}
-
-                    <div className="space-y-6">
-                        {CLASSIFY_PHRASES.map((phrase, index) => {
-                            const selectedType = answers[phrase.id];
-                            const isCorrect = selectedType === phrase.type;
-                            
-                            return (
-                                <div key={phrase.id} className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-cyan-100 transition-all">
-                                    <div className="flex items-start gap-4 mb-6">
-                                        <div className="bg-cyan-50 text-cyan-600 font-bold w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-xl border border-cyan-100">
-                                            {index + 1}
-                                        </div>
-                                        <p className="text-2xl md:text-3xl font-bold text-gray-700 leading-loose">{phrase.text}</p>
-                                    </div>
-                                    
-                                    <div className="grid grid-cols-3 gap-3 md:gap-6 pl-0 md:pl-16">
-                                        {Object.keys(typeLabels).map(typeKey => {
-                                            let btnClass = "py-4 px-2 text-center rounded-xl border-2 font-bold transition-all text-lg md:text-xl outline-none ";
-                                            if (!submitted) {
-                                                if (selectedType === typeKey) btnClass += "bg-cyan-500 text-white border-cyan-500 shadow-md transform scale-105";
-                                                else btnClass += "bg-gray-50 text-gray-600 border-gray-100 hover:bg-cyan-50 hover:border-cyan-300 hover:text-cyan-700 cursor-pointer";
-                                            } else {
-                                                if (typeKey === phrase.type) btnClass += "bg-emerald-500 text-white border-emerald-500 shadow-md";
-                                                else if (selectedType === typeKey && !isCorrect) btnClass += "bg-rose-500 text-white border-rose-500 shadow-md";
-                                                else btnClass += "bg-gray-50 text-gray-400 border-gray-100 opacity-50";
-                                            }
-                                            return (
-                                                <button key={typeKey} disabled={submitted} onClick={() => handleSelect(phrase.id, typeKey)} className={btnClass}>
-                                                    {typeLabels[typeKey]}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-
-                                    {submitted && (
-                                        <div className={`mt-8 p-6 border rounded-2xl fade-in shadow-sm pl-0 md:pl-16 ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
-                                            <div className="flex items-center gap-3 mb-4 border-b pb-4" style={{borderColor: isCorrect ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)'}}>
-                                                <div className={isCorrect ? "text-emerald-500" : "text-rose-500"}>
-                                                    {isCorrect ? <IconCheckCircle className="w-8 h-8" /> : <IconXCircle className="w-8 h-8" />}
-                                                </div>
-                                                <span className={`text-2xl font-bold ${isCorrect ? 'text-emerald-700' : 'text-rose-700'}`}>
-                                                    {isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-start gap-4 mt-2">
-                                                <div className={isCorrect ? "text-emerald-500 mt-1" : "text-rose-500 mt-1"}><IconSparkles className="w-8 h-8" /></div>
-                                                <span className={`text-xl md:text-2xl font-bold leading-loose ${isCorrect ? 'text-emerald-800' : 'text-rose-800'}`}>{phrase.explanation}</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
+                <div className="fade-in max-w-3xl mx-auto py-6">
+                    <div className="flex justify-between items-center mb-6 text-cyan-600 font-bold px-2 text-xl font-readex">
+                        <span>قسم تصنيف العبارات</span>
+                        <span>العبارة {currentQ + 1} من {CLASSIFY_PHRASES.length}</span>
+                    </div>
+                    <div className="w-full bg-cyan-100 h-3 rounded-full mb-10 overflow-hidden shadow-inner">
+                        <div className="bg-cyan-500 h-full transition-all duration-500 ease-out" style={{width: `${((currentQ + 1) / CLASSIFY_PHRASES.length) * 100}%`}}></div>
                     </div>
 
-                    {!submitted && (
-                        <div className="mt-12 flex justify-center pb-16">
-                            <button onClick={submit} className="bg-cyan-500 hover:bg-cyan-600 text-white text-2xl font-bold py-5 px-16 rounded-2xl shadow-md transition-all hover:-translate-y-1 w-full md:w-auto cursor-pointer">
-                                التحقق وعرض النتيجة
+                    <div className="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-cyan-100 mb-8">
+                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-10 leading-loose whitespace-pre-line text-center bg-cyan-50 p-8 rounded-2xl border border-cyan-100 font-readex">
+                            {q.text}
+                        </h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {Object.keys(typeLabels).map(typeKey => {
+                                let btnClass = "py-5 px-4 text-center rounded-2xl border-2 font-bold transition-all text-xl md:text-2xl outline-none ";
+                                if (!answered) {
+                                    btnClass += "border-gray-200 hover:border-cyan-400 hover:bg-cyan-50 text-gray-700 bg-white shadow-sm cursor-pointer";
+                                } else {
+                                    if (typeKey === q.type) btnClass += "border-emerald-500 bg-emerald-50 text-emerald-800 shadow-md";
+                                    else if (selected === typeKey) btnClass += "border-rose-500 bg-rose-50 text-rose-800 shadow-md";
+                                    else btnClass += "border-gray-100 bg-gray-50 opacity-50 text-gray-400";
+                                }
+                                return (
+                                    <button key={typeKey} type="button" disabled={answered} onClick={() => { setSelected(typeKey); setAnswered(true); if (typeKey === q.type) setScore(s => s + 1); }} className={btnClass}>
+                                        {typeLabels[typeKey]}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {/* التغذية الراجعة الفورية */}
+                        {answered && (
+                            <div className={`mt-8 p-6 border rounded-2xl fade-in shadow-sm ${isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}`}>
+                                <div className="flex items-center gap-3 mb-4 border-b pb-4" style={{borderColor: isCorrect ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)'}}>
+                                    <div className={isCorrect ? "text-emerald-600" : "text-rose-600"}>
+                                        {isCorrect ? <IconCheckCircle className="w-8 h-8" /> : <IconXCircle className="w-8 h-8" />}
+                                    </div>
+                                    <span className={`text-2xl font-bold font-readex ${isCorrect ? 'text-emerald-800' : 'text-rose-800'}`}>
+                                        {isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}
+                                    </span>
+                                </div>
+                                <div className="flex items-start gap-4 mt-2">
+                                    <div className={isCorrect ? "text-emerald-600 mt-1" : "text-rose-600 mt-1"}><IconSparkles className="w-8 h-8" /></div>
+                                    <span className={`text-xl md:text-2xl font-bold leading-loose ${isCorrect ? 'text-emerald-900' : 'text-rose-900'}`}>{q.explanation}</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {answered && (
+                        <div className="flex justify-end fade-in px-2 pb-10">
+                            <button type="button" onClick={() => {
+                                if (currentQ < CLASSIFY_PHRASES.length - 1) { setCurrentQ(q => q + 1); setAnswered(false); setSelected(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                                else { setCompleted(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                            }} className="bg-cyan-600 hover:bg-cyan-700 text-white text-xl md:text-2xl font-bold py-4 px-10 rounded-2xl shadow-md transition-all flex items-center gap-3 hover:-translate-x-2 cursor-pointer font-readex">
+                                <span>{currentQ < CLASSIFY_PHRASES.length - 1 ? 'العبارة التالية' : 'عرض نتيجة القسم'}</span>
+                                <IconArrowLeft className="w-6 h-6" />
                             </button>
                         </div>
                     )}
@@ -441,69 +428,70 @@
 
             const reset = () => { setScore(0); setCurrentQ(0); setAnswered(false); setSelected(null); setCompleted(false); window.scrollTo({top: 0, behavior: 'smooth'}); };
 
-            if (completed) return <SectionResult score={score} maxScore={TF_QUESTIONS.length} onReset={reset} sectionTitle="صواب أم خطأ" theme="pink" />;
+            if (completed) return <SectionResult score={score} maxScore={TF_QUESTIONS.length} onReset={reset} sectionTitle="صواب أم خطأ" theme="rose" />;
 
             const q = TF_QUESTIONS[currentQ];
             const isCorrect = selected === q.answer;
             
             return (
                 <div className="fade-in max-w-3xl mx-auto py-6">
-                    <div className="flex justify-between items-center mb-6 text-pink-400 font-bold px-2 text-xl">
+                    <div className="flex justify-between items-center mb-6 text-rose-500 font-bold px-2 text-xl font-readex">
                         <span>قسم الصواب والخطأ</span>
                         <span>السؤال {currentQ + 1} من {TF_QUESTIONS.length}</span>
                     </div>
-                    <div className="w-full bg-pink-100 h-3 rounded-full mb-10 overflow-hidden shadow-inner">
-                        <div className="bg-pink-400 h-full transition-all duration-500 ease-out" style={{width: `${((currentQ + 1) / TF_QUESTIONS.length) * 100}%`}}></div>
+                    <div className="w-full bg-rose-100 h-3 rounded-full mb-10 overflow-hidden shadow-inner">
+                        <div className="bg-rose-500 h-full transition-all duration-500 ease-out" style={{width: `${((currentQ + 1) / TF_QUESTIONS.length) * 100}%`}}></div>
                     </div>
 
-                    <div className="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-pink-100 mb-8">
-                        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-10 leading-loose text-center bg-pink-50 p-8 rounded-2xl border border-pink-100">
+                    <div className="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-rose-100 mb-8">
+                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-10 leading-loose text-center bg-rose-50 p-8 rounded-2xl border border-rose-100 font-readex">
                             {q.text}
                         </h2>
 
                         <div className="grid grid-cols-2 gap-4 md:gap-6">
-                            {/* زر صواب */}
                             <button
+                                type="button"
                                 disabled={answered}
                                 onClick={() => { setSelected(true); setAnswered(true); if (q.answer === true) setScore(s => s + 1); }}
                                 className={`py-6 rounded-2xl border-2 font-bold text-2xl transition-all outline-none ${
                                     !answered 
-                                    ? "border-gray-100 hover:border-pink-300 hover:bg-pink-50 bg-white text-gray-600 shadow-sm cursor-pointer"
+                                    ? "border-gray-200 hover:border-rose-400 hover:bg-rose-50 bg-white text-gray-700 shadow-sm cursor-pointer"
                                     : (q.answer === true 
-                                        ? "border-emerald-400 bg-emerald-50 text-emerald-800 shadow-sm" 
-                                        : (selected === true ? "border-rose-400 bg-rose-50 text-rose-800 shadow-sm" : "border-gray-50 bg-gray-50 text-gray-400 opacity-50")
+                                        ? "border-emerald-500 bg-emerald-50 text-emerald-800 shadow-md" 
+                                        : (selected === true ? "border-rose-500 bg-rose-50 text-rose-800 shadow-md" : "border-gray-100 bg-gray-50 text-gray-400 opacity-50")
                                       )
                                 }`}
                             >صواب</button>
 
-                            {/* زر خطأ */}
                             <button
+                                type="button"
                                 disabled={answered}
                                 onClick={() => { setSelected(false); setAnswered(true); if (q.answer === false) setScore(s => s + 1); }}
                                 className={`py-6 rounded-2xl border-2 font-bold text-2xl transition-all outline-none ${
                                     !answered 
-                                    ? "border-gray-100 hover:border-pink-300 hover:bg-pink-50 bg-white text-gray-600 shadow-sm cursor-pointer"
+                                    ? "border-gray-200 hover:border-rose-400 hover:bg-rose-50 bg-white text-gray-700 shadow-sm cursor-pointer"
                                     : (q.answer === false 
-                                        ? "border-emerald-400 bg-emerald-50 text-emerald-800 shadow-sm" 
-                                        : (selected === false ? "border-rose-400 bg-rose-50 text-rose-800 shadow-sm" : "border-gray-50 bg-gray-50 text-gray-400 opacity-50")
+                                        ? "border-emerald-500 bg-emerald-50 text-emerald-800 shadow-md" 
+                                        : (selected === false ? "border-rose-500 bg-rose-50 text-rose-800 shadow-md" : "border-gray-100 bg-gray-50 text-gray-400 opacity-50")
                                       )
                                 }`}
                             >خطأ</button>
                         </div>
 
+                        {/* التغذية الراجعة الفورية */}
                         {answered && (
-                            <div className={`mt-8 p-6 border rounded-2xl fade-in shadow-sm ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
+                            <div className={`mt-8 p-6 border rounded-2xl fade-in shadow-sm ${isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}`}>
                                 <div className="flex items-center gap-3 mb-4 border-b pb-4" style={{borderColor: isCorrect ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)'}}>
-                                    <div className={isCorrect ? "text-emerald-500" : "text-rose-500"}>
+                                    <div className={isCorrect ? "text-emerald-600" : "text-rose-600"}>
                                         {isCorrect ? <IconCheckCircle className="w-8 h-8" /> : <IconXCircle className="w-8 h-8" />}
                                     </div>
-                                    <span className={`text-2xl font-bold ${isCorrect ? 'text-emerald-700' : 'text-rose-700'}`}>
+                                    <span className={`text-2xl font-bold font-readex ${isCorrect ? 'text-emerald-800' : 'text-rose-800'}`}>
                                         {isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}
                                     </span>
                                 </div>
                                 <div className="flex items-start gap-4 mt-2">
-                                    <div className={isCorrect ? "text-emerald-500 mt-1" : "text-rose-500 mt-1"}><IconSparkles className="w-8 h-8" /></div>
-                                    <span className={`text-xl md:text-2xl font-bold leading-loose ${isCorrect ? 'text-emerald-800' : 'text-rose-800'}`}>{q.explanation}</span>
+                                    <div className={isCorrect ? "text-emerald-600 mt-1" : "text-rose-600 mt-1"}><IconSparkles className="w-8 h-8" /></div>
+                                    <span className={`text-xl md:text-2xl font-bold leading-loose ${isCorrect ? 'text-emerald-900' : 'text-rose-900'}`}>{q.explanation}</span>
                                 </div>
                             </div>
                         )}
@@ -511,11 +499,10 @@
 
                     {answered && (
                         <div className="flex justify-end fade-in px-2 pb-10">
-                            <button onClick={() => {
-                                if (currentQ < TF_QUESTIONS.length - 1) { setCurrentQ(q => q + 1); setAnswered(false); setSelected(null); }
-                                else { setCompleted(true); }
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }} className="bg-pink-500 hover:bg-pink-600 text-white text-xl md:text-2xl font-bold py-4 px-10 rounded-2xl shadow-md transition-all flex items-center gap-3 hover:-translate-x-2 cursor-pointer">
+                            <button type="button" onClick={() => {
+                                if (currentQ < TF_QUESTIONS.length - 1) { setCurrentQ(q => q + 1); setAnswered(false); setSelected(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                                else { setCompleted(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                            }} className="bg-rose-500 hover:bg-rose-600 text-white text-xl md:text-2xl font-bold py-4 px-10 rounded-2xl shadow-md transition-all flex items-center gap-3 hover:-translate-x-2 cursor-pointer font-readex">
                                 <span>{currentQ < TF_QUESTIONS.length - 1 ? 'السؤال التالي' : 'عرض نتيجة القسم'}</span>
                                 <IconArrowLeft className="w-6 h-6" />
                             </button>
@@ -538,7 +525,6 @@
                 <div className="w-full pb-12">
                     <NavigationBar activeTab={activeTab} changeTab={changeTab} />
                     <div className="container mx-auto px-4 md:px-8 max-w-5xl">
-                        {/* استخدام display بدلاً من rendering للحفاظ على تقدم الطالب داخل القسم لو انتقل لقسم آخر ورجع */}
                         <div style={{ display: activeTab === 'welcome' ? 'block' : 'none' }}>
                             <WelcomeSection changeTab={changeTab} />
                         </div>
@@ -561,5 +547,3 @@
     </script>
 </body>
 </html>
-
-
