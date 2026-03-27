@@ -55,7 +55,7 @@
 
         /* تعويض التمرير لتجنب تغطية شريط التبويبات الثابت للمحتوى */
         .scroll-offset {
-            scroll-margin-top: 85px; 
+            scroll-margin-top: 60px; 
         }
     </style>
 </head>
@@ -150,11 +150,11 @@
         const Header = () => (
             <header className="w-full text-center py-6 bg-transparent flex flex-col items-center justify-center">
                 <a href="https://www.youtube.com/egysalah" target="_blank" rel="noopener noreferrer" 
-                   className="inline-flex items-center gap-2 text-3xl font-bold text-slate-800 hover:text-red-600 transition-colors duration-300">
-                    <IconYoutube className="w-8 h-8 text-red-600" />
-                    العربية السهلة
+                   className="inline-flex items-center gap-2 text-2xl font-bold text-slate-800 hover:text-red-600 transition-colors duration-300 bg-transparent">
+                    <span>العربية السهلة</span>
+                    <IconYoutube className="w-7 h-7 text-red-600" />
                 </a>
-                <span className="text-lg font-medium text-slate-500 mt-1">محمود صلاح</span>
+                <span className="text-lg font-bold text-slate-500 mt-1">محمود صلاح</span>
             </header>
         );
 
@@ -358,8 +358,11 @@
             const handleTabChange = (tabId) => {
                 setActiveTab(tabId);
                 setProgressPercent(0); // تصفير الشريط لحين تحميل المكون
-                const el = document.getElementById('main-content');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // استخدام setTimeout لضمان اكتمال تحميل المكون الجديد قبل التمرير
+                setTimeout(() => {
+                    const el = document.getElementById('main-content');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 10);
             };
 
             const handleSectionComplete = (sectionId, score, total) => {
@@ -389,13 +392,13 @@
                 overallPercentage = Math.round((totalScore / totalQuestions) * 100);
 
                 if (overallPercentage < 50) {
-                    finalMessage = "لا بأس! البدايات دائماً تتطلب جهداً. راجع القاعدة وحاول مرة أخرى، أنت قادر على التحسن!";
+                    finalMessage = "لا بأس! البدايات دائمًا تتطلب جهدًا. راجع القاعدة وحاول مرة أخرى، أنت قادر على التحسن!";
                     finalColorClass = "text-rose-600";
                 } else if (overallPercentage < 85) {
-                    finalMessage = "أداء جيد جداً! لديك فهم ممتاز للاستعارة، بقليل من التركيز ستصل إلى العلامة الكاملة.";
+                    finalMessage = "أداء جيد جدًا! لديك فهم ممتاز للاستعارة، بقليل من التركيز ستصل إلى العلامة الكاملة.";
                     finalColorClass = "text-indigo-600";
                 } else {
-                    finalMessage = "عمل مبهر! أنت خبير حقيقي في البلاغة وتحديداً في الاستعارة. استمر في هذا التميز!";
+                    finalMessage = "عمل مبهر! أنت خبير حقيقي في البلاغة وتحديدًا في الاستعارة. استمر في هذا التميز!";
                     finalColorClass = "text-emerald-600";
                 }
             }
@@ -406,15 +409,15 @@
                     <Header />
 
                     {/* شريط التبويبات والتقدم (ثابت أعلى الشاشة) */}
-                    <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-sm">
+                    <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm relative">
                         <div className="container mx-auto px-2">
                             {/* استخدام الخصائص لضمان شريط أفقي واحد وتمرير ناعم في الهواتف */}
-                            <nav className="flex overflow-x-auto whitespace-nowrap flex-nowrap no-scrollbar py-2 justify-center gap-2">
+                            <nav className="flex overflow-x-auto whitespace-nowrap flex-nowrap no-scrollbar py-1 justify-center gap-2">
                                 {SECTIONS.map(section => {
                                     const isActive = activeTab === section.id;
-                                    const baseClass = "px-5 py-2 rounded-lg font-bold text-sm md:text-base transition-all outline-none cursor-pointer flex-shrink-0 border-2 ";
+                                    const baseClass = "px-4 py-1.5 rounded-lg font-bold text-sm md:text-base transition-all outline-none cursor-pointer flex-shrink-0 border-2 ";
                                     const activeClass = isActive 
-                                        ? `bg-${section.theme}-600 text-white border-${section.theme}-600 shadow-md` 
+                                        ? `bg-${section.theme}-600 text-white border-${section.theme}-600 shadow-sm` 
                                         : `bg-white text-slate-600 border-slate-100 hover:border-${section.theme}-200 hover:text-${section.theme}-700`;
                                     
                                     return (
@@ -426,7 +429,7 @@
                             </nav>
                         </div>
                         {/* شريط التقدم النحيف */}
-                        <div className="w-full h-1 bg-slate-100 absolute bottom-0 left-0">
+                        <div className="w-full h-[2px] bg-slate-100 absolute bottom-0 left-0">
                             <div 
                                 className="h-full bg-slate-800 transition-all duration-300 ease-out" 
                                 style={{ width: `${progressPercent}%`, right: 0, position: 'absolute' }}
@@ -437,12 +440,12 @@
                     {/* المحتوى الرئيسي للمتطابق مع التبويب */}
                     <main id="main-content" className="flex-grow container mx-auto px-4 py-8 scroll-offset flex flex-col items-center">
                         
-                        {/* رسالة ترحيبية بسيطة أعلى أول قسم فقط لتجنب إنشاء تبويب "الرئيسية" */}
-                        {activeTab === 'quiz' && !scores.quiz && (
-                            <div className="max-w-3xl w-full text-center mb-10 fade-in">
-                                <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-4">أسرار البلاغة: الاستعارة</h1>
+                        {/* رسالة ترحيبية بسيطة وعنوان يظهران في القسم الأول فقط */}
+                        {activeTab === 'quiz' && (
+                            <div className="max-w-3xl w-full text-center mb-8 fade-in">
+                                <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">أسرار البلاغة: الاستعارة</h1>
                                 <p className="text-lg text-slate-600 font-medium">
-                                    مرحباً بك يا بطل اللغة العربية! اختر أحد التدريبات للبدء في اختبار معلوماتك حول الاستعارة (المكنية، التصريحية، والتمثيلية).
+                                    مرحبًا بك يا بطل اللغة العربية! اختر أحد التدريبات للبدء في اختبار معلوماتك حول الاستعارة (المكنية، التصريحية، والتمثيلية).
                                 </p>
                             </div>
                         )}
