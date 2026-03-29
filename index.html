@@ -19,22 +19,29 @@
     <style>
         body { 
             font-family: 'Readex Pro', sans-serif; 
-            background-color: #f8fafc; /* خلفية باستيل فاتحة جدًا ومريحة */
+            background-color: #f8fafc;
             color: #0f172a; 
             -webkit-tap-highlight-color: transparent;
         }
         
-        /* حركات التمرير والظهور */
         html { scroll-behavior: smooth; }
+        
+        /* حركات الظهور والسقوط للصناديق */
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        .fly-out { animation: flyOut 0.4s ease-in forwards; }
+        @keyframes flyOut {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(120px) scale(0.5); opacity: 0; }
+        }
         
         button { outline: none; }
         
-        /* إخفاء شريط التمرير للتبويبات لجمالية التصميم مع إبقاء خاصية التمرير */
+        /* إخفاء شريط التمرير */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -46,13 +53,12 @@
     <script type="text/babel">
         const { useState, useEffect, useRef, useCallback } = React;
 
-        // ================= الأداة اللغوية للأرقام =================
+        // ================= الأداة اللغوية =================
         const toArabicNum = (num) => {
             const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
             return String(num).split('').map(c => arabicNumbers[c] || c).join('');
         };
 
-        // ================= أداة الخلط العشوائي (Shuffle) =================
         const shuffleArray = (array) => {
             const newArray = [...array];
             for (let i = newArray.length - 1; i > 0; i--) {
@@ -62,7 +68,7 @@
             return newArray;
         };
 
-        // ================= الأيقونات (SVG نقية) =================
+        // ================= الأيقونات (SVG) =================
         const IconYoutube = ({ className }) => <svg className={className} fill="#FF0000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/></svg>;
         const IconCheckCircle = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;
         const IconXCircle = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>;
@@ -74,7 +80,7 @@
         const IconHidden = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>;
         const IconLoud = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>;
         const IconScene = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>;
-        const IconTray = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>;
+        const IconTray = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>;
 
         // ================= قواعد البيانات =================
         const QUIZ_QUESTIONS = [
@@ -87,7 +93,7 @@
             { text: "«طارت الأخبار السعيدة في أرجاء المدينة»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه الأخبار السعيدة بطيور تطير، وحذف المشبه به (الطيور).", hint: "الأخبار لا تطير. ما الذي يطير وحذفناه من الجملة؟" },
             { text: "تحدثت مع بحرٍ في الطب (تقصد طبيبًا بارعًا).\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه الطبيب العظيم بالبحر في علمه، فصرّح بالمشبه به (بحر).", hint: "لقد صرحنا بالمشبه به (بحر) وحذفنا المشبه (الطبيب)." },
             { text: "لمن يصنع الخير في غير أهله: «أنت تزرع في البحر»\nهذه الصورة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه حالة صانع الخير في غير أهله بمن يزرع في ماء البحر.", hint: "موقف يقابله موقف آخر بالكامل، لتوضيح سوء التصرف." },
-            { text: "«افترس المرض جسد الرجل الضعيف»\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه المرض بح حيوان مفترس، وحذف الحيوان وأبقى صفة الافتراس.", hint: "الافتراس صفة لشيء محذوف." },
+            { text: "«افترس المرض جسد الرجل الضعيف»\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه المرض بحيوان مفترس، وحذف الحيوان وأبقى صفة الافتراس.", hint: "الافتراس صفة لشيء محذوف." },
             { text: "قال تعالى: «واعتصموا بحبل الله جميعًا ولا تفرقوا» (يقصد دين الله).\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه (الدين) بالحبل، وحذف المشبه وصرّح بالمشبه به.", hint: "ماذا يقصد بالحبل هنا؟" },
             { text: "«نطق الجدار مبينًا أمجاد حضارتنا»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه (الجدار) بإنسان ينطق، وحذف المشبه به وأبقى صفة النطق.", hint: "الجدار لا ينطق. من الذي ينطق وحذفناه من الجملة؟" },
             { text: "لمن يحاول إخفاء الحقيقة: «أنت تحجب الشمس بغربال!»\nهذه الصورة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه موقف إخفاء الحقيقة بموقف تغطية نور الشمس بغربال.", hint: "صورة تمثيلية لحالة شخص يحاول فعل المستحيل." },
@@ -96,21 +102,34 @@
         ];
 
         const CLASSIFY_PHRASES = [
-            { text: "بكى السحاب على الأرض العطشى", type: "makneya", explanation: "استعارة مكنية: شبه السحاب بإنسان يبكي، وحذف المشبه به (الإنسان).", hint: "السحاب لا يبكي، هناك إنسان مخفي." },
-            { text: "شاهدت أسدًا يقود الطائرة الحربية", type: "tasreheya", explanation: "استعارة تصريحية: صرح بـ (أسد) وحذف المشبه وقصد الطيار الشجاع.", hint: "هل الأسد يقود طائرة؟." },
-            { text: "لمن يشتري المجهول: «أنت تشتري سمكًا في ماء»", type: "tamtheleya", explanation: "استعارة تمثيلية: تشبيه حالة (شراء المجهول) بحالة (شراء السمك قبل صيده).", hint: "موقف يشبه موقفًا في الحياة." },
-            { text: "عضتنا الأيام بنابها القاسي", type: "makneya", explanation: "استعارة مكنية: شبه الأيام بحيوان مفترس، وحذفه وأبقى صفة العض.", hint: "الأيام ليس لها ناب. من صاحب الناب الذي اختفى هنا؟" },
-            { text: "قابلت كوكبًا في علوم الحاسوب", type: "tasreheya", explanation: "استعارة تصريحية: صرح بـ (كوكب) وقصد العالِم البارع.", hint: "نقصد العالِم." },
-            { text: "لمن يتردد: «أراك تقدم رجلًا وتؤخر أخرى»", type: "tamtheleya", explanation: "استعارة تمثيلية: تشبيه حالة المتردد بهذه الصورة.", hint: "هذه صورة حركية تمثل التردد وعدم الحسم." },
-            { text: "زأر الجندي في وجه الأعداء", type: "makneya", explanation: "استعارة مكنية: شبه الجندي بأسد، وحذف المشبه به وأبقى صفة الزئير.", hint: "الزئير صفة لحيوان معين لم يذكر اسمه في الجملة." },
-            { text: "«نسورنا تحمي سماء الوطن في كل وقت» (يقصد الطيارين)", type: "tasreheya", explanation: "استعارة تصريحية: شبه (الطيارين) بالنسور، وحذف المشبه وصرّح بلفظ المشبه به.", hint: "صرحنا بكلمة (النسور) مباشرة." },
-            { text: "«عادت المياه إلى مجاريها» (بعد خصام)", type: "tamtheleya", explanation: "استعارة تمثيلية: شبه حالة عودة العلاقات بحالة عودة المياه لمسارها.", hint: "مثل يقال عند الصلح بعد الخصام." },
-            { text: "«عضنا الفقر بنابه»", type: "makneya", explanation: "استعارة مكنية: شبه الفقر بوحش له ناب، وحذف المشبه به.", hint: "هل الفقر له أسنان؟ ماذا حذفنا؟" },
-            { text: "«ابتسم الصباح ووزع نوره على الكون»", type: "makneya", explanation: "استعارة مكنية: شبه الصباح بإنسان يبتسم، وحذف المشبه به.", hint: "الصباح لا يبتسم، لمن هذه الصفة؟" },
-            { text: "«من تدخل فيما لا يعنيه لقي ما لا يرضيه» (لمن يتدخل دائمًا)", type: "tamtheleya", explanation: "استعارة تمثيلية: تشبيه موقف المتطفل بموقف من يلقى الأذى.", hint: "حكمة تقال في مواقف التطفل." },
-            { text: "«تبتسم الزهور في الربيع»", type: "makneya", explanation: "استعارة مكنية: شبه الزهور بإنسان يبتسم.", hint: "أعطينا الزهور صفة بشرية." },
-            { text: "«أضاءت النجوم سماء التفوق» (الطلاب الأوائل)", type: "tasreheya", explanation: "استعارة تصريحية: شبه الطلاب بالنجوم وصرح بالمشبه به.", hint: "نصرح بكلمة (النجوم) ونقصد الطلاب." },
-            { text: "«أنت تبحث عن إبرة في كومة قش» (لمن يبحث عن المستحيل)", type: "tamtheleya", explanation: "استعارة تمثيلية: شبه حالة من يبحث عن المستحيل بهذه الصورة.", hint: "موقف مشهور للبحث الصعب." }
+            { text: "بكى السحاب على الأرض العطشى", type: "makneya", explanation: "شبه السحاب بإنسان يبكي، وحذف المشبه به (الإنسان).", hint: "السحاب لا يبكي، هناك إنسان مخفي." },
+            { text: "شاهدت أسدًا يقود الطائرة الحربية", type: "tasreheya", explanation: "صرح بـ (أسد) وحذف المشبه وقصد الطيار الشجاع.", hint: "هل الأسد يقود طائرة؟." },
+            { text: "لمن يشتري المجهول: «أنت تشتري سمكًا في ماء»", type: "tamtheleya", explanation: "تشبيه حالة (شراء المجهول) بحالة (شراء السمك قبل صيده).", hint: "موقف يشبه موقفًا في الحياة." },
+            { text: "عضتنا الأيام بنابها القاسي", type: "makneya", explanation: "شبه الأيام بحيوان مفترس، وحذفه وأبقى صفة العض.", hint: "الأيام ليس لها ناب. من صاحب الناب الذي اختفى هنا؟" },
+            { text: "قابلت كوكبًا في علوم الحاسوب", type: "tasreheya", explanation: "صرح بـ (كوكب) وقصد العالِم البارع.", hint: "نقصد العالِم." },
+            { text: "لمن يتردد: «أراك تقدم رجلًا وتؤخر أخرى»", type: "tamtheleya", explanation: "تشبيه حالة المتردد بهذه الصورة.", hint: "هذه صورة حركية تمثل التردد وعدم الحسم." },
+            { text: "زأر الجندي في وجه الأعداء", type: "makneya", explanation: "شبه الجندي بأسد، وحذف المشبه به وأبقى صفة الزئير.", hint: "الزئير صفة لحيوان معين لم يذكر اسمه في الجملة." },
+            { text: "«نسورنا تحمي سماء الوطن في كل وقت»", type: "tasreheya", explanation: "شبه (الطيارين) بالنسور، وحذف المشبه وصرّح بلفظ المشبه به.", hint: "صرحنا بكلمة (النسور) مباشرة." },
+            { text: "«عادت المياه إلى مجاريها» (بعد خصام)", type: "tamtheleya", explanation: "شبه حالة عودة العلاقات بحالة عودة المياه لمسارها.", hint: "مثل يقال عند الصلح بعد الخصام." },
+            { text: "«عضنا الفقر بنابه»", type: "makneya", explanation: "شبه الفقر بوحش له ناب، وحذف المشبه به.", hint: "هل الفقر له أسنان؟ ماذا حذفنا؟" },
+            { text: "«ابتسم الصباح ووزع نوره»", type: "makneya", explanation: "شبه الصباح بإنسان يبتسم، وحذف المشبه به.", hint: "الصباح لا يبتسم، لمن هذه الصفة؟" },
+            { text: "«من تدخل فيما لا يعنيه لقي ما لا يرضيه»", type: "tamtheleya", explanation: "تشبيه موقف المتطفل بموقف من يلقى الأذى.", hint: "حكمة تقال في مواقف التطفل." },
+            { text: "«تبتسم الزهور في الربيع»", type: "makneya", explanation: "شبه الزهور بإنسان يبتسم.", hint: "أعطينا الزهور صفة بشرية." },
+            { text: "«أضاءت النجوم سماء التفوق»", type: "tasreheya", explanation: "شبه الطلاب بالنجوم وصرح بالمشبه به.", hint: "نصرح بكلمة (النجوم) ونقصد الطلاب." },
+            { text: "«أنت تبحث عن إبرة في كومة قش»", type: "tamtheleya", explanation: "شبه حالة من يبحث عن المستحيل بهذه الصورة.", hint: "موقف مشهور للبحث الصعب." }
+        ];
+
+        const SPOTTING_QUESTIONS = [
+            { words: ["تبتسم", "الزهور", "في", "الربيع"], correctIndex: 0, explanation: "الاستعارة في (تبتسم)، شبه الزهور بإنسان وحذف المشبه به.", hint: "صفة بشرية أُعطيت للزهور." },
+            { words: ["تحدثت", "مع", "بحرٍ", "في", "المستشفى"], correctIndex: 2, explanation: "الاستعارة في (بحرٍ)، يقصد الطبيب العالم واسع المعرفة.", hint: "كلمة تدل على الاتساع والعمق استُعيرت للطبيب." },
+            { words: ["افترس", "المرض", "جسد", "المريض"], correctIndex: 0, explanation: "الاستعارة في (افترس)، شبه المرض بوحش وأبقى صفة الافتراس.", hint: "صفة حيوانية لا تتناسب حقيقة مع المرض." },
+            { words: ["نسورنا", "تحمي", "سماء", "الوطن"], correctIndex: 0, explanation: "الاستعارة في (نسورنا)، يقصد الطيارين البواسل فصرح بالمشبه به.", hint: "طائر جارح أطلقناه على الطيار الشجاع." },
+            { words: ["طارت", "الأخبار", "في", "المدينة"], correctIndex: 0, explanation: "الاستعارة في (طارت)، شبه الأخبار بطيور تطير.", hint: "الأخبار لا تملك أجنحة، فما الكلمة الخيالية؟" },
+            { words: ["شاهدت", "أسدًا", "يطلق", "النار"], correctIndex: 1, explanation: "الاستعارة في (أسدًا)، يقصد جنديًا شجاعًا فصرح بالمشبه به.", hint: "حيوان مفترس لا يمكنه إطلاق النار في الحقيقة!" },
+            { words: ["نطق", "الجدار", "بأمجادنا"], correctIndex: 0, explanation: "الاستعارة في (نطق)، شبه الجدار بإنسان يتكلم.", hint: "الجدار جماد، فما الكلمة التي جعلته كالبشر؟" },
+            { words: ["بكت", "السماء", "على", "الشهيد"], correctIndex: 0, explanation: "الاستعارة في (بكت)، شبه السماء بإنسان يبكي.", hint: "السماء تمطر ولا تفعل هذا الفعل البشري." },
+            { words: ["أمطرت", "العين", "لؤلؤًا"], correctIndex: 2, explanation: "الاستعارة في (لؤلؤًا)، يقصد الدموع الغالية.", hint: "ماذا يخرج من العين عند البكاء وشبهناه بحجر كريم؟" },
+            { words: ["زأر", "الجندي", "في", "المعركة"], correctIndex: 0, explanation: "الاستعارة في (زأر)، شبه الجندي بأسد وحذف الأسد وأبقى صوته.", hint: "صوت الأسد الذي استعرناه للجندي." }
         ];
 
         const TF_QUESTIONS = [
@@ -129,7 +148,8 @@
         const SECTIONS = [
             { id: 'intro', label: 'قبل أن نبدأ', data: [], theme: 'amber' },
             { id: 'quiz', label: 'اختر الإجابة', data: QUIZ_QUESTIONS, theme: 'violet' },
-            { id: 'classify', label: 'التصنيف', data: CLASSIFY_PHRASES, theme: 'cyan' },
+            { id: 'classify', label: 'لعبة التصنيف', data: CLASSIFY_PHRASES, theme: 'cyan' },
+            { id: 'spotting', label: 'صياد الكلمات', data: SPOTTING_QUESTIONS, theme: 'indigo' },
             { id: 'tf', label: 'صواب وخطأ', data: TF_QUESTIONS, theme: 'rose' }
         ];
 
@@ -196,6 +216,7 @@
             </div>
         );
 
+        // 1. مكون الأسئلة العادية (للاختيار من متعدد والصواب والخطأ)
         const QuestionCard = ({ question, index, type, theme, onAnswerSubmit, resetKey }) => {
             const [answered, setAnswered] = useState(false);
             const [selected, setSelected] = useState(null);
@@ -209,21 +230,13 @@
                 
                 let initialOptions = [];
                 if (type === 'quiz') {
-                    initialOptions = question.options.map((opt, idx) => ({ text: opt, isCorrect: idx === question.correct, originalIndex: idx }));
-                } else if (type === 'classify') {
-                    initialOptions = [
-                        { text: "مكنية", val: "makneya", isCorrect: "makneya" === question.type },
-                        { text: "تصريحية", val: "tasreheya", isCorrect: "tasreheya" === question.type },
-                        { text: "تمثيلية", val: "tamtheleya", isCorrect: "tamtheleya" === question.type }
-                    ];
+                    initialOptions = question.options.map((opt, idx) => ({ text: opt, isCorrect: idx === question.correct }));
                 } else if (type === 'tf') {
                     initialOptions = [
                         { text: "صواب", val: true, isCorrect: true === question.answer },
                         { text: "خطأ", val: false, isCorrect: false === question.answer }
                     ];
                 }
-                
-                // الاحتفاظ بترتيب الخيارات كما طلبتم سابقاً بدون خلط
                 setOptions(initialOptions);
             }, [question, type, resetKey]);
 
@@ -238,76 +251,44 @@
 
             return (
                 <div className={`bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 ${answered ? (isSelectedCorrect ? 'ring-2 ring-emerald-400' : 'ring-2 ring-rose-400') : ''}`}>
-                    
                     <div className="flex justify-between items-center mb-6">
                         <span className={`font-semibold text-lg md:text-xl text-${theme}-700 bg-${theme}-100 px-5 py-2 rounded-full`}>
                             السؤال {toArabicNum(index + 1)}
                         </span>
-                        
-                        <button onClick={() => setShowHint(!showHint)} 
-                                className={`flex items-center gap-2 px-4 py-2 rounded-full text-lg md:text-xl font-semibold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}`}>
+                        <button onClick={() => setShowHint(!showHint)} className={`flex items-center gap-2 px-4 py-2 rounded-full text-lg md:text-xl font-semibold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}`}>
                             <IconLightbulb className="w-5 h-5 md:w-6 md:h-6 text-amber-500" />
                             تلميح
                         </button>
                     </div>
-
                     <h3 className="text-2xl md:text-3xl font-semibold text-slate-700 mb-8 leading-relaxed whitespace-pre-line text-center bg-slate-50 p-6 rounded-xl border border-slate-100">
                         {question.text}
                     </h3>
-
                     {showHint && (
                         <div className="bg-amber-50 text-amber-900 p-5 rounded-xl mb-6 text-lg md:text-xl font-medium border border-amber-200 fade-in flex gap-3 items-start">
                             <span className="text-amber-500 font-semibold text-xl md:text-2xl leading-none">💡</span>
                             <span className="leading-relaxed">{question.hint}</span>
                         </div>
                     )}
-
-                    <div className={`grid gap-4 mx-auto w-full ${type === 'classify' ? 'max-w-3xl grid-cols-1 md:grid-cols-3' : 'max-w-2xl ' + (type === 'quiz' ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2')}`}>
+                    <div className={`grid gap-4 mx-auto w-full max-w-2xl ${type === 'quiz' ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
                         {options.map((opt, idx) => {
-                            let btnClass = "";
-                            
-                            if (type === 'classify') {
-                                btnClass = "relative overflow-hidden w-full p-6 md:p-8 rounded-2xl border-2 border-b-8 transition-all font-bold text-xl md:text-2xl flex flex-col justify-center items-center gap-3 ";
-                                if (!answered) {
-                                    btnClass += `border-slate-200 bg-slate-50 text-slate-700 hover:border-${theme}-300 hover:bg-${theme}-50 hover:text-${theme}-700 hover:-translate-y-1 active:scale-95 active:border-b-2 active:translate-y-1 cursor-pointer`;
-                                } else {
-                                    if (opt.isCorrect) btnClass += "bg-emerald-50 border-emerald-500 border-b-emerald-600 text-emerald-800";
-                                    else if (selected === opt) btnClass += "bg-rose-50 border-rose-500 border-b-rose-600 text-rose-800";
-                                    else btnClass += "bg-slate-50 border-slate-100 border-b-slate-200 text-slate-400 opacity-60";
-                                    btnClass += " cursor-default";
-                                }
+                            let btnClass = "w-full p-5 rounded-xl border-2 transition-all font-semibold text-xl flex justify-center items-center gap-3 ";
+                            if (!answered) {
+                                btnClass += `border-slate-200 bg-white text-slate-600 active:scale-95 hover:bg-slate-50 cursor-pointer`;
                             } else {
-                                btnClass = "w-full p-5 rounded-xl border-2 transition-all font-semibold text-xl flex justify-center items-center gap-3 ";
-                                if (!answered) {
-                                    btnClass += `border-slate-200 bg-white text-slate-600 active:scale-95 hover:bg-slate-50 cursor-pointer`;
-                                } else {
-                                    if (opt.isCorrect) btnClass += "bg-emerald-50 border-emerald-500 text-emerald-800";
-                                    else if (selected === opt) btnClass += "bg-rose-50 border-rose-500 text-rose-800";
-                                    else btnClass += "bg-slate-50 border-slate-100 text-slate-400 opacity-60";
-                                    btnClass += " cursor-default";
-                                }
+                                if (opt.isCorrect) btnClass += "bg-emerald-50 border-emerald-500 text-emerald-800";
+                                else if (selected === opt) btnClass += "bg-rose-50 border-rose-500 text-rose-800";
+                                else btnClass += "bg-slate-50 border-slate-100 text-slate-400 opacity-60";
+                                btnClass += " cursor-default";
                             }
-
                             return (
                                 <button key={idx} disabled={answered} onClick={() => handleAnswer(opt)} className={btnClass}>
-                                    
-                                    {type === 'classify' && (
-                                        <IconTray className={`w-10 h-10 md:w-14 md:h-14 mb-2 transition-colors ${answered ? (opt.isCorrect ? 'text-emerald-500' : (selected === opt ? 'text-rose-500' : 'text-slate-300')) : `text-${theme}-400`}`} />
-                                    )}
-                                    
                                     <span className="relative z-10">{opt.text}</span>
-                                    
-                                    {answered && opt.isCorrect && type !== 'classify' && <IconCheckCircle className="w-6 h-6 md:w-7 md:h-7 text-emerald-600 shrink-0" />}
-                                    {answered && selected === opt && !opt.isCorrect && type !== 'classify' && <IconXCircle className="w-6 h-6 md:w-7 md:h-7 text-rose-500 shrink-0" />}
-                                    
-                                    {type === 'classify' && answered && opt.isCorrect && <IconCheckCircle className="w-6 h-6 md:w-8 md:h-8 text-emerald-600 absolute top-3 right-3 md:top-4 md:right-4 opacity-80" />}
-                                    {type === 'classify' && answered && selected === opt && !opt.isCorrect && <IconXCircle className="w-6 h-6 md:w-8 md:h-8 text-rose-500 absolute top-3 right-3 md:top-4 md:right-4 opacity-80" />}
-                                    
+                                    {answered && opt.isCorrect && <IconCheckCircle className="w-6 h-6 md:w-7 md:h-7 text-emerald-600 shrink-0" />}
+                                    {answered && selected === opt && !opt.isCorrect && <IconXCircle className="w-6 h-6 md:w-7 md:h-7 text-rose-500 shrink-0" />}
                                 </button>
                             );
                         })}
                     </div>
-
                     {answered && (
                         <div className={`mt-8 p-5 rounded-xl border fade-in ${isSelectedCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}`}>
                             <div className={`flex items-center gap-2 mb-3 font-bold text-xl md:text-2xl ${isSelectedCorrect ? 'text-emerald-700' : 'text-rose-700'}`}>
@@ -326,15 +307,246 @@
             );
         };
 
+        // 2. المكون الجديد: صياد الكلمات (Spotting)
+        const SpottingCard = ({ question, index, theme, onAnswerSubmit, resetKey }) => {
+            const [answered, setAnswered] = useState(false);
+            const [selectedIndex, setSelectedIndex] = useState(null);
+            const [showHint, setShowHint] = useState(false);
+
+            useEffect(() => {
+                setAnswered(false);
+                setSelectedIndex(null);
+                setShowHint(false);
+            }, [question, resetKey]);
+
+            const handleWordClick = (idx) => {
+                if (answered) return;
+                setSelectedIndex(idx);
+                setAnswered(true);
+                onAnswerSubmit(idx === question.correctIndex);
+            };
+
+            const isCorrectAnswer = selectedIndex === question.correctIndex;
+
+            return (
+                <div className={`bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 ${answered ? (isCorrectAnswer ? 'ring-2 ring-emerald-400' : 'ring-2 ring-rose-400') : ''}`}>
+                    <div className="flex justify-between items-center mb-6">
+                        <span className={`font-semibold text-lg md:text-xl text-${theme}-700 bg-${theme}-100 px-5 py-2 rounded-full`}>
+                            السؤال {toArabicNum(index + 1)}
+                        </span>
+                        
+                        <button onClick={() => setShowHint(!showHint)} className={`flex items-center gap-2 px-4 py-2 rounded-full text-lg md:text-xl font-semibold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}`}>
+                            <IconLightbulb className="w-5 h-5 md:w-6 md:h-6 text-amber-500" />
+                            تلميح
+                        </button>
+                    </div>
+
+                    <div className="text-center mb-8">
+                        <p className="text-slate-500 font-semibold text-lg md:text-xl mb-6">
+                            انقر على الكلمة التي تمثل <span className={`text-${theme}-600 font-bold`}>الاستعارة</span> في الجملة الآتية:
+                        </p>
+                        <div className="flex flex-wrap justify-center items-center gap-3 md:gap-4 p-6 md:p-8 bg-slate-50 rounded-2xl border border-slate-100 leading-loose">
+                            {question.words.map((word, idx) => {
+                                const isSelected = selectedIndex === idx;
+                                const isCorrect = idx === question.correctIndex;
+                                
+                                let wordClass = "px-4 md:px-6 py-3 md:py-4 text-2xl md:text-3xl font-bold rounded-xl transition-all duration-300 select-none ";
+                                if (!answered) {
+                                    wordClass += `bg-white border-2 border-slate-200 text-slate-700 hover:border-${theme}-300 hover:bg-${theme}-50 hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer`;
+                                } else {
+                                    if (isSelected && isCorrect) wordClass += "bg-emerald-500 text-white border-2 border-emerald-600 shadow-md scale-105";
+                                    else if (isSelected && !isCorrect) wordClass += "bg-rose-500 text-white border-2 border-rose-600 shadow-md scale-105";
+                                    else if (!isSelected && isCorrect) wordClass += "bg-emerald-50 text-emerald-700 border-2 border-emerald-300 ring-2 ring-emerald-200";
+                                    else wordClass += "bg-slate-50 border-2 border-slate-100 text-slate-400 opacity-50 cursor-default";
+                                }
+
+                                return (
+                                    <span key={idx} onClick={() => handleWordClick(idx)} className={wordClass}>
+                                        {word}
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {showHint && (
+                        <div className="bg-amber-50 text-amber-900 p-5 rounded-xl mb-6 text-lg md:text-xl font-medium border border-amber-200 fade-in flex gap-3 items-start">
+                            <span className="text-amber-500 font-semibold text-xl md:text-2xl leading-none">💡</span>
+                            <span className="leading-relaxed">{question.hint}</span>
+                        </div>
+                    )}
+
+                    {answered && (
+                        <div className={`mt-8 p-5 rounded-xl border fade-in ${isCorrectAnswer ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}`}>
+                            <div className={`flex items-center gap-2 mb-3 font-bold text-xl md:text-2xl ${isCorrectAnswer ? 'text-emerald-700' : 'text-rose-700'}`}>
+                                {isCorrectAnswer ? <IconCheckCircle className="w-7 h-7 md:w-8 md:h-8" /> : <IconXCircle className="w-7 h-7 md:w-8 md:h-8" />}
+                                <span>{isCorrectAnswer ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
+                            </div>
+                            <div className="flex items-start gap-3 mt-3">
+                                <IconSparkles className={`w-5 h-5 md:w-6 md:h-6 mt-1 shrink-0 ${isCorrectAnswer ? "text-emerald-500" : "text-rose-500"}`} />
+                                <span className={`text-lg md:text-xl font-semibold leading-relaxed ${isCorrectAnswer ? 'text-emerald-800' : 'text-rose-800'}`}>
+                                    {question.explanation}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // 3. المكون الجديد المذهل: لعبة الفرز (Sorting Game) لقسم التصنيف
+        const SortingGameContainer = ({ section, isActive, resetKey, progress, onAnswerSubmit, onReset, onNext, isLast }) => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [status, setStatus] = useState('idle'); // 'idle', 'correct', 'incorrect'
+            const [animatingOut, setAnimatingOut] = useState(false);
+            const [showHint, setShowHint] = useState(false);
+            const [boxCounts, setBoxCounts] = useState({ makneya: 0, tasreheya: 0, tamtheleya: 0 });
+
+            const shuffledQuestions = React.useMemo(() => {
+                return shuffleArray(section.data);
+            }, [section.data, resetKey]);
+
+            useEffect(() => {
+                setCurrentIndex(0);
+                setStatus('idle');
+                setShowHint(false);
+                setBoxCounts({ makneya: 0, tasreheya: 0, tamtheleya: 0 });
+                setAnimatingOut(false);
+            }, [resetKey]);
+
+            const isCurrentSectionComplete = currentIndex >= shuffledQuestions.length;
+            const currentQuestion = shuffledQuestions[currentIndex];
+
+            const handleBoxClick = (type) => {
+                if (status !== 'idle' || isCurrentSectionComplete) return;
+
+                const isCorrect = type === currentQuestion.type;
+                setStatus(isCorrect ? 'correct' : 'incorrect');
+
+                if (isCorrect) {
+                    setBoxCounts(prev => ({ ...prev, [type]: prev[type] + 1 }));
+                }
+                onAnswerSubmit(isCorrect);
+            };
+
+            const handleContinue = () => {
+                setAnimatingOut(true);
+                setTimeout(() => {
+                    setCurrentIndex(prev => prev + 1);
+                    setStatus('idle');
+                    setShowHint(false);
+                    setAnimatingOut(false);
+                }, 300); // يتطابق مع مدة حركة fly-out في CSS
+            };
+
+            // تعريف الصناديق الثلاثة بتنسيقاتها وألوانها
+            const boxes = [
+                { id: 'makneya', label: 'مكنية', colorClass: 'border-amber-200 text-amber-700 bg-amber-50', hoverClass: 'hover:border-amber-400 hover:bg-amber-100' },
+                { id: 'tasreheya', label: 'تصريحية', colorClass: 'border-violet-200 text-violet-700 bg-violet-50', hoverClass: 'hover:border-violet-400 hover:bg-violet-100' },
+                { id: 'tamtheleya', label: 'تمثيلية', colorClass: 'border-cyan-200 text-cyan-700 bg-cyan-50', hoverClass: 'hover:border-cyan-400 hover:bg-cyan-100' }
+            ];
+
+            return (
+                <div className={isActive ? 'block' : 'hidden'}>
+                    {!isCurrentSectionComplete && currentQuestion && (
+                        <div className="flex flex-col items-center fade-in">
+                            <div className="text-slate-500 font-bold mb-4 bg-white px-6 py-2 rounded-full shadow-sm border border-slate-100 text-sm md:text-base">
+                                البطاقة {toArabicNum(currentIndex + 1)} من {toArabicNum(shuffledQuestions.length)}
+                            </div>
+
+                            {/* البطاقة المركزية للجملة */}
+                            <div className={`w-full max-w-2xl bg-white p-6 md:p-10 rounded-3xl shadow-lg border-2 border-slate-200 transition-all duration-300 relative z-10 ${animatingOut ? 'fly-out' : 'fade-in'}`}>
+                                <div className="flex justify-end mb-4">
+                                    <button onClick={() => setShowHint(!showHint)} className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm md:text-base font-semibold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}`}>
+                                        <IconLightbulb className="w-4 h-4 md:w-5 md:h-5 text-amber-500" /> تلميح
+                                    </button>
+                                </div>
+                                
+                                <h3 className="text-2xl md:text-3xl font-bold text-center leading-loose text-slate-800 mb-2">
+                                    «{currentQuestion.text}»
+                                </h3>
+
+                                {showHint && status === 'idle' && (
+                                    <div className="mt-4 bg-amber-50 text-amber-900 p-4 rounded-xl text-base md:text-lg font-medium border border-amber-200 fade-in flex gap-2 items-start">
+                                        <span className="text-amber-500 font-semibold leading-none">💡</span>
+                                        <span className="leading-relaxed">{currentQuestion.hint}</span>
+                                    </div>
+                                )}
+
+                                {/* التغذية الراجعة تظهر داخل البطاقة */}
+                                {status !== 'idle' && (
+                                    <div className={`mt-8 p-5 rounded-2xl border-2 fade-in ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}`}>
+                                        <div className={`flex items-center justify-center gap-2 mb-3 font-bold text-xl md:text-2xl ${status === 'correct' ? 'text-emerald-700' : 'text-rose-700'}`}>
+                                            {status === 'correct' ? <IconCheckCircle className="w-7 h-7 md:w-8 md:h-8" /> : <IconXCircle className="w-7 h-7 md:w-8 md:h-8" />}
+                                            <span>{status === 'correct' ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
+                                        </div>
+                                        <p className={`text-center text-lg md:text-xl font-semibold leading-relaxed mb-6 ${status === 'correct' ? 'text-emerald-800' : 'text-rose-800'}`}>
+                                            {currentQuestion.explanation}
+                                        </p>
+                                        <div className="flex justify-center">
+                                            <button onClick={handleContinue} className={`px-8 py-3 text-white font-bold text-lg md:text-xl rounded-full active:scale-95 transition-transform shadow-md ${status === 'correct' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-rose-600 hover:bg-rose-700'}`}>
+                                                متابعة
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* الصناديق الثلاثة بالأسفل (تبقى في الشاشة دائماً) */}
+                            <div className="flex flex-row w-full max-w-3xl gap-2 md:gap-6 mt-6 md:mt-12 relative z-0">
+                                {boxes.map(b => (
+                                    <button
+                                        key={b.id}
+                                        disabled={status !== 'idle'}
+                                        onClick={() => handleBoxClick(b.id)}
+                                        className={`flex-1 flex flex-col items-center justify-center p-3 md:p-6 border-2 md:border-4 rounded-2xl md:rounded-3xl transition-all duration-300 
+                                            ${b.colorClass} 
+                                            ${status === 'idle' ? `${b.hoverClass} hover:-translate-y-2 cursor-pointer shadow-sm hover:shadow-md` : 'opacity-60 cursor-default grayscale-[30%]'}
+                                        `}
+                                    >
+                                        <IconTray className="w-8 h-8 md:w-12 md:h-12 mb-2 md:mb-3 opacity-80" />
+                                        <span className="font-bold text-sm md:text-2xl mb-2 md:mb-3">{b.label}</span>
+                                        <div className="bg-white/90 px-3 md:px-4 py-1 rounded-full shadow-inner font-black text-sm md:text-xl border border-white/50">
+                                            {toArabicNum(boxCounts[b.id])}
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {isCurrentSectionComplete && (
+                        <div className={`mt-12 p-8 md:p-10 bg-white border-2 border-${section.theme}-200 rounded-2xl shadow-sm text-center fade-in max-w-2xl mx-auto w-full`}>
+                            <h3 className="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم ({section.label})</h3>
+                            <div className={`text-5xl font-bold text-${section.theme}-600`} style={{direction: 'ltr'}}>
+                                {toArabicNum(progress.score)} <span className="text-4xl text-slate-300 font-medium">/</span> {toArabicNum(progress.total)}
+                            </div>
+                        </div>
+                    )}
+
+                    {isCurrentSectionComplete && (
+                        <div className="mt-8 flex flex-col md:flex-row justify-center items-center gap-4 max-w-2xl mx-auto w-full">
+                            <button onClick={onReset} className="w-full md:w-auto px-8 py-3 md:py-4 rounded-full font-semibold text-lg md:text-xl text-slate-600 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-transform flex items-center justify-center gap-3">
+                                <IconRefresh className="w-5 h-5 md:w-6 md:h-6" /> إعادة المحاولة
+                            </button>
+
+                            {!isLast && (
+                                <button onClick={onNext} className={`w-full md:w-auto px-8 md:px-10 py-3 md:py-4 rounded-full font-semibold text-lg md:text-xl text-white shadow-md transition-transform flex items-center justify-center gap-3 active:scale-95 bg-${section.theme}-600 hover:bg-${section.theme}-700`}>
+                                    القسم التالي <IconArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // التقييم النهائي
         const FinalEvaluation = ({ progress, onRestart }) => {
             const evalRef = useRef(null);
 
             useEffect(() => {
-                if (evalRef.current) {
-                    setTimeout(() => {
-                        evalRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 400);
-                }
+                if (evalRef.current) setTimeout(() => { evalRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 400);
             }, []);
 
             const totalScore = Object.values(progress).reduce((acc, p) => acc + p.score, 0);
@@ -343,9 +555,7 @@
             if (totalQuestions === 0) return null;
             
             const percentage = Math.round((totalScore / totalQuestions) * 100);
-
-            let message = "";
-            let color = "";
+            let message = "", color = "";
             
             if (percentage < 60) { message = "تحتاج إلى مزيد من التدريب، لا تيأس وحاول مرة أخرى!"; color = "text-rose-600"; }
             else if (percentage < 85) { message = "أداء رائع! مستواك جيد جدًا في البلاغة."; color = "text-violet-600"; }
@@ -364,35 +574,26 @@
                         النسبة المئوية: {toArabicNum(percentage)}%
                     </div>
                     <p className={`text-xl md:text-2xl font-semibold leading-relaxed ${color} mb-10`}>{message}</p>
-                    
                     <button onClick={onRestart} className="px-8 md:px-10 py-3 md:py-4 rounded-full font-semibold text-xl md:text-2xl text-white bg-slate-700 hover:bg-slate-800 shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-3 mx-auto">
-                        <IconRefresh className="w-6 h-6 md:w-7 md:h-7" />
-                        ابدأ من جديد
+                        <IconRefresh className="w-6 h-6 md:w-7 md:h-7" /> ابدأ من جديد
                     </button>
                 </div>
             );
         };
 
+        // حاوية الأقسام العادية (اختر الإجابة، صواب وخطأ، صياد الكلمات)
         const SectionContainer = ({ section, isActive, resetKey, progress, onAnswerSubmit, onReset, onNext, isLast }) => {
-            const shuffledQuestions = React.useMemo(() => {
-                return shuffleArray(section.data);
-            }, [section.data, resetKey]);
-
+            const shuffledQuestions = React.useMemo(() => shuffleArray(section.data), [section.data, resetKey]);
             const isCurrentSectionComplete = progress.total > 0 && progress.answered === progress.total;
 
             return (
                 <div className={isActive ? 'block' : 'hidden'}>
-                    {shuffledQuestions.map((q, idx) => (
-                        <QuestionCard
-                            key={`${section.id}-${idx}-${resetKey}`}
-                            question={q}
-                            index={idx}
-                            type={section.id}
-                            theme={section.theme}
-                            resetKey={resetKey}
-                            onAnswerSubmit={onAnswerSubmit}
-                        />
-                    ))}
+                    {shuffledQuestions.map((q, idx) => {
+                        if (section.id === 'spotting') {
+                            return <SpottingCard key={`${section.id}-${idx}-${resetKey}`} question={q} index={idx} theme={section.theme} resetKey={resetKey} onAnswerSubmit={onAnswerSubmit} />;
+                        }
+                        return <QuestionCard key={`${section.id}-${idx}-${resetKey}`} question={q} index={idx} type={section.id} theme={section.theme} resetKey={resetKey} onAnswerSubmit={onAnswerSubmit} />;
+                    })}
 
                     {isCurrentSectionComplete && (
                         <div className={`mt-12 p-8 md:p-10 bg-white border-2 border-${section.theme}-200 rounded-2xl shadow-sm text-center fade-in max-w-2xl mx-auto w-full`}>
@@ -403,21 +604,19 @@
                         </div>
                     )}
 
-                    <div className="mt-8 flex flex-col md:flex-row justify-center items-center gap-4 max-w-2xl mx-auto w-full">
-                        <button onClick={onReset}
-                                className="w-full md:w-auto px-8 py-3 md:py-4 rounded-full font-semibold text-lg md:text-xl text-slate-600 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-transform flex items-center justify-center gap-3">
-                            <IconRefresh className="w-5 h-5 md:w-6 md:h-6" />
-                            إعادة المحاولة
-                        </button>
-
-                        {!isLast && (
-                            <button onClick={onNext}
-                                    className={`w-full md:w-auto px-8 md:px-10 py-3 md:py-4 rounded-full font-semibold text-lg md:text-xl text-white shadow-md transition-transform flex items-center justify-center gap-3 active:scale-95 bg-${section.theme}-600 hover:bg-${section.theme}-700`}>
-                                القسم التالي
-                                <IconArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
+                    {isCurrentSectionComplete && (
+                        <div className="mt-8 flex flex-col md:flex-row justify-center items-center gap-4 max-w-2xl mx-auto w-full">
+                            <button onClick={onReset} className="w-full md:w-auto px-8 py-3 md:py-4 rounded-full font-semibold text-lg md:text-xl text-slate-600 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-transform flex items-center justify-center gap-3">
+                                <IconRefresh className="w-5 h-5 md:w-6 md:h-6" /> إعادة المحاولة
                             </button>
-                        )}
-                    </div>
+
+                            {!isLast && (
+                                <button onClick={onNext} className={`w-full md:w-auto px-8 md:px-10 py-3 md:py-4 rounded-full font-semibold text-lg md:text-xl text-white shadow-md transition-transform flex items-center justify-center gap-3 active:scale-95 bg-${section.theme}-600 hover:bg-${section.theme}-700`}>
+                                    القسم التالي <IconArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
             );
         };
@@ -425,21 +624,20 @@
         // ================= التطبيق الرئيسي =================
         function App() {
             const [activeTab, setActiveTab] = useState(SECTIONS[0].id);
-            const [resetKeys, setResetKeys] = useState({ quiz: 0, classify: 0, tf: 0 });
+            const [resetKeys, setResetKeys] = useState({ quiz: 0, classify: 0, spotting: 0, tf: 0 });
             
             const [progress, setProgress] = useState({
                 intro: { answered: 0, total: 0, score: 0 },
                 quiz: { answered: 0, total: SECTIONS[1].data.length, score: 0 },
                 classify: { answered: 0, total: SECTIONS[2].data.length, score: 0 },
-                tf: { answered: 0, total: SECTIONS[3].data.length, score: 0 }
+                spotting: { answered: 0, total: SECTIONS[3].data.length, score: 0 },
+                tf: { answered: 0, total: SECTIONS[4].data.length, score: 0 }
             });
 
             const contentRef = useRef(null);
 
             const scrollToContent = useCallback(() => {
-                if (contentRef.current) {
-                    contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                if (contentRef.current) contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, []);
 
             const handleTabChange = (tabId) => {
@@ -450,82 +648,55 @@
             const handleAnswerSubmit = (sectionId, isCorrect) => {
                 setProgress(prev => {
                     const current = prev[sectionId];
-                    return {
-                        ...prev,
-                        [sectionId]: {
-                            ...current,
-                            answered: current.answered + 1,
-                            score: isCorrect ? current.score + 1 : current.score
-                        }
-                    };
+                    return { ...prev, [sectionId]: { ...current, answered: current.answered + 1, score: isCorrect ? current.score + 1 : current.score }};
                 });
             };
 
             const handleResetSection = (sectionId) => {
                 setResetKeys(prev => ({ ...prev, [sectionId]: prev[sectionId] + 1 }));
-                setProgress(prev => ({
-                    ...prev,
-                    [sectionId]: { ...prev[sectionId], answered: 0, score: 0 }
-                }));
+                setProgress(prev => ({ ...prev, [sectionId]: { ...prev[sectionId], answered: 0, score: 0 } }));
                 scrollToContent();
             };
 
             const handleGlobalRestart = () => {
-                setResetKeys(prev => ({
-                    quiz: prev.quiz + 1,
-                    classify: prev.classify + 1,
-                    tf: prev.tf + 1
-                }));
+                setResetKeys(prev => ({ quiz: prev.quiz + 1, classify: prev.classify + 1, spotting: prev.spotting + 1, tf: prev.tf + 1 }));
                 setProgress({
                     intro: { answered: 0, total: 0, score: 0 },
                     quiz: { answered: 0, total: SECTIONS[1].data.length, score: 0 },
                     classify: { answered: 0, total: SECTIONS[2].data.length, score: 0 },
-                    tf: { answered: 0, total: SECTIONS[3].data.length, score: 0 }
+                    spotting: { answered: 0, total: SECTIONS[3].data.length, score: 0 },
+                    tf: { answered: 0, total: SECTIONS[4].data.length, score: 0 }
                 });
                 handleTabChange(SECTIONS[0].id);
             };
 
             const handleNextSection = () => {
                 const currentIndex = SECTIONS.findIndex(s => s.id === activeTab);
-                if (currentIndex < SECTIONS.length - 1) {
-                    handleTabChange(SECTIONS[currentIndex + 1].id);
-                }
+                if (currentIndex < SECTIONS.length - 1) handleTabChange(SECTIONS[currentIndex + 1].id);
             };
 
             const currentSection = SECTIONS.find(s => s.id === activeTab);
             const currentProgress = progress[activeTab];
             const progressPercent = currentProgress.total > 0 ? (currentProgress.answered / currentProgress.total) * 100 : 0;
-            
-            const isAllComplete = Object.values(progress)
-                                        .filter(p => p.total > 0)
-                                        .every(p => p.answered === p.total);
+            const isAllComplete = Object.values(progress).filter(p => p.total > 0).every(p => p.answered === p.total);
 
             return (
                 <div className="w-full flex flex-col min-h-screen">
                     <Header />
                     
-                    {/* شريط التبويبات المُحدّث لمنع التشوه على الهواتف */}
+                    {/* شريط التبويبات المتجاوب لإصلاح مشكلة الموبايل */}
                     <div className="sticky top-0 z-50 bg-[#f8fafc]/95 backdrop-blur-md shadow-sm border-b border-slate-200">
                         <div className="w-full overflow-x-auto no-scrollbar">
-                            <div className="flex items-center gap-3 px-4 py-3 flex-nowrap sm:justify-center">
+                            <div className="flex items-center gap-3 px-4 py-3 flex-nowrap md:justify-center">
                                 {SECTIONS.map(section => {
                                     const isActive = activeTab === section.id;
                                     const secProgress = progress[section.id];
                                     const isDone = secProgress.total > 0 && secProgress.answered === secProgress.total;
                                     
-                                    let activeClass = "";
-                                    if (isActive) {
-                                        activeClass = section.theme === 'violet' ? "bg-violet-600 text-white border-violet-600 shadow-md" :
-                                                      section.theme === 'cyan'   ? "bg-cyan-600 text-white border-cyan-600 shadow-md" :
-                                                      section.theme === 'rose'   ? "bg-rose-600 text-white border-rose-600 shadow-md" :
-                                                                                   "bg-amber-500 text-white border-amber-500 shadow-md";
-                                    } else {
-                                        activeClass = "bg-white text-slate-600 border-slate-200";
-                                    }
+                                    let activeClass = isActive ? `bg-${section.theme}-600 text-white border-${section.theme}-600 shadow-md` : "bg-white text-slate-600 border-slate-200";
 
                                     return (
                                         <button key={section.id} type="button" onClick={() => handleTabChange(section.id)} 
-                                                /* إضافة shrink-0 و whitespace-nowrap لمنع تشوه الزر */
                                                 className={`shrink-0 whitespace-nowrap px-6 py-2 rounded-full font-semibold text-lg md:text-xl border-2 transition-all flex items-center justify-center gap-2 ${activeClass}`}>
                                             {section.label}
                                             {isDone && !isActive && <IconCheckCircle className="w-4 h-4 md:w-5 md:h-5 text-emerald-500 shrink-0" />}
@@ -535,40 +706,33 @@
                             </div>
                         </div>
                         <div className="w-full h-[2px] bg-slate-200">
-                            <div className={`h-full transition-all duration-500 ease-out bg-${currentSection.theme}-500`} 
-                                 style={{ width: `${progressPercent}%` }}></div>
+                            <div className={`h-full transition-all duration-500 ease-out bg-${currentSection.theme}-500`} style={{ width: `${progressPercent}%` }}></div>
                         </div>
                     </div>
                     
                     <main ref={contentRef} className="container mx-auto px-4 py-8 max-w-4xl flex-grow scroll-mt-12">
-                        
                         <h1 className="text-center text-3xl md:text-4xl font-semibold text-slate-700 mb-10">تدريبات الاستعارة</h1>
 
                         <div className={activeTab === 'intro' ? 'block' : 'hidden'}>
                             <IntroSection onNext={handleNextSection} />
                         </div>
 
-                        {SECTIONS.filter(s => s.id !== 'intro').map(section => (
-                            <SectionContainer 
-                                key={section.id}
-                                section={section}
-                                isActive={activeTab === section.id}
-                                resetKey={resetKeys[section.id]}
-                                progress={progress[section.id]}
-                                onAnswerSubmit={(isCorrect) => handleAnswerSubmit(section.id, isCorrect)}
-                                onReset={() => handleResetSection(section.id)}
-                                onNext={handleNextSection}
-                                isLast={section.id === SECTIONS[SECTIONS.length - 1].id}
-                            />
-                        ))}
+                        {SECTIONS.filter(s => s.id !== 'intro').map(section => {
+                            if (section.id === 'classify') {
+                                return (
+                                    <SortingGameContainer key={section.id} section={section} isActive={activeTab === section.id} resetKey={resetKeys[section.id]} progress={progress[section.id]} onAnswerSubmit={(isCorrect) => handleAnswerSubmit(section.id, isCorrect)} onReset={() => handleResetSection(section.id)} onNext={handleNextSection} isLast={section.id === SECTIONS[SECTIONS.length - 1].id} />
+                                );
+                            }
+                            return (
+                                <SectionContainer key={section.id} section={section} isActive={activeTab === section.id} resetKey={resetKeys[section.id]} progress={progress[section.id]} onAnswerSubmit={(isCorrect) => handleAnswerSubmit(section.id, isCorrect)} onReset={() => handleResetSection(section.id)} onNext={handleNextSection} isLast={section.id === SECTIONS[SECTIONS.length - 1].id} />
+                            );
+                        })}
 
                         {isAllComplete && activeTab !== 'intro' && <FinalEvaluation progress={progress} onRestart={handleGlobalRestart} />}
-                        
                     </main>
 
                     <footer className="mt-auto py-8 bg-white border-t border-slate-200 text-center">
-                        <a href="https://www.youtube.com/egysalah" target="_blank" rel="noopener noreferrer" 
-                           className="text-slate-400 text-sm font-medium block w-full">
+                        <a href="https://www.youtube.com/egysalah" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm font-medium block w-full">
                             جميع الحقوق محفوظة لقناة العربية السهلة
                         </a>
                     </footer>
@@ -581,5 +745,3 @@
     </script>
 </body>
 </html>
-
-
