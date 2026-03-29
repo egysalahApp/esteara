@@ -636,13 +636,11 @@
             const scrollTargetRef = useRef(null);
 
             const scrollToContent = useCallback(() => {
-                // استخدام window.scrollTo بحساب دقيق يمنع تعارض المتصفح بين التمرير العمودي والأفقي
-                // تم زيادة التوقيت لـ 100ms ليضمن المتصفح رسم محتوى القسم الجديد بالكامل قبل الانتقال
                 setTimeout(() => {
                     if (scrollTargetRef.current) {
-                        const headerOffset = 130; // مساحة لتعويض ارتفاع شريط التبويبات والهيدر تقريباً
+                        const headerOffset = 64; // مسافة 4rem تساوي 64px
                         const elementPosition = scrollTargetRef.current.getBoundingClientRect().top;
-                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        const offsetPosition = elementPosition + window.scrollY - headerOffset;
                         
                         window.scrollTo({
                             top: offsetPosition,
@@ -739,7 +737,7 @@
                     
                     <main className="container mx-auto px-4 py-8 max-w-4xl flex-grow">
                         {/* نقطة الهدف المخفية لضمان الهبوط بشكل صحيح تحت التبويبات */}
-                        <div ref={scrollTargetRef}></div>
+                        <div ref={scrollTargetRef} className="scroll-mt-16"></div>
 
                         <div className={activeTab === 'intro' ? 'block' : 'hidden'}>
                             <h1 className="text-center text-2xl md:text-3xl font-semibold text-slate-700 mb-8">الاستعارة</h1>
