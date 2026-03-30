@@ -460,19 +460,14 @@
                 return `
                     <div id="${sectionId}-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
                         
-                        <!-- المربع المدمج لرقم السؤال، التلميح، ونص السؤال -->
-                        <div class="bg-slate-50 p-4 md:p-5 rounded-xl border border-slate-100 mb-5">
-                            <div class="flex justify-between items-start mb-3">
-                                <span class="font-bold text-xl text-${theme}-700 bg-${theme}-100 px-4 py-1.5 rounded-full">
-                                    السؤال ${toArabicNum(idx + 1)}
-                                </span>
-                                <button onclick="App.toggleHint('${sectionId}', ${idx})" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-bold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
-                                    ${ICONS.lightbulb} تلميح
-                                </button>
-                            </div>
-                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-800 leading-relaxed whitespace-pre-line text-right px-2 mt-4">
+                        <!-- المربع المدمج للتلميح ونص السؤال -->
+                        <div class="bg-slate-50 px-4 pt-3 pb-5 md:px-5 md:pt-4 md:pb-6 rounded-xl border border-slate-100 mb-5 flex items-center justify-between gap-4">
+                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-800 leading-relaxed whitespace-pre-line text-right flex-grow px-2 -translate-y-0.5 md:-translate-y-1">
                                 ${q.text}
                             </h3>
+                            <button onclick="App.toggleHint('${sectionId}', ${idx})" class="shrink-0 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-bold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
+                                ${ICONS.lightbulb} تلميح
+                            </button>
                         </div>
                         
                         ${showHint ? `
@@ -535,19 +530,14 @@
                 return `
                     <div id="spotting-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
                         
-                        <!-- المربع المدمج لرقم السؤال، التلميح، والتعليمة -->
-                        <div class="bg-slate-50 p-4 md:p-5 rounded-xl border border-slate-100 mb-5">
-                            <div class="flex justify-between items-start mb-3">
-                                <span class="font-bold text-xl text-${theme}-700 bg-${theme}-100 px-4 py-1.5 rounded-full">
-                                    السؤال ${toArabicNum(idx + 1)}
-                                </span>
-                                <button onclick="App.toggleHint('spotting', ${idx})" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-bold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
-                                    ${ICONS.lightbulb} تلميح
-                                </button>
-                            </div>
-                            <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl px-2 mt-4">
+                        <!-- المربع المدمج للتلميح والتعليمة -->
+                        <div class="bg-slate-50 px-4 pt-3 pb-5 md:px-5 md:pt-4 md:pb-6 rounded-xl border border-slate-100 mb-5 flex items-center justify-between gap-4">
+                            <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl flex-grow px-2 -translate-y-0.5 md:-translate-y-1">
                                 انقر على الكلمة التي تمثل <span class="text-${theme}-600 font-bold">الاستعارة</span> في الجملة الآتية:
                             </p>
+                            <button onclick="App.toggleHint('spotting', ${idx})" class="shrink-0 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-bold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
+                                ${ICONS.lightbulb} تلميح
+                            </button>
                         </div>
 
                         ${showHint ? `
@@ -622,15 +612,13 @@
                             <div class="w-full max-w-2xl bg-white p-5 md:p-6 rounded-3xl shadow-lg border-2 border-slate-200 transition-all duration-300 relative z-10 flex flex-col justify-start ${animatingOut ? 'fly-out' : 'fade-in'}">
                                 
                                 <!-- المربع المدمج للتلميح ونص الجملة -->
-                                <div class="bg-slate-50 p-4 md:p-5 rounded-xl border border-slate-100 mb-5">
-                                    <div class="flex justify-end mb-3">
-                                        <button onclick="App.toggleHint('classify', ${currentIndex})" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-semibold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
-                                            ${ICONS.lightbulb} تلميح
-                                        </button>
-                                    </div>
-                                    <h3 class="text-2xl md:text-3xl font-bold text-right leading-loose text-slate-800 px-2 mt-2">
+                                <div class="bg-slate-50 px-4 pt-3 pb-5 md:px-5 md:pt-4 md:pb-6 rounded-xl border border-slate-100 mb-5 flex items-center justify-between gap-4">
+                                    <h3 class="text-2xl md:text-3xl font-bold text-right text-slate-800 flex-grow px-2 -translate-y-0.5 md:-translate-y-1">
                                         «${currentQuestion.text}»
                                     </h3>
+                                    <button onclick="App.toggleHint('classify', ${currentIndex})" class="shrink-0 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-semibold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
+                                        ${ICONS.lightbulb} تلميح
+                                    </button>
                                 </div>
 
                                 ${showHint && status === 'idle' ? `
@@ -660,10 +648,6 @@
 
                             <div class="flex flex-row w-full max-w-2xl mx-auto gap-2 md:gap-6 mt-6 md:mt-12 relative z-0">
                                 ${boxesHTML}
-                            </div>
-
-                            <div class="mt-8 text-slate-500 font-bold bg-white px-6 py-2 rounded-full shadow-sm border border-slate-100 text-xl">
-                                البطاقة ${toArabicNum(currentIndex + 1)} من ${toArabicNum(questions.length)}
                             </div>
                         </div>
                     `;
