@@ -460,22 +460,26 @@
                 return `
                     <div id="${sectionId}-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
                         
-                        <!-- المربع المدمج للتلميح ونص السؤال -->
-                        <div class="bg-slate-50 px-4 pt-3 pb-5 md:px-5 md:pt-4 md:pb-6 rounded-xl border border-slate-100 mb-5 flex items-center justify-between gap-4">
-                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-800 leading-relaxed whitespace-pre-line text-right flex-grow px-2 -translate-y-0.5 md:-translate-y-1">
+                        <!-- صندوق السؤال (يحتوي على النص فقط) -->
+                        <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-4">
+                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-800 leading-relaxed whitespace-pre-line text-right">
                                 ${q.text}
                             </h3>
-                            <button onclick="App.toggleHint('${sectionId}', ${idx})" class="shrink-0 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-bold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
-                                ${ICONS.lightbulb} تلميح
-                            </button>
                         </div>
                         
-                        ${showHint ? `
-                            <div class="bg-amber-50 text-amber-900 p-4 rounded-xl mb-5 text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right">
-                                <span class="text-amber-500 font-semibold leading-none">💡</span>
-                                <span class="leading-relaxed">${q.hint}</span>
-                            </div>
-                        ` : ''}
+                        <!-- منطقة التلميح (الزر ومربع النص) -->
+                        <div class="mb-6 flex flex-col items-start gap-3">
+                            <button onclick="App.toggleHint('${sectionId}', ${idx})" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 ${showHint ? 'bg-amber-100 border border-amber-300 text-amber-800' : 'bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700'}">
+                                ${ICONS.lightbulb} تلميح
+                            </button>
+                            
+                            ${showHint ? `
+                                <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right w-full">
+                                    <span class="text-amber-500 font-semibold leading-none">💡</span>
+                                    <span class="leading-relaxed">${q.hint}</span>
+                                </div>
+                            ` : ''}
+                        </div>
                         
                         <div class="grid gap-3 mx-auto w-full max-w-2xl flex-grow ${sectionId === 'quiz' ? 'grid-cols-1 content-start' : 'grid-cols-1 md:grid-cols-2 content-center'}">
                             ${optionsHTML}
@@ -530,22 +534,26 @@
                 return `
                     <div id="spotting-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
                         
-                        <!-- المربع المدمج للتلميح والتعليمة -->
-                        <div class="bg-slate-50 px-4 pt-3 pb-5 md:px-5 md:pt-4 md:pb-6 rounded-xl border border-slate-100 mb-5 flex items-center justify-between gap-4">
-                            <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl flex-grow px-2 -translate-y-0.5 md:-translate-y-1">
+                        <!-- صندوق التعليمة -->
+                        <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-4">
+                            <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl leading-relaxed">
                                 انقر على الكلمة التي تمثل <span class="text-${theme}-600 font-bold">الاستعارة</span> في الجملة الآتية:
                             </p>
-                            <button onclick="App.toggleHint('spotting', ${idx})" class="shrink-0 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-bold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
-                                ${ICONS.lightbulb} تلميح
-                            </button>
                         </div>
 
-                        ${showHint ? `
-                            <div class="bg-amber-50 text-amber-900 p-4 rounded-xl mb-5 text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right">
-                                <span class="text-amber-500 font-semibold leading-none">💡</span>
-                                <span class="leading-relaxed">${q.hint}</span>
-                            </div>
-                        ` : ''}
+                        <!-- منطقة التلميح -->
+                        <div class="mb-6 flex flex-col items-start gap-3">
+                            <button onclick="App.toggleHint('spotting', ${idx})" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 ${showHint ? 'bg-amber-100 border border-amber-300 text-amber-800' : 'bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700'}">
+                                ${ICONS.lightbulb} تلميح
+                            </button>
+                            
+                            ${showHint ? `
+                                <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right w-full">
+                                    <span class="text-amber-500 font-semibold leading-none">💡</span>
+                                    <span class="leading-relaxed">${q.hint}</span>
+                                </div>
+                            ` : ''}
+                        </div>
 
                         <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 leading-loose mx-auto w-full max-w-2xl">
                             ${wordsHTML}
@@ -611,29 +619,29 @@
                         <div class="flex flex-col items-center fade-in">
                             <div class="w-full max-w-2xl bg-white p-5 md:p-6 rounded-3xl shadow-lg border-2 border-slate-200 transition-all duration-300 relative z-10 flex flex-col justify-start ${animatingOut ? 'fly-out' : 'fade-in'}">
                                 
-                                <!-- المربع المدمج للتلميح ونص الجملة -->
-                                <div class="bg-slate-50 px-4 pt-3 pb-5 md:px-5 md:pt-4 md:pb-6 rounded-xl border border-slate-100 mb-5 flex items-center justify-between gap-4">
-                                    <h3 class="text-2xl md:text-3xl font-bold text-right text-slate-800 flex-grow px-2 -translate-y-0.5 md:-translate-y-1">
+                                <!-- صندوق الجملة -->
+                                <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-4">
+                                    <h3 class="text-2xl md:text-3xl font-bold text-right leading-relaxed text-slate-800">
                                         «${currentQuestion.text}»
                                     </h3>
-                                    <button onclick="App.toggleHint('classify', ${currentIndex})" class="shrink-0 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-semibold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
-                                        ${ICONS.lightbulb} تلميح
-                                    </button>
                                 </div>
 
-                                ${showHint && status === 'idle' ? `
-                                    <div class="mt-2 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start mb-4 text-right">
-                                        <span class="text-amber-500 font-semibold leading-none">💡</span>
-                                        <span class="leading-relaxed">${currentQuestion.hint}</span>
-                                    </div>
-                                ` : ''}
+                                <!-- منطقة التلميح -->
+                                <div class="mb-6 flex flex-col items-start gap-3 w-full">
+                                    <button onclick="App.toggleHint('classify', ${currentIndex})" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 ${showHint ? 'bg-amber-100 border border-amber-300 text-amber-800' : 'bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700'}">
+                                        ${ICONS.lightbulb} تلميح
+                                    </button>
+                                    
+                                    ${showHint && status === 'idle' ? `
+                                        <div class="mt-2 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right w-full">
+                                            <span class="text-amber-500 font-semibold leading-none">💡</span>
+                                            <span class="leading-relaxed">${currentQuestion.hint}</span>
+                                        </div>
+                                    ` : ''}
+                                </div>
 
                                 ${status !== 'idle' ? `
-                                    <div class="mt-4 p-4 rounded-2xl border-2 fade-in text-right ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
-                                        <div class="flex items-center justify-start gap-2 mb-2 font-bold text-xl md:text-2xl ${status === 'correct' ? 'text-emerald-700' : 'text-rose-700'}">
-                                            ${status === 'correct' ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
-                                            <span>${status === 'correct' ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
-                                        </div>
+                                    <div class="mt-2 p-4 rounded-2xl border-2 fade-in text-right ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                         <p class="text-right text-xl md:text-2xl font-semibold leading-relaxed mb-6 ${status === 'correct' ? 'text-emerald-800' : 'text-rose-800'}">
                                             ${currentQuestion.explanation}
                                         </p>
