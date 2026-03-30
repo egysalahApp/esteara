@@ -85,26 +85,26 @@
 
         // ================= قواعد البيانات =================
         const QUIZ_QUESTIONS = [
-            { text: "«ابتسمت الفرصة للشاب الطموح»\nما نوع الاستعارة هنا؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه (الفرصة) بإنسان يبتسم، وحذف المشبه به وأبقى صفة من صفاته (الابتسام).", hint: "الفرصة لا تبتسم، من الذي يبتسم وحذفناه؟" },
-            { text: "قال المعلق: «سجل الصقر هدف الفوز لفريقنا» (يقصد اللاعب).\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه (اللاعب) بالصقر، وحذف المشبه وصرّح بلفظ المشبه به (الصقر).", hint: "من الذي يسجل الأهداف؟" },
-            { text: "لمن يبذل جهدًا بلا فائدة: «أنت تنفخ في رماد!»\nهذه الصورة تسمى:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه (حالة من يبذل جهدًا بلا فائدة) بـ(حالة من ينفخ في الرماد ليشعله).", hint: "هذه الصورة تشبه حالة كاملة بحالة كاملة، كالأمثال." },
-            { text: "«غردت هواتفنا برسائل النجاح»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه (الهواتف) بطيور تغرد، وحذف المشبه به وأبقى صفة التغريد.", hint: "ما الكائن الذي يغرد؟ لقد أخفيناه وأبقينا صفته." },
-            { text: "قال المدير: «ودعنا أقمارًا تخرجوا من جامعتنا اليوم»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه (الطلاب) بالأقمار، وحذف المشبه وصرّح بالمشبه به.", hint: "من المقصود بالأقمار؟ لقد نطقنا بالمشبه به مباشرة." },
-            { text: "لمن يعود لعادة سيئة تركها: «رجعت حليمة لعادتها القديمة»\nهذه الصورة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه موقف (من يعود لفعل تركه) بموقف المرأة (حليمة) في المثل الشهير.", hint: "هذا مثل شعبي، والأمثال دائمًا تمثل مواقف كاملة." },
-            { text: "«طارت الأخبار السعيدة في أرجاء المدينة»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه الأخبار السعيدة بطيور تطير، وحذف المشبه به (الطيور).", hint: "الأخبار لا تطير. ما الذي يطير وحذفناه من الجملة؟" },
-            { text: "تحدثت مع بحرٍ في الطب (تقصد طبيبًا بارعًا).\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه الطبيب العظيم بالبحر في علمه، فصرّح بالمشبه به (بحر).", hint: "لقد صرحنا بالمشبه به (بحر) وحذفنا المشبه (الطبيب)." },
-            { text: "لمن يصنع الخير في غير أهله: «أنت تزرع في البحر»\nهذه الصورة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه حالة صانع الخير في غير أهله بمن يزرع في ماء البحر.", hint: "موقف يقابله موقف آخر بالكامل، لتوضيح سوء التصرف." },
-            { text: "«افترس المرض جسد الرجل الضعيف»\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه المرض بحيوان مفترس، وحذف الحيوان وأبقى صفة الافتراس.", hint: "الافتراس صفة لشيء محذوف." },
-            { text: "قال تعالى: «واعتصموا بحبل الله جميعًا ولا تفرقوا» (يقصد دين الله).\nما نوع الاستعارة؟", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه (الدين) بالحبل، وحذف المشبه وصرّح بالمشبه به.", hint: "ماذا يقصد بالحبل هنا؟" },
-            { text: "«نطق الجدار مبينًا أمجاد حضارتنا»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه (الجدار) بإنسان ينطق، وحذف المشبه به وأبقى صفة النطق.", hint: "الجدار لا ينطق. من الذي ينطق وحذفناه من الجملة؟" },
-            { text: "لمن يحاول إخفاء الحقيقة: «أنت تحجب الشمس بغربال!»\nهذه الصورة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 2, explanation: "لأنه شبه موقف إخفاء الحقيقة بموقف تغطية نور الشمس بغربال.", hint: "صورة تمثيلية لحالة شخص يحاول فعل المستحيل." },
-            { text: "«رأيت أسدًا يطلق النار على الأعداء» (يقصد جنديًا)\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 1, explanation: "لأنه شبه الجندي بالأسد، وصرح بالمشبه به.", hint: "الأسد لا يطلق النار." },
-            { text: "«بكى اليتيم فبكت معه الجدران»\nنوع الاستعارة:", options: ["استعارة مكنية", "استعارة تصريحية", "استعارة تمثيلية"], correct: 0, explanation: "لأنه شبه الجدران بإنسان يبكي، وحذف الإنسان.", hint: "أعطى الجدران صفة البكاء." }
+            { text: "«ابتسمت الفرصة للشاب الطموح»\nما نوع الاستعارة هنا؟", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه (الفرصة) بإنسان يبتسم، وحذف المشبه به وأبقى صفة من صفاته (الابتسام).", hint: "الفرصة لا تبتسم، من الذي يبتسم وحذفناه؟" },
+            { text: "قال المعلق: «سجل الصقر هدف الفوز لفريقنا» (يقصد اللاعب).\nما نوع الاستعارة؟", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه (اللاعب) بالصقر، وحذف المشبه وصرّح بلفظ المشبه به (الصقر).", hint: "من الذي يسجل الأهداف؟" },
+            { text: "لمن يبذل جهدًا بلا فائدة: «أنت تنفخ في رماد!»\nهذه الصورة تسمى:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 2, explanation: "لأنه شبه (حالة من يبذل جهدًا بلا فائدة) بـ(حالة من ينفخ في الرماد ليشعله).", hint: "الأمثال (والأقوال المشهورة) عند استخدامها في مواقف مشابهة." },
+            { text: "«غردت هواتفنا برسائل النجاح»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه (الهواتف) بطيور تغرد، وحذف المشبه به وأبقى صفة التغريد.", hint: "ما الكائن الذي يغرد؟ لقد أخفيناه وأبقينا صفته." },
+            { text: "قال المدير: «ودعنا أقمارًا تخرجوا من جامعتنا اليوم»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه (الطلاب) بالأقمار، وحذف المشبه وصرّح بالمشبه به.", hint: "من المقصود بالأقمار؟ لقد نطقنا بالمشبه به مباشرة." },
+            { text: "لمن يعود لعادة سيئة تركها: «رجعت حليمة لعادتها القديمة»\nهذه الصورة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 2, explanation: "لأنه شبه موقف (من يعود لفعل تركه) بموقف المرأة (حليمة) في المثل الشهير.", hint: "هذا مثل شعبي، والأمثال دائمًا تمثل مواقف كاملة." },
+            { text: "«طارت الأخبار السعيدة في أرجاء المدينة»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه الأخبار السعيدة بطيور تطير، وحذف المشبه به (الطيور).", hint: "الأخبار لا تطير. ما الذي يطير وحذفناه من الجملة؟" },
+            { text: "تحدثت مع بحرٍ في الطب (تقصد طبيبًا بارعًا).\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه الطبيب العظيم بالبحر في علمه، فصرّح بالمشبه به (بحر).", hint: "لقد صرحنا بالمشبه به (بحر) وحذفنا المشبه (الطبيب)." },
+            { text: "لمن يصنع الخير في غير أهله: «أنت تزرع في البحر»\nهذه الصورة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 2, explanation: "لأنه شبه حالة صانع الخير في غير أهله بمن يزرع في ماء البحر.", hint: "موقف يقابله موقف آخر بالكامل، لتوضيح سوء التصرف." },
+            { text: "«افترس المرض جسد الرجل الضعيف»\nما نوع الاستعارة؟", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه المرض بحيوان مفترس، وحذف الحيوان وأبقى صفة الافتراس.", hint: "الافتراس صفة لشيء محذوف." },
+            { text: "قال تعالى: «واعتصموا بحبل الله جميعًا ولا تفرقوا» (يقصد دين الله).\nما نوع الاستعارة؟", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه (الدين) بالحبل، وحذف المشبه وصرّح بالمشبه به.", hint: "ماذا يقصد بالحبل هنا؟" },
+            { text: "«نطق الجدار مبينًا أمجاد حضارتنا»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه (الجدار) بإنسان ينطق، وحذف المشبه به وأبقى صفة النطق.", hint: "الجدار لا ينطق. من الذي ينطق وحذفناه من الجملة؟" },
+            { text: "لمن يحاول إخفاء الحقيقة: «أنت تحجب الشمس بغربال!»\nهذه الصورة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 2, explanation: "لأنه شبه موقف إخفاء الحقيقة بموقف تغطية نور الشمس بغربال.", hint: "صورة تمثيلية لحالة شخص يحاول فعل المستحيل." },
+            { text: "«رأيت أسدًا يطلق النار على الأعداء» (يقصد جنديًا)\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه الجندي بالأسد، وصرح بالمشبه به.", hint: "الأسد لا يطلق النار." },
+            { text: "«بكى اليتيم فبكت معه الجدران»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه الجدران بإنسان يبكي، وحذف الإنسان.", hint: "أعطى الجدران صفة البكاء." }
         ];
 
         const CLASSIFY_PHRASES = [
             { text: "بكى السحاب على الأرض العطشى", type: "makneya", explanation: "شبه السحاب بإنسان يبكي، وحذف المشبه به (الإنسان).", hint: "السحاب لا يبكي، هناك إنسان مخفي." },
-            { text: "شاهدت أسدًا يقود الطائرة الحربية", type: "tasreheya", explanation: "صرح بـ (أسد) وحذف المشبه وقصد الطيار الشجاع.", hint: "هل الأسد يقود طائرة؟." },
+            { text: "شاهدت أسدًا يقود الطائرة الحربية", type: "tasreheya", explanation: "صرح بـ (أسد) وحذف المشبه وقصد الطيار الشجاع.", hint: "هل الأسد يقود طائرة؟" },
             { text: "لمن يشتري المجهول: «أنت تشتري سمكًا في ماء»", type: "tamtheleya", explanation: "تشبيه حالة (شراء المجهول) بحالة (شراء السمك قبل صيده).", hint: "موقف يشبه موقفًا في الحياة." },
             { text: "عضتنا الأيام بنابها القاسي", type: "makneya", explanation: "شبه الأيام بحيوان مفترس، وحذفه وأبقى صفة العض.", hint: "الأيام ليس لها ناب. من صاحب الناب الذي اختفى هنا؟" },
             { text: "قابلت كوكبًا في علوم الحاسوب", type: "tasreheya", explanation: "صرح بـ (كوكب) وقصد العالِم البارع.", hint: "نقصد العالِم." },
@@ -366,7 +366,7 @@
                             <div>
                                 <h3 class="text-2xl font-semibold text-slate-700 mb-3">٣. الاستعارة التمثيلية</h3>
                                 <p class="text-xl text-slate-600 leading-relaxed">
-                                    هي تشبيه حالة كاملة بحالة أخرى كاملة (تكثر في الأمثال).<br/>
+                                    هي تشبيه حالة كاملة بحالة أخرى كاملة، دون ذكر الحالتين معًا، والحالة الأولى تكون مفهومة من السياق (تكثر في الأمثال).<br/>
                                     <span class="text-cyan-600 font-semibold">مثال:</span> لمن يبذل جهدًا بلا فائدة: "أنت تنفخ في رماد".
                                 </p>
                             </div>
@@ -458,39 +458,43 @@
                 });
 
                 return `
-                    <div id="${sectionId}-q-${idx}" class="bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
-                        <div class="flex justify-between items-center mb-6">
-                            <span class="font-semibold text-lg md:text-xl text-${theme}-700 bg-${theme}-100 px-5 py-2 rounded-full">
-                                السؤال ${toArabicNum(idx + 1)}
-                            </span>
-                            <button onclick="App.toggleHint('${sectionId}', ${idx})" class="flex items-center gap-2 px-4 py-2 rounded-full text-lg md:text-xl font-semibold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
-                                ${ICONS.lightbulb} تلميح
-                            </button>
+                    <div id="${sectionId}-q-${idx}" class="bg-white rounded-2xl p-5 md:p-8 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
+                        
+                        <!-- المربع المدمج لرقم السؤال، التلميح، ونص السؤال -->
+                        <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="font-bold text-sm md:text-base text-${theme}-700 bg-${theme}-100 px-3 py-1 rounded-full">
+                                    السؤال ${toArabicNum(idx + 1)}
+                                </span>
+                                <button onclick="App.toggleHint('${sectionId}', ${idx})" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm md:text-base font-bold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
+                                    ${ICONS.lightbulb} تلميح
+                                </button>
+                            </div>
+                            <h3 class="text-xl md:text-2xl font-semibold text-slate-800 leading-relaxed whitespace-pre-line text-center px-2">
+                                ${q.text}
+                            </h3>
                         </div>
-                        <h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-8 leading-relaxed whitespace-pre-line text-center bg-slate-50 p-6 rounded-xl border border-slate-100">
-                            ${q.text}
-                        </h3>
                         
                         ${showHint ? `
-                            <div class="bg-amber-50 text-amber-900 p-5 rounded-xl mb-6 text-lg md:text-xl font-medium border border-amber-200 fade-in flex gap-3 items-start">
-                                <span class="text-amber-500 font-semibold text-xl md:text-2xl leading-none">💡</span>
+                            <div class="bg-amber-50 text-amber-900 p-4 rounded-xl mb-5 text-base md:text-lg font-medium border border-amber-200 fade-in flex gap-2 items-start">
+                                <span class="text-amber-500 font-semibold leading-none">💡</span>
                                 <span class="leading-relaxed">${q.hint}</span>
                             </div>
                         ` : ''}
                         
-                        <div class="grid gap-4 mx-auto w-full max-w-2xl flex-grow ${sectionId === 'quiz' ? 'grid-cols-1 content-start' : 'grid-cols-1 md:grid-cols-2 content-center'}">
+                        <div class="grid gap-3 mx-auto w-full max-w-xl flex-grow ${sectionId === 'quiz' ? 'grid-cols-1 content-start' : 'grid-cols-1 md:grid-cols-2 content-center'}">
                             ${optionsHTML}
                         </div>
                         
                         ${answered ? `
-                            <div class="mt-8 p-5 rounded-xl border fade-in ${isSelectedCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
-                                <div class="flex items-center gap-2 mb-3 font-bold text-xl md:text-2xl ${isSelectedCorrect ? 'text-emerald-700' : 'text-rose-700'}">
+                            <div class="mt-6 p-4 rounded-xl border fade-in ${isSelectedCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
+                                <div class="flex items-center gap-2 mb-2 font-bold text-lg md:text-xl ${isSelectedCorrect ? 'text-emerald-700' : 'text-rose-700'}">
                                     ${isSelectedCorrect ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
                                     <span>${isSelectedCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
                                 </div>
-                                <div class="flex items-start gap-3 mt-3">
+                                <div class="flex items-start gap-2 mt-2">
                                     ${isSelectedCorrect ? ICONS.sparklesEmerald : ICONS.sparklesRose}
-                                    <span class="text-lg md:text-xl font-semibold leading-relaxed ${isSelectedCorrect ? 'text-emerald-800' : 'text-rose-800'}">
+                                    <span class="text-base md:text-lg font-semibold leading-relaxed ${isSelectedCorrect ? 'text-emerald-800' : 'text-rose-800'}">
                                         ${q.explanation}
                                     </span>
                                 </div>
@@ -543,7 +547,7 @@
                             <p class="text-slate-500 font-semibold text-lg md:text-xl mb-6">
                                 انقر على الكلمة التي تمثل <span class="text-${theme}-600 font-bold">الاستعارة</span> في الجملة الآتية:
                             </p>
-                            <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 p-6 md:p-8 bg-slate-50 rounded-2xl border border-slate-100 leading-loose">
+                            <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 p-6 md:p-8 bg-slate-50 rounded-2xl border border-slate-100 leading-loose mx-auto w-full max-w-xl">
                                 ${wordsHTML}
                             </div>
                         </div>
@@ -651,7 +655,7 @@
                                 </div>
                             </div>
 
-                            <div class="flex flex-row w-full max-w-3xl gap-2 md:gap-6 mt-6 md:mt-12 relative z-0">
+                            <div class="flex flex-row w-full max-w-xl mx-auto gap-2 md:gap-6 mt-6 md:mt-12 relative z-0">
                                 ${boxesHTML}
                             </div>
 
@@ -724,12 +728,18 @@
                 
                 this.recordProgress(sectionId, selectedOption.isCorrect);
                 
-                // تحديث بطاقة السؤال محلياً
-                const theme = SECTIONS.find(s => s.id === sectionId).theme;
-                document.getElementById(`${sectionId}-q-${qIndex}`).outerHTML = this.renderQuestionCard(qState, qIndex, sectionId, theme);
+                const progress = this.state.progress[sectionId];
                 
-                this.updateTabs();
-                this.checkFinalEvaluation();
+                // في حالة اكتمال جميع أسئلة القسم، نُحدّث الواجهة بأكملها لإظهار النتيجة
+                if (progress.answered === progress.total) {
+                    this.updateUI();
+                } else {
+                    // تحديث بطاقة السؤال محلياً فقط
+                    const theme = SECTIONS.find(s => s.id === sectionId).theme;
+                    document.getElementById(`${sectionId}-q-${qIndex}`).outerHTML = this.renderQuestionCard(qState, qIndex, sectionId, theme);
+                    this.updateTabs();
+                    this.checkFinalEvaluation();
+                }
             },
 
             handleSpottingClick(qIndex, wIndex) {
@@ -742,11 +752,18 @@
                 const isCorrect = wIndex === qState.originalQuestion.correctIndex;
                 this.recordProgress('spotting', isCorrect);
                 
-                const theme = SECTIONS.find(s => s.id === 'spotting').theme;
-                document.getElementById(`spotting-q-${qIndex}`).outerHTML = this.renderSpottingCard(qState, qIndex, theme, 'spotting');
-                
-                this.updateTabs();
-                this.checkFinalEvaluation();
+                const progress = this.state.progress['spotting'];
+
+                // في حالة اكتمال جميع أسئلة القسم، نُحدّث الواجهة بأكملها لإظهار النتيجة
+                if (progress.answered === progress.total) {
+                    this.updateUI();
+                } else {
+                    // تحديث بطاقة السؤال محلياً فقط
+                    const theme = SECTIONS.find(s => s.id === 'spotting').theme;
+                    document.getElementById(`spotting-q-${qIndex}`).outerHTML = this.renderSpottingCard(qState, qIndex, theme, 'spotting');
+                    this.updateTabs();
+                    this.checkFinalEvaluation();
+                }
             },
 
             handleSortClick(type) {
