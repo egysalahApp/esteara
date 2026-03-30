@@ -339,7 +339,7 @@
             renderIntroSectionHTML() {
                 return `
                     <div class="max-w-3xl mx-auto space-y-6 fade-in">
-                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-amber-100 shadow-sm flex flex-col md:flex-row items-center md:items-start text-center md:text-right gap-6">
+                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-amber-100 shadow-sm flex flex-col md:flex-row items-start text-right gap-4 md:gap-6">
                             <div class="bg-amber-100 p-4 rounded-full shrink-0">${ICONS.hidden}</div>
                             <div>
                                 <h3 class="text-2xl font-semibold text-slate-700 mb-3">١. الاستعارة المكنية</h3>
@@ -350,7 +350,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-violet-100 shadow-sm flex flex-col md:flex-row items-center md:items-start text-center md:text-right gap-6">
+                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-violet-100 shadow-sm flex flex-col md:flex-row items-start text-right gap-4 md:gap-6">
                             <div class="bg-violet-100 p-4 rounded-full shrink-0">${ICONS.loud}</div>
                             <div>
                                 <h3 class="text-2xl font-semibold text-slate-700 mb-3">٢. الاستعارة التصريحية</h3>
@@ -361,7 +361,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-cyan-100 shadow-sm flex flex-col md:flex-row items-center md:items-start text-center md:text-right gap-6">
+                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-cyan-100 shadow-sm flex flex-col md:flex-row items-start text-right gap-4 md:gap-6">
                             <div class="bg-cyan-100 p-4 rounded-full shrink-0">${ICONS.scene}</div>
                             <div>
                                 <h3 class="text-2xl font-semibold text-slate-700 mb-3">٣. الاستعارة التمثيلية</h3>
@@ -470,7 +470,7 @@
                                     ${ICONS.lightbulb} تلميح
                                 </button>
                             </div>
-                            <h3 class="text-xl md:text-2xl font-semibold text-slate-800 leading-relaxed whitespace-pre-line text-center px-2">
+                            <h3 class="text-xl md:text-2xl font-semibold text-slate-800 leading-relaxed whitespace-pre-line text-right px-2">
                                 ${q.text}
                             </h3>
                         </div>
@@ -545,7 +545,7 @@
                                     ${ICONS.lightbulb} تلميح
                                 </button>
                             </div>
-                            <p class="text-center text-slate-700 font-semibold text-lg md:text-xl px-2">
+                            <p class="text-right text-slate-700 font-semibold text-lg md:text-xl px-2">
                                 انقر على الكلمة التي تمثل <span class="text-${theme}-600 font-bold">الاستعارة</span> في الجملة الآتية:
                             </p>
                         </div>
@@ -628,7 +628,7 @@
                                             ${ICONS.lightbulb} تلميح
                                         </button>
                                     </div>
-                                    <h3 class="text-xl md:text-2xl font-bold text-center leading-loose text-slate-800 px-2">
+                                    <h3 class="text-xl md:text-2xl font-bold text-right leading-loose text-slate-800 px-2">
                                         «${currentQuestion.text}»
                                     </h3>
                                 </div>
@@ -646,7 +646,7 @@
                                             ${status === 'correct' ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
                                             <span>${status === 'correct' ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
                                         </div>
-                                        <p class="text-center text-base md:text-lg font-semibold leading-relaxed mb-4 ${status === 'correct' ? 'text-emerald-800' : 'text-rose-800'}">
+                                        <p class="text-right text-base md:text-lg font-semibold leading-relaxed mb-4 ${status === 'correct' ? 'text-emerald-800' : 'text-rose-800'}">
                                             ${currentQuestion.explanation}
                                         </p>
                                         <div class="flex justify-center">
