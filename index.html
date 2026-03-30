@@ -186,12 +186,12 @@
             },
 
             initSectionData() {
-                // قسم اختر الإجابة (خلط الأسئلة وخلط الخيارات داخلها)
+                // قسم اختر الإجابة (خلط الأسئلة فقط وليس الاختيارات)
                 this.state.quizData = shuffleArray(QUIZ_QUESTIONS).map((q, idx) => {
                     const mappedOptions = q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correct }));
                     return {
                         originalQuestion: q,
-                        options: shuffleArray(mappedOptions),
+                        options: mappedOptions,
                         answered: false,
                         selectedOption: null,
                         showHint: false
@@ -218,7 +218,7 @@
                     showHint: false
                 }));
 
-                // قسم لعبة التصنيف
+                // قسم لعبة التصنيف (خلط الأسئلة فقط وليس الاختيارات/الصناديق)
                 this.state.classifyData = {
                     questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false })),
                     currentIndex: 0,
@@ -841,12 +841,13 @@
                 this.state.progress[sectionId].score = 0;
                 
                 if (sectionId === 'quiz' || sectionId === 'tf' || sectionId === 'spotting') {
-                    // إعادة خلط الأسئلة
+                    // إعادة خلط الأسئلة فقط
                     let sourceData = sectionId === 'quiz' ? QUIZ_QUESTIONS : (sectionId === 'tf' ? TF_QUESTIONS : SPOTTING_QUESTIONS);
                     let newData = shuffleArray(sourceData).map(q => {
                         let options = [];
                         if (sectionId === 'quiz') {
-                            options = shuffleArray(q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correct })));
+                            // تثبيت ترتيب الاختيارات
+                            options = q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correct }));
                         } else if (sectionId === 'tf') {
                             options = [
                                 { text: "صواب", isCorrect: true === q.answer },
@@ -857,6 +858,7 @@
                     });
                     this.state[`${sectionId}Data`] = newData;
                 } else if (sectionId === 'classify') {
+                    // إعادة خلط الأسئلة فقط في قسم التصنيف
                     this.state.classifyData = {
                         questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false })),
                         currentIndex: 0,
