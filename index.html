@@ -72,9 +72,6 @@
             xCircle: `<svg class="w-6 h-6 md:w-7 md:h-7 shrink-0 text-rose-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
             xCircleLarge: `<svg class="w-7 h-7 md:w-8 md:h-8 text-rose-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
             refresh: `<svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`,
-            sparklesEmerald: `<svg class="w-5 h-5 md:w-6 md:h-6 mt-1 shrink-0 text-emerald-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>`,
-            sparklesRose: `<svg class="w-5 h-5 md:w-6 md:h-6 mt-1 shrink-0 text-rose-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>`,
-            lightbulb: `<svg class="w-4 h-4 md:w-5 md:h-5 text-amber-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg>`,
             arrowLeft: `<svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
             medal: `<svg class="w-24 h-24 md:w-32 md:h-32 mx-auto text-amber-400 mb-6 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>`,
             hidden: `<svg class="w-10 h-10 text-amber-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>`,
@@ -186,7 +183,7 @@
             },
 
             initSectionData() {
-                // قسم اختر الإجابة (خلط الأسئلة فقط وليس الاختيارات)
+                // قسم اختر الإجابة
                 this.state.quizData = shuffleArray(QUIZ_QUESTIONS).map((q, idx) => {
                     const mappedOptions = q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correct }));
                     return {
@@ -198,7 +195,7 @@
                     };
                 });
 
-                // قسم صواب وخطأ (خلط الأسئلة فقط، الخيارات ثابتة)
+                // قسم صواب وخطأ
                 this.state.tfData = shuffleArray(TF_QUESTIONS).map(q => ({
                     originalQuestion: q,
                     options: [
@@ -218,7 +215,7 @@
                     showHint: false
                 }));
 
-                // قسم لعبة التصنيف (خلط الأسئلة فقط وليس الاختيارات/الصناديق)
+                // قسم لعبة التصنيف
                 this.state.classifyData = {
                     questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false })),
                     currentIndex: 0,
@@ -245,7 +242,8 @@
                         <div id="tabs-container" class="mx-auto w-max max-w-full overflow-x-auto px-4 no-scrollbar scroll-smooth">
                             <div id="tabs-wrapper" class="flex items-center gap-3 py-3 flex-nowrap"></div>
                         </div>
-                        <div class="w-full h-[2px] bg-slate-200">
+                        <!-- شريط تقدم ديناميكي بارتفاع 4 بكسل (h-[4px]) -->
+                        <div class="w-full h-[4px] bg-slate-200">
                             <div id="progress-bar" class="h-full transition-all duration-500 ease-out" style="width: 0%"></div>
                         </div>
                     </div>
@@ -315,8 +313,9 @@
                 
                 wrapper.innerHTML = html;
 
-                // تحديث شريط التقدم
+                // تحديث شريط التقدم للقسم الحالي
                 const currentProgress = this.state.progress[this.state.activeTab];
+                // حساب النسبة بناءً على عدد الأسئلة التي تم حلها في القسم الحالي
                 const progressPercent = currentProgress.total > 0 ? (currentProgress.answered / currentProgress.total) * 100 : 0;
                 const progressBar = document.getElementById('progress-bar');
                 const theme = SECTIONS.find(s => s.id === this.state.activeTab).theme;
@@ -435,7 +434,7 @@
                         btnClass += " cursor-default";
                     }
 
-                    // ترقيم ديناميكي لأسئلة الاختيار من متعدد فقط (quiz)
+                    // ترقيم ديناميكي لأسئلة الاختيار من متعدد فقط
                     let numberingHTML = '';
                     if (sectionId === 'quiz') {
                         let numClass = `w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-xl md:text-2xl font-bold shrink-0 transition-colors `;
@@ -450,7 +449,7 @@
                     optionsHTML += `
                         <button ${answered ? 'disabled' : ''} onclick="App.handleAnswer('${sectionId}', ${idx}, ${optIdx})" class="${btnClass}">
                             ${numberingHTML}
-                            <span class="relative z-10 flex-grow ${sectionId === 'quiz' ? 'text-right' : 'text-center'}">${opt.text}</span>
+                            <span class="relative z-10 flex-grow text-right">${opt.text}</span>
                             ${answered && opt.isCorrect ? ICONS.checkCircle : ''}
                             ${answered && selectedOption === opt && !opt.isCorrect ? ICONS.xCircle : ''}
                         </button>
@@ -460,46 +459,49 @@
                 return `
                     <div id="${sectionId}-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
                         
-                        <!-- المربع المدمج لرقم السؤال، التلميح، ونص السؤال -->
-                        <div class="bg-slate-50 p-4 md:p-5 rounded-xl border border-slate-100 mb-5">
-                            <div class="flex justify-between items-start mb-3">
-                                <span class="font-bold text-xl text-${theme}-700 bg-${theme}-100 px-4 py-1.5 rounded-full">
+                        <!-- صندوق السؤال الأساسي متكامل العرض -->
+                        <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-6 w-full mx-auto">
+                            <!-- السطر العلوي: التلميح (يسار) ورقم السؤال (يمين) -->
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="bg-${theme}-100 text-${theme}-700 font-bold px-4 py-1.5 rounded-full text-lg md:text-xl">
                                     السؤال ${toArabicNum(idx + 1)}
                                 </span>
-                                <button onclick="App.toggleHint('${sectionId}', ${idx})" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-bold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
-                                    ${ICONS.lightbulb} تلميح
+                                <button onclick="App.toggleHint('${sectionId}', ${idx})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">
+                                    💡 تلميح
                                 </button>
                             </div>
-                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-800 leading-relaxed whitespace-pre-line text-right px-2 mt-4">
+                            
+                            <!-- نص السؤال -->
+                            <h3 class="text-2xl md:text-3xl font-bold text-slate-800 leading-relaxed whitespace-pre-line text-right">
                                 ${q.text}
                             </h3>
+
+                            <!-- التلميح (قابل للطي) -->
+                            <div class="transition-all duration-300 overflow-hidden ${showHint ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}">
+                                <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
+                                    <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
+                                    <span class="leading-relaxed">${q.hint}</span>
+                                </div>
+                            </div>
                         </div>
                         
-                        ${showHint ? `
-                            <div class="bg-amber-50 text-amber-900 p-4 rounded-xl mb-5 text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right">
-                                <span class="text-amber-500 font-semibold leading-none">💡</span>
-                                <span class="leading-relaxed">${q.hint}</span>
-                            </div>
-                        ` : ''}
-                        
-                        <div class="grid gap-3 mx-auto w-full max-w-2xl flex-grow ${sectionId === 'quiz' ? 'grid-cols-1 content-start' : 'grid-cols-1 md:grid-cols-2 content-center'}">
+                        <!-- الخيارات -->
+                        <div class="grid gap-3 mx-auto w-full flex-grow grid-cols-1 content-start">
                             ${optionsHTML}
                         </div>
                         
-                        ${answered ? `
-                            <div class="mt-6 p-4 rounded-xl border fade-in text-right ${isSelectedCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
-                                <div class="flex items-center justify-start gap-2 mb-2 font-bold text-xl md:text-2xl ${isSelectedCorrect ? 'text-emerald-700' : 'text-rose-700'}">
+                        <!-- التغذية الراجعة فورية بانتقال سلس -->
+                        <div class="transition-all duration-500 overflow-hidden ${answered ? 'max-h-[500px] opacity-100 mt-6' : 'max-h-0 opacity-0'}">
+                            <div class="p-5 rounded-xl border text-right ${isSelectedCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
+                                <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${isSelectedCorrect ? 'text-emerald-700' : 'text-rose-700'}">
                                     ${isSelectedCorrect ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
                                     <span>${isSelectedCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
                                 </div>
-                                <div class="flex items-start gap-2 mt-2">
-                                    ${isSelectedCorrect ? ICONS.sparklesEmerald : ICONS.sparklesRose}
-                                    <span class="text-xl md:text-2xl font-semibold leading-relaxed ${isSelectedCorrect ? 'text-emerald-800' : 'text-rose-800'}">
-                                        ${q.explanation}
-                                    </span>
+                                <div class="text-xl md:text-2xl font-semibold leading-relaxed ${isSelectedCorrect ? 'text-emerald-800' : 'text-rose-800'} pr-1">
+                                    ${q.explanation}
                                 </div>
                             </div>
-                        ` : ''}
+                        </div>
                     </div>
                 `;
             },
@@ -535,46 +537,49 @@
                 return `
                     <div id="spotting-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
                         
-                        <!-- المربع المدمج لرقم السؤال، التلميح، والتعليمة -->
-                        <div class="bg-slate-50 p-4 md:p-5 rounded-xl border border-slate-100 mb-5">
-                            <div class="flex justify-between items-start mb-3">
-                                <span class="font-bold text-xl text-${theme}-700 bg-${theme}-100 px-4 py-1.5 rounded-full">
+                        <!-- صندوق التعليمة متكامل العرض -->
+                        <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-6 w-full mx-auto">
+                            <!-- السطر العلوي: التلميح ورقم السؤال -->
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="bg-${theme}-100 text-${theme}-700 font-bold px-4 py-1.5 rounded-full text-lg md:text-xl">
                                     السؤال ${toArabicNum(idx + 1)}
                                 </span>
-                                <button onclick="App.toggleHint('spotting', ${idx})" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-bold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
-                                    ${ICONS.lightbulb} تلميح
+                                <button onclick="App.toggleHint('spotting', ${idx})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">
+                                    💡 تلميح
                                 </button>
                             </div>
-                            <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl px-2 mt-4">
+                            
+                            <!-- نص التعليمة -->
+                            <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl leading-relaxed">
                                 انقر على الكلمة التي تمثل <span class="text-${theme}-600 font-bold">الاستعارة</span> في الجملة الآتية:
                             </p>
+
+                            <!-- التلميح (قابل للطي) -->
+                            <div class="transition-all duration-300 overflow-hidden ${showHint ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}">
+                                <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
+                                    <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
+                                    <span class="leading-relaxed">${q.hint}</span>
+                                </div>
+                            </div>
                         </div>
 
-                        ${showHint ? `
-                            <div class="bg-amber-50 text-amber-900 p-4 rounded-xl mb-5 text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right">
-                                <span class="text-amber-500 font-semibold leading-none">💡</span>
-                                <span class="leading-relaxed">${q.hint}</span>
-                            </div>
-                        ` : ''}
-
-                        <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 leading-loose mx-auto w-full max-w-2xl">
+                        <!-- منطقة الكلمات -->
+                        <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 leading-loose mx-auto w-full">
                             ${wordsHTML}
                         </div>
 
-                        ${answered ? `
-                            <div class="mt-6 p-4 rounded-xl border fade-in text-right ${isCorrectAnswer ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
-                                <div class="flex items-center justify-start gap-2 mb-2 font-bold text-xl md:text-2xl ${isCorrectAnswer ? 'text-emerald-700' : 'text-rose-700'}">
+                        <!-- التغذية الراجعة فورية بانتقال سلس -->
+                        <div class="transition-all duration-500 overflow-hidden ${answered ? 'max-h-[500px] opacity-100 mt-6' : 'max-h-0 opacity-0'}">
+                            <div class="p-5 rounded-xl border text-right ${isCorrectAnswer ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
+                                <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${isCorrectAnswer ? 'text-emerald-700' : 'text-rose-700'}">
                                     ${isCorrectAnswer ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
                                     <span>${isCorrectAnswer ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
                                 </div>
-                                <div class="flex items-start gap-2 mt-2">
-                                    ${isCorrectAnswer ? ICONS.sparklesEmerald : ICONS.sparklesRose}
-                                    <span class="text-xl md:text-2xl font-semibold leading-relaxed ${isCorrectAnswer ? 'text-emerald-800' : 'text-rose-800'}">
-                                        ${q.explanation}
-                                    </span>
+                                <div class="text-xl md:text-2xl font-semibold leading-relaxed ${isCorrectAnswer ? 'text-emerald-800' : 'text-rose-800'} pr-1">
+                                    ${q.explanation}
                                 </div>
                             </div>
-                        ` : ''}
+                        </div>
                     </div>
                 `;
             },
@@ -618,52 +623,56 @@
                     });
 
                     html += `
-                        <div class="flex flex-col items-center fade-in">
-                            <div class="w-full max-w-2xl bg-white p-5 md:p-6 rounded-3xl shadow-lg border-2 border-slate-200 transition-all duration-300 relative z-10 flex flex-col justify-start ${animatingOut ? 'fly-out' : 'fade-in'}">
+                        <div class="flex flex-col items-center fade-in w-full">
+                            <div class="w-full bg-white p-5 md:p-6 rounded-3xl shadow-lg border-2 border-slate-200 transition-all duration-300 relative z-10 flex flex-col justify-start ${animatingOut ? 'fly-out' : 'fade-in'}">
                                 
-                                <!-- المربع المدمج للتلميح ونص الجملة -->
-                                <div class="bg-slate-50 p-4 md:p-5 rounded-xl border border-slate-100 mb-5">
-                                    <div class="flex justify-end mb-3">
-                                        <button onclick="App.toggleHint('classify', ${currentIndex})" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-semibold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
-                                            ${ICONS.lightbulb} تلميح
+                                <!-- صندوق الجملة متكامل العرض -->
+                                <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-6 w-full mx-auto">
+                                    <!-- السطر العلوي: التلميح ورقم البطاقة -->
+                                    <div class="flex items-center justify-between mb-4">
+                                        <span class="bg-${theme}-100 text-${theme}-700 font-bold px-4 py-1.5 rounded-full text-lg md:text-xl">
+                                            البطاقة ${toArabicNum(currentIndex + 1)}
+                                        </span>
+                                        <button onclick="App.toggleHint('classify', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">
+                                            💡 تلميح
                                         </button>
                                     </div>
-                                    <h3 class="text-2xl md:text-3xl font-bold text-right leading-loose text-slate-800 px-2 mt-2">
+                                    
+                                    <!-- نص الجملة -->
+                                    <h3 class="text-2xl md:text-3xl font-bold leading-relaxed text-slate-800 text-right">
                                         «${currentQuestion.text}»
                                     </h3>
+
+                                    <!-- التلميح (قابل للطي) -->
+                                    <div class="transition-all duration-300 overflow-hidden ${showHint && status === 'idle' ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}">
+                                        <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
+                                            <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
+                                            <span class="leading-relaxed">${currentQuestion.hint}</span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                ${showHint && status === 'idle' ? `
-                                    <div class="mt-2 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start mb-4 text-right">
-                                        <span class="text-amber-500 font-semibold leading-none">💡</span>
-                                        <span class="leading-relaxed">${currentQuestion.hint}</span>
-                                    </div>
-                                ` : ''}
-
-                                ${status !== 'idle' ? `
-                                    <div class="mt-4 p-4 rounded-2xl border-2 fade-in text-right ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
-                                        <div class="flex items-center justify-start gap-2 mb-2 font-bold text-xl md:text-2xl ${status === 'correct' ? 'text-emerald-700' : 'text-rose-700'}">
+                                <!-- التغذية الراجعة فورية بانتقال سلس -->
+                                <div class="transition-all duration-500 overflow-hidden ${status !== 'idle' ? 'max-h-[500px] opacity-100 mt-2 mb-4' : 'max-h-0 opacity-0'}">
+                                    <div class="p-5 rounded-2xl border text-right ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
+                                        <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${status === 'correct' ? 'text-emerald-700' : 'text-rose-700'}">
                                             ${status === 'correct' ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
                                             <span>${status === 'correct' ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
                                         </div>
-                                        <p class="text-right text-xl md:text-2xl font-semibold leading-relaxed mb-6 ${status === 'correct' ? 'text-emerald-800' : 'text-rose-800'}">
+                                        <div class="text-xl md:text-2xl font-semibold leading-relaxed mb-6 ${status === 'correct' ? 'text-emerald-800' : 'text-rose-800'} pr-1">
                                             ${currentQuestion.explanation}
-                                        </p>
-                                        <div class="flex justify-center">
+                                        </div>
+                                        <div class="flex justify-center mt-4">
                                             <button onclick="App.handleSortContinue()" class="px-10 py-3 text-white font-bold text-xl md:text-2xl rounded-full active:scale-95 transition-transform shadow-md ${status === 'correct' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-rose-600 hover:bg-rose-700'}">
                                                 متابعة
                                             </button>
                                         </div>
                                     </div>
-                                ` : ''}
-                            </div>
-
-                            <div class="flex flex-row w-full max-w-2xl mx-auto gap-2 md:gap-6 mt-6 md:mt-12 relative z-0">
-                                ${boxesHTML}
-                            </div>
-
-                            <div class="mt-8 text-slate-500 font-bold bg-white px-6 py-2 rounded-full shadow-sm border border-slate-100 text-xl">
-                                البطاقة ${toArabicNum(currentIndex + 1)} من ${toArabicNum(questions.length)}
+                                </div>
+                                
+                                <div class="flex flex-row w-full gap-2 md:gap-6 mt-2 relative z-0">
+                                    ${boxesHTML}
+                                </div>
                             </div>
                         </div>
                     `;
@@ -690,7 +699,7 @@
                 const isLast = sectionId === SECTIONS[SECTIONS.length - 1].id;
                 
                 return `
-                    <div class="mt-8 flex flex-col md:flex-row justify-center items-center gap-4 max-w-2xl mx-auto w-full">
+                    <div class="mt-8 flex flex-col md:flex-row justify-center items-center gap-4 mx-auto w-full">
                         <button onclick="App.handleResetSection('${sectionId}')" class="w-full md:w-auto px-8 py-3 md:py-4 rounded-full font-semibold text-xl md:text-2xl text-slate-600 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-transform flex items-center justify-center gap-3">
                             ${ICONS.refresh} إعادة المحاولة
                         </button>
@@ -713,7 +722,6 @@
                 } else {
                     const qState = this.state[`${sectionId}Data`][idx];
                     qState.showHint = !qState.showHint;
-                    // تحديث الكارت فقط لتحسين الأداء
                     const cardHtml = sectionId === 'spotting' ? 
                         this.renderSpottingCard(qState, idx, SECTIONS.find(s=>s.id===sectionId).theme, sectionId) :
                         this.renderQuestionCard(qState, idx, sectionId, SECTIONS.find(s=>s.id===sectionId).theme);
@@ -728,16 +736,15 @@
                 const selectedOption = qState.options[optIndex];
                 qState.answered = true;
                 qState.selectedOption = selectedOption;
+                qState.showHint = false; // الإغلاق التلقائي للتلميح
                 
                 this.recordProgress(sectionId, selectedOption.isCorrect);
                 
                 const progress = this.state.progress[sectionId];
                 
-                // في حالة اكتمال جميع أسئلة القسم، نُحدّث الواجهة بأكملها لإظهار النتيجة
                 if (progress.answered === progress.total) {
                     this.updateUI();
                 } else {
-                    // تحديث بطاقة السؤال محلياً فقط
                     const theme = SECTIONS.find(s => s.id === sectionId).theme;
                     document.getElementById(`${sectionId}-q-${qIndex}`).outerHTML = this.renderQuestionCard(qState, qIndex, sectionId, theme);
                     this.updateTabs();
@@ -751,17 +758,16 @@
                 
                 qState.answered = true;
                 qState.selectedIndex = wIndex;
+                qState.showHint = false; // الإغلاق التلقائي للتلميح
                 
                 const isCorrect = wIndex === qState.originalQuestion.correctIndex;
                 this.recordProgress('spotting', isCorrect);
                 
                 const progress = this.state.progress['spotting'];
 
-                // في حالة اكتمال جميع أسئلة القسم، نُحدّث الواجهة بأكملها لإظهار النتيجة
                 if (progress.answered === progress.total) {
                     this.updateUI();
                 } else {
-                    // تحديث بطاقة السؤال محلياً فقط
                     const theme = SECTIONS.find(s => s.id === 'spotting').theme;
                     document.getElementById(`spotting-q-${qIndex}`).outerHTML = this.renderSpottingCard(qState, qIndex, theme, 'spotting');
                     this.updateTabs();
@@ -778,6 +784,8 @@
                 
                 state.status = isCorrect ? 'correct' : 'incorrect';
                 if (isCorrect) state.boxCounts[type]++;
+                
+                state.questions[state.currentIndex].showHint = false; // الإغلاق التلقائي للتلميح
                 
                 this.recordProgress('classify', isCorrect);
                 this.updateUI();
@@ -804,7 +812,6 @@
             // --- منطق التمرير الاحترافي ومتقدم ---
             scrollToContent() {
                 requestAnimationFrame(() => {
-                    // استخدام setTimeout لضمان اكتمال بناء الـ DOM (Reflow) قبل حساب المسافة - لا تتجاوز 50ms
                     setTimeout(() => {
                         const target = document.getElementById('scroll-target');
                         if (target) {
@@ -833,7 +840,6 @@
                             const containerRect = container.getBoundingClientRect();
                             const btnRect = tabBtn.getBoundingClientRect();
                             
-                            // حساب دقيق يعتمد على إحداثيات الشاشة للتمرير الأفقي الآمن مع الـ RTL
                             const scrollDelta = (btnRect.left + btnRect.width / 2) - (containerRect.left + containerRect.width / 2);
                             container.scrollBy({ left: scrollDelta, behavior: 'smooth' });
                         }
@@ -856,17 +862,14 @@
             },
 
             handleResetSection(sectionId) {
-                // تصفير بيانات القسم المعني فقط
                 this.state.progress[sectionId].answered = 0;
                 this.state.progress[sectionId].score = 0;
                 
                 if (sectionId === 'quiz' || sectionId === 'tf' || sectionId === 'spotting') {
-                    // إعادة خلط الأسئلة فقط
                     let sourceData = sectionId === 'quiz' ? QUIZ_QUESTIONS : (sectionId === 'tf' ? TF_QUESTIONS : SPOTTING_QUESTIONS);
                     let newData = shuffleArray(sourceData).map(q => {
                         let options = [];
                         if (sectionId === 'quiz') {
-                            // تثبيت ترتيب الاختيارات
                             options = q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correct }));
                         } else if (sectionId === 'tf') {
                             options = [
@@ -878,7 +881,6 @@
                     });
                     this.state[`${sectionId}Data`] = newData;
                 } else if (sectionId === 'classify') {
-                    // إعادة خلط الأسئلة فقط في قسم التصنيف
                     this.state.classifyData = {
                         questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false })),
                         currentIndex: 0,
@@ -893,7 +895,6 @@
             },
 
             handleGlobalRestart() {
-                // تصفير التقدم الشامل
                 this.state.progress = {
                     intro: { answered: 0, total: 0, score: 0 },
                     classify: { answered: 0, total: CLASSIFY_PHRASES.length, score: 0 },
@@ -902,17 +903,15 @@
                     tf: { answered: 0, total: TF_QUESTIONS.length, score: 0 }
                 };
                 
-                this.initSectionData(); // توليد وخلط جديد لجميع الأسئلة
+                this.initSectionData();
                 this.state.activeTab = SECTIONS[0].id;
                 this.updateUI();
                 
-                // التمرير لأعلى الصفحة
                 requestAnimationFrame(() => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
             },
 
-            // --- التقييم النهائي ---
             checkFinalEvaluation() {
                 const isAllComplete = Object.values(this.state.progress).filter(p => p.total > 0).every(p => p.answered === p.total);
                 const container = document.getElementById('final-evaluation-container');
@@ -946,7 +945,6 @@
                         </div>
                     `;
 
-                    // التمركز الآلي والهادئ نحو التقييم النهائي
                     requestAnimationFrame(() => {
                         setTimeout(() => {
                             const evalBox = document.getElementById('final-eval-box');
