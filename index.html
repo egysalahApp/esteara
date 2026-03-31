@@ -72,6 +72,9 @@
             xCircle: `<svg class="w-6 h-6 md:w-7 md:h-7 shrink-0 text-rose-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
             xCircleLarge: `<svg class="w-7 h-7 md:w-8 md:h-8 text-rose-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
             refresh: `<svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`,
+            sparklesEmerald: `<svg class="w-5 h-5 md:w-6 md:h-6 mt-1 shrink-0 text-emerald-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>`,
+            sparklesRose: `<svg class="w-5 h-5 md:w-6 md:h-6 mt-1 shrink-0 text-rose-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>`,
+            lightbulb: `<svg class="w-5 h-5 md:w-6 md:h-6 text-amber-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg>`,
             arrowLeft: `<svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
             medal: `<svg class="w-24 h-24 md:w-32 md:h-32 mx-auto text-amber-400 mb-6 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>`,
             hidden: `<svg class="w-10 h-10 text-amber-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>`,
@@ -486,7 +489,7 @@
                         </div>
                         
                         <!-- الخيارات -->
-                        <div class="grid gap-3 mx-auto w-full flex-grow grid-cols-1 content-start">
+                        <div class="grid gap-3 mx-auto w-full max-w-md flex-grow grid-cols-1 content-start">
                             ${optionsHTML}
                         </div>
                         
@@ -564,7 +567,7 @@
                         </div>
 
                         <!-- منطقة الكلمات -->
-                        <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 leading-loose mx-auto w-full">
+                        <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 leading-loose mx-auto w-full max-w-lg">
                             ${wordsHTML}
                         </div>
 
@@ -670,7 +673,7 @@
                                     </div>
                                 </div>
                                 
-                                <div class="flex flex-row w-full gap-2 md:gap-6 mt-2 relative z-0">
+                                <div class="flex flex-row w-full max-w-lg mx-auto gap-2 md:gap-4 mt-2 relative z-0">
                                     ${boxesHTML}
                                 </div>
                             </div>
