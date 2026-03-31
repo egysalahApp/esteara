@@ -460,26 +460,27 @@
                 return `
                     <div id="${sectionId}-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
                         
-                        <!-- صندوق السؤال (يحتوي على النص فقط) -->
-                        <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-4">
-                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-800 leading-relaxed whitespace-pre-line text-right">
+                        <!-- المربع المدمج لرقم السؤال، التلميح، ونص السؤال -->
+                        <div class="bg-slate-50 p-4 md:p-5 rounded-xl border border-slate-100 mb-5">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="font-bold text-xl text-${theme}-700 bg-${theme}-100 px-4 py-1.5 rounded-full">
+                                    السؤال ${toArabicNum(idx + 1)}
+                                </span>
+                                <button onclick="App.toggleHint('${sectionId}', ${idx})" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-bold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
+                                    ${ICONS.lightbulb} تلميح
+                                </button>
+                            </div>
+                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-800 leading-relaxed whitespace-pre-line text-right px-2 mt-4">
                                 ${q.text}
                             </h3>
                         </div>
                         
-                        <!-- منطقة التلميح (الزر ومربع النص) -->
-                        <div class="mb-6 flex flex-col items-start gap-3">
-                            <button onclick="App.toggleHint('${sectionId}', ${idx})" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 ${showHint ? 'bg-amber-100 border border-amber-300 text-amber-800' : 'bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700'}">
-                                ${ICONS.lightbulb} تلميح
-                            </button>
-                            
-                            ${showHint ? `
-                                <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right w-full">
-                                    <span class="text-amber-500 font-semibold leading-none">💡</span>
-                                    <span class="leading-relaxed">${q.hint}</span>
-                                </div>
-                            ` : ''}
-                        </div>
+                        ${showHint ? `
+                            <div class="bg-amber-50 text-amber-900 p-4 rounded-xl mb-5 text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right">
+                                <span class="text-amber-500 font-semibold leading-none">💡</span>
+                                <span class="leading-relaxed">${q.hint}</span>
+                            </div>
+                        ` : ''}
                         
                         <div class="grid gap-3 mx-auto w-full max-w-2xl flex-grow ${sectionId === 'quiz' ? 'grid-cols-1 content-start' : 'grid-cols-1 md:grid-cols-2 content-center'}">
                             ${optionsHTML}
@@ -534,26 +535,27 @@
                 return `
                     <div id="spotting-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
                         
-                        <!-- صندوق التعليمة -->
-                        <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-4">
-                            <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl leading-relaxed">
+                        <!-- المربع المدمج لرقم السؤال، التلميح، والتعليمة -->
+                        <div class="bg-slate-50 p-4 md:p-5 rounded-xl border border-slate-100 mb-5">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="font-bold text-xl text-${theme}-700 bg-${theme}-100 px-4 py-1.5 rounded-full">
+                                    السؤال ${toArabicNum(idx + 1)}
+                                </span>
+                                <button onclick="App.toggleHint('spotting', ${idx})" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-bold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
+                                    ${ICONS.lightbulb} تلميح
+                                </button>
+                            </div>
+                            <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl px-2 mt-4">
                                 انقر على الكلمة التي تمثل <span class="text-${theme}-600 font-bold">الاستعارة</span> في الجملة الآتية:
                             </p>
                         </div>
 
-                        <!-- منطقة التلميح -->
-                        <div class="mb-6 flex flex-col items-start gap-3">
-                            <button onclick="App.toggleHint('spotting', ${idx})" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 ${showHint ? 'bg-amber-100 border border-amber-300 text-amber-800' : 'bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700'}">
-                                ${ICONS.lightbulb} تلميح
-                            </button>
-                            
-                            ${showHint ? `
-                                <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right w-full">
-                                    <span class="text-amber-500 font-semibold leading-none">💡</span>
-                                    <span class="leading-relaxed">${q.hint}</span>
-                                </div>
-                            ` : ''}
-                        </div>
+                        ${showHint ? `
+                            <div class="bg-amber-50 text-amber-900 p-4 rounded-xl mb-5 text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right">
+                                <span class="text-amber-500 font-semibold leading-none">💡</span>
+                                <span class="leading-relaxed">${q.hint}</span>
+                            </div>
+                        ` : ''}
 
                         <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 leading-loose mx-auto w-full max-w-2xl">
                             ${wordsHTML}
@@ -619,29 +621,31 @@
                         <div class="flex flex-col items-center fade-in">
                             <div class="w-full max-w-2xl bg-white p-5 md:p-6 rounded-3xl shadow-lg border-2 border-slate-200 transition-all duration-300 relative z-10 flex flex-col justify-start ${animatingOut ? 'fly-out' : 'fade-in'}">
                                 
-                                <!-- صندوق الجملة -->
-                                <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-4">
-                                    <h3 class="text-2xl md:text-3xl font-bold text-right leading-relaxed text-slate-800">
+                                <!-- المربع المدمج للتلميح ونص الجملة -->
+                                <div class="bg-slate-50 p-4 md:p-5 rounded-xl border border-slate-100 mb-5">
+                                    <div class="flex justify-end mb-3">
+                                        <button onclick="App.toggleHint('classify', ${currentIndex})" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xl font-semibold border transition-all active:scale-95 ${showHint ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'}">
+                                            ${ICONS.lightbulb} تلميح
+                                        </button>
+                                    </div>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-right leading-loose text-slate-800 px-2 mt-2">
                                         «${currentQuestion.text}»
                                     </h3>
                                 </div>
 
-                                <!-- منطقة التلميح -->
-                                <div class="mb-6 flex flex-col items-start gap-3 w-full">
-                                    <button onclick="App.toggleHint('classify', ${currentIndex})" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 ${showHint ? 'bg-amber-100 border border-amber-300 text-amber-800' : 'bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700'}">
-                                        ${ICONS.lightbulb} تلميح
-                                    </button>
-                                    
-                                    ${showHint && status === 'idle' ? `
-                                        <div class="mt-2 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start text-right w-full">
-                                            <span class="text-amber-500 font-semibold leading-none">💡</span>
-                                            <span class="leading-relaxed">${currentQuestion.hint}</span>
-                                        </div>
-                                    ` : ''}
-                                </div>
+                                ${showHint && status === 'idle' ? `
+                                    <div class="mt-2 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl md:text-2xl font-medium border border-amber-200 fade-in flex gap-2 items-start mb-4 text-right">
+                                        <span class="text-amber-500 font-semibold leading-none">💡</span>
+                                        <span class="leading-relaxed">${currentQuestion.hint}</span>
+                                    </div>
+                                ` : ''}
 
                                 ${status !== 'idle' ? `
-                                    <div class="mt-2 p-4 rounded-2xl border-2 fade-in text-right ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
+                                    <div class="mt-4 p-4 rounded-2xl border-2 fade-in text-right ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
+                                        <div class="flex items-center justify-start gap-2 mb-2 font-bold text-xl md:text-2xl ${status === 'correct' ? 'text-emerald-700' : 'text-rose-700'}">
+                                            ${status === 'correct' ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
+                                            <span>${status === 'correct' ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
+                                        </div>
                                         <p class="text-right text-xl md:text-2xl font-semibold leading-relaxed mb-6 ${status === 'correct' ? 'text-emerald-800' : 'text-rose-800'}">
                                             ${currentQuestion.explanation}
                                         </p>
@@ -656,6 +660,10 @@
 
                             <div class="flex flex-row w-full max-w-2xl mx-auto gap-2 md:gap-6 mt-6 md:mt-12 relative z-0">
                                 ${boxesHTML}
+                            </div>
+
+                            <div class="mt-8 text-slate-500 font-bold bg-white px-6 py-2 rounded-full shadow-sm border border-slate-100 text-xl">
+                                البطاقة ${toArabicNum(currentIndex + 1)} من ${toArabicNum(questions.length)}
                             </div>
                         </div>
                     `;
