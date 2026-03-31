@@ -983,12 +983,16 @@
         // تشغيل التطبيق فور تحميل المستند
         document.addEventListener('DOMContentLoaded', () => {
             
-            // إيقاف استعادة التمرير التلقائي للمتصفح
-            if ('scrollRestoration' in history) {
-                history.scrollRestoration = 'manual';
+            try {
+                // إيقاف استعادة التمرير التلقائي للمتصفح
+                if ('scrollRestoration' in history) {
+                    history.scrollRestoration = 'manual';
+                }
+                // إجبار الصفحة على الصعود لأعلى نقطة عند بدء التحميل
+                window.scrollTo(0, 0);
+            } catch (error) {
+                console.warn("تم تجاهل ضبط التمرير بسبب قيود البيئة المعزولة (iFrame).", error);
             }
-            // إجبار الصفحة على الصعود لأعلى نقطة عند بدء التحميل
-            window.scrollTo(0, 0);
 
             App.init();
         });
