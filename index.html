@@ -23,7 +23,7 @@
         
         html { scroll-behavior: smooth; }
         
-        /* حركات الظهور والسقوط للصناديق */
+        /* حركات الظهور والسقوط للصناديق (لأول مرة فقط) */
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(15px); }
@@ -34,6 +34,13 @@
         @keyframes flyOut {
             0% { transform: translateY(0) scale(1); opacity: 1; }
             100% { transform: translateY(120px) scale(0.5); opacity: 0; }
+        }
+
+        /* حركة الشفافية للثبات البصري (للتلميحات والإجابات) */
+        .fade-opacity { animation: fadeInOpacity 0.3s ease-out forwards; }
+        @keyframes fadeInOpacity {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         button { outline: none; }
@@ -72,9 +79,6 @@
             xCircle: `<svg class="w-6 h-6 md:w-7 md:h-7 shrink-0 text-rose-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
             xCircleLarge: `<svg class="w-7 h-7 md:w-8 md:h-8 text-rose-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
             refresh: `<svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`,
-            sparklesEmerald: `<svg class="w-5 h-5 md:w-6 md:h-6 mt-1 shrink-0 text-emerald-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>`,
-            sparklesRose: `<svg class="w-5 h-5 md:w-6 md:h-6 mt-1 shrink-0 text-rose-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>`,
-            lightbulb: `<svg class="w-5 h-5 md:w-6 md:h-6 text-amber-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg>`,
             arrowLeft: `<svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
             medal: `<svg class="w-24 h-24 md:w-32 md:h-32 mx-auto text-amber-400 mb-6 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>`,
             hidden: `<svg class="w-10 h-10 text-amber-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>`,
@@ -390,19 +394,22 @@
                 const isComplete = progress.total > 0 && progress.answered === progress.total;
                 const questions = this.state[`${sectionId}Data`];
                 
-                let html = '';
+                // إضافة كلاس fade-in للحاوية الكلية لتجنب إعادة الحركة عند النقر داخل الأسئلة
+                let html = '<div class="fade-in">';
                 
                 questions.forEach((q, idx) => {
+                    html += `<div id="${sectionId}-wrapper-${idx}">`;
                     if (sectionId === 'spotting') {
                         html += this.renderSpottingCard(q, idx, sectionData.theme, sectionId);
                     } else {
                         html += this.renderQuestionCard(q, idx, sectionId, sectionData.theme);
                     }
+                    html += `</div>`;
                 });
 
                 if (isComplete) {
                     html += `
-                        <div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center fade-in max-w-2xl mx-auto w-full">
+                        <div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full">
                             <h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.label})</h3>
                             <div class="text-5xl font-bold text-${sectionData.theme}-600" style="direction: ltr">
                                 ${toArabicNum(progress.score)} <span class="text-4xl text-slate-300 font-medium">/</span> ${toArabicNum(progress.total)}
@@ -410,7 +417,8 @@
                         </div>
                     `;
                 }
-
+                
+                html += '</div>'; // إغلاق حاوية القسم
                 html += this.renderSectionFooterControls(sectionId, isComplete);
                 return html;
             },
@@ -418,6 +426,10 @@
             renderQuestionCard(qState, idx, sectionId, theme) {
                 const { originalQuestion: q, options, answered, selectedOption, showHint } = qState;
                 const isSelectedCorrect = selectedOption && selectedOption.isCorrect;
+                
+                // التحكم الذكي في تطبيق كلاسات الحركات لتظهر مرة واحدة فقط
+                const hintFadeClass = qState.hintAnimate ? 'fade-opacity' : '';
+                const answerFadeClass = qState.answerAnimate ? 'fade-opacity' : '';
                 
                 let ringClass = '';
                 if (answered) {
@@ -460,7 +472,7 @@
                 });
 
                 return `
-                    <div id="${sectionId}-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
+                    <div id="${sectionId}-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative transition-colors duration-300 flex flex-col justify-start ${ringClass}">
                         
                         <!-- صندوق السؤال الأساسي متكامل العرض -->
                         <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-6 w-full mx-auto">
@@ -479,8 +491,8 @@
                                 ${q.text}
                             </h3>
 
-                            <!-- التلميح (قابل للطي) -->
-                            <div class="transition-all duration-300 overflow-hidden ${showHint ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}">
+                            <!-- التلميح يظهر بحركة لمرة واحدة فقط ثم يثبت -->
+                            <div class="${showHint ? `block mt-4 ${hintFadeClass}` : 'hidden'}">
                                 <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                     <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
                                     <span class="leading-relaxed">${q.hint}</span>
@@ -493,8 +505,8 @@
                             ${optionsHTML}
                         </div>
                         
-                        <!-- التغذية الراجعة فورية بانتقال سلس -->
-                        <div class="transition-all duration-500 overflow-hidden ${answered ? 'max-h-[500px] opacity-100 mt-6' : 'max-h-0 opacity-0'}">
+                        <!-- التغذية الراجعة تظهر بحركة لمرة واحدة فقط ثم تثبت -->
+                        <div class="${answered ? `block mt-6 ${answerFadeClass}` : 'hidden'}">
                             <div class="p-5 rounded-xl border text-right ${isSelectedCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                 <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${isSelectedCorrect ? 'text-emerald-700' : 'text-rose-700'}">
                                     ${isSelectedCorrect ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
@@ -512,6 +524,10 @@
             renderSpottingCard(qState, idx, theme, sectionId) {
                 const { originalQuestion: q, answered, selectedIndex, showHint } = qState;
                 const isCorrectAnswer = selectedIndex === q.correctIndex;
+                
+                // التحكم الذكي في تطبيق كلاسات الحركات لتظهر مرة واحدة فقط
+                const hintFadeClass = qState.hintAnimate ? 'fade-opacity' : '';
+                const answerFadeClass = qState.answerAnimate ? 'fade-opacity' : '';
                 
                 let ringClass = answered ? (isCorrectAnswer ? 'ring-2 ring-emerald-400' : 'ring-2 ring-rose-400') : '';
 
@@ -538,7 +554,7 @@
                 });
 
                 return `
-                    <div id="spotting-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative fade-in transition-all duration-300 flex flex-col justify-start ${ringClass}">
+                    <div id="spotting-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative transition-colors duration-300 flex flex-col justify-start ${ringClass}">
                         
                         <!-- صندوق التعليمة متكامل العرض -->
                         <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-6 w-full mx-auto">
@@ -557,8 +573,8 @@
                                 انقر على الكلمة التي تمثل <span class="text-${theme}-600 font-bold">الاستعارة</span> في الجملة الآتية:
                             </p>
 
-                            <!-- التلميح (قابل للطي) -->
-                            <div class="transition-all duration-300 overflow-hidden ${showHint ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}">
+                            <!-- التلميح يظهر بحركة لمرة واحدة فقط ثم يثبت -->
+                            <div class="${showHint ? `block mt-4 ${hintFadeClass}` : 'hidden'}">
                                 <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                     <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
                                     <span class="leading-relaxed">${q.hint}</span>
@@ -571,8 +587,8 @@
                             ${wordsHTML}
                         </div>
 
-                        <!-- التغذية الراجعة فورية بانتقال سلس -->
-                        <div class="transition-all duration-500 overflow-hidden ${answered ? 'max-h-[500px] opacity-100 mt-6' : 'max-h-0 opacity-0'}">
+                        <!-- التغذية الراجعة تظهر بحركة لمرة واحدة فقط ثم تثبت -->
+                        <div class="${answered ? `block mt-6 ${answerFadeClass}` : 'hidden'}">
                             <div class="p-5 rounded-xl border text-right ${isCorrectAnswer ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                 <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${isCorrectAnswer ? 'text-emerald-700' : 'text-rose-700'}">
                                     ${isCorrectAnswer ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
@@ -598,6 +614,10 @@
                 if (!isComplete && questions[currentIndex]) {
                     const currentQuestion = questions[currentIndex].originalQuestion;
                     const showHint = questions[currentIndex].showHint;
+                    
+                    // التحكم الذكي في تطبيق كلاسات الحركات لتظهر مرة واحدة فقط
+                    const hintFadeClass = questions[currentIndex].hintAnimate ? 'fade-opacity' : '';
+                    const feedbackFadeClass = state.feedbackAnimate ? 'fade-opacity' : '';
                     
                     const boxes = [
                         { id: 'makneya', label: 'مكنية', colorClass: 'border-amber-200 text-amber-700 bg-amber-50', hoverClass: 'hover:border-amber-400 hover:bg-amber-100' },
@@ -625,9 +645,10 @@
                         `;
                     });
 
+                    // استخدام حركة الدخول أو الخروج الكلية للبطاقة
                     html += `
-                        <div class="flex flex-col items-center fade-in w-full">
-                            <div class="w-full bg-white p-5 md:p-6 rounded-3xl shadow-lg border-2 border-slate-200 transition-all duration-300 relative z-10 flex flex-col justify-start ${animatingOut ? 'fly-out' : 'fade-in'}">
+                        <div class="flex flex-col items-center w-full">
+                            <div class="w-full bg-white p-5 md:p-6 rounded-3xl shadow-lg border-2 border-slate-200 transition-colors duration-300 relative z-10 flex flex-col justify-start ${animatingOut ? 'fly-out' : 'fade-in'}">
                                 
                                 <!-- صندوق الجملة متكامل العرض -->
                                 <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-6 w-full mx-auto">
@@ -646,8 +667,8 @@
                                         «${currentQuestion.text}»
                                     </h3>
 
-                                    <!-- التلميح (قابل للطي) -->
-                                    <div class="transition-all duration-300 overflow-hidden ${showHint && status === 'idle' ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}">
+                                    <!-- التلميح يظل مفتوحاً إذا تم النقر عليه مسبقاً بثبات -->
+                                    <div class="${showHint ? `block mt-4 ${hintFadeClass}` : 'hidden'}">
                                         <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                             <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
                                             <span class="leading-relaxed">${currentQuestion.hint}</span>
@@ -655,8 +676,8 @@
                                     </div>
                                 </div>
 
-                                <!-- التغذية الراجعة فورية بانتقال سلس -->
-                                <div class="transition-all duration-500 overflow-hidden ${status !== 'idle' ? 'max-h-[500px] opacity-100 mt-2 mb-4' : 'max-h-0 opacity-0'}">
+                                <!-- التغذية الراجعة -->
+                                <div class="${status !== 'idle' ? `block mt-2 mb-4 ${feedbackFadeClass}` : 'hidden'}">
                                     <div class="p-5 rounded-2xl border text-right ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                         <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${status === 'correct' ? 'text-emerald-700' : 'text-rose-700'}">
                                             ${status === 'correct' ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
@@ -720,15 +741,22 @@
             
             toggleHint(sectionId, idx) {
                 if (sectionId === 'classify') {
-                    this.state.classifyData.questions[idx].showHint = !this.state.classifyData.questions[idx].showHint;
+                    const q = this.state.classifyData.questions[idx];
+                    q.showHint = !q.showHint;
+                    q.hintAnimate = q.showHint; // تفعيل حركة الظهور عند الفتح فقط
                     this.updateUI();
+                    q.hintAnimate = false; // إطفاء المفتاح فوراً لمنع التكرار لاحقاً
                 } else {
                     const qState = this.state[`${sectionId}Data`][idx];
                     qState.showHint = !qState.showHint;
+                    qState.hintAnimate = qState.showHint; // تفعيل حركة الظهور عند الفتح فقط
+                    
                     const cardHtml = sectionId === 'spotting' ? 
                         this.renderSpottingCard(qState, idx, SECTIONS.find(s=>s.id===sectionId).theme, sectionId) :
                         this.renderQuestionCard(qState, idx, sectionId, SECTIONS.find(s=>s.id===sectionId).theme);
-                    document.getElementById(`${sectionId}-q-${idx}`).outerHTML = cardHtml;
+                        
+                    document.getElementById(`${sectionId}-wrapper-${idx}`).innerHTML = cardHtml;
+                    qState.hintAnimate = false; // إطفاء المفتاح فوراً لمنع التكرار لاحقاً
                 }
             },
 
@@ -739,7 +767,9 @@
                 const selectedOption = qState.options[optIndex];
                 qState.answered = true;
                 qState.selectedOption = selectedOption;
-                qState.showHint = false; // الإغلاق التلقائي للتلميح
+                qState.answerAnimate = true; // تفعيل حركة ظهور النتيجة
+                
+                // تم حذف سطر إغلاق التلميح للحفاظ على استقلالية العناصر
                 
                 this.recordProgress(sectionId, selectedOption.isCorrect);
                 
@@ -749,10 +779,12 @@
                     this.updateUI();
                 } else {
                     const theme = SECTIONS.find(s => s.id === sectionId).theme;
-                    document.getElementById(`${sectionId}-q-${qIndex}`).outerHTML = this.renderQuestionCard(qState, qIndex, sectionId, theme);
+                    document.getElementById(`${sectionId}-wrapper-${qIndex}`).innerHTML = this.renderQuestionCard(qState, qIndex, sectionId, theme);
                     this.updateTabs();
                     this.checkFinalEvaluation();
                 }
+                
+                qState.answerAnimate = false; // إطفاء المفتاح فوراً لمنع التكرار لاحقاً
             },
 
             handleSpottingClick(qIndex, wIndex) {
@@ -761,7 +793,9 @@
                 
                 qState.answered = true;
                 qState.selectedIndex = wIndex;
-                qState.showHint = false; // الإغلاق التلقائي للتلميح
+                qState.answerAnimate = true; // تفعيل حركة ظهور النتيجة
+                
+                // تم حذف سطر إغلاق التلميح للحفاظ على استقلالية العناصر
                 
                 const isCorrect = wIndex === qState.originalQuestion.correctIndex;
                 this.recordProgress('spotting', isCorrect);
@@ -772,10 +806,12 @@
                     this.updateUI();
                 } else {
                     const theme = SECTIONS.find(s => s.id === 'spotting').theme;
-                    document.getElementById(`spotting-q-${qIndex}`).outerHTML = this.renderSpottingCard(qState, qIndex, theme, 'spotting');
+                    document.getElementById(`spotting-wrapper-${qIndex}`).innerHTML = this.renderSpottingCard(qState, qIndex, theme, 'spotting');
                     this.updateTabs();
                     this.checkFinalEvaluation();
                 }
+                
+                qState.answerAnimate = false; // إطفاء المفتاح فوراً لمنع التكرار لاحقاً
             },
 
             handleSortClick(type) {
@@ -788,10 +824,14 @@
                 state.status = isCorrect ? 'correct' : 'incorrect';
                 if (isCorrect) state.boxCounts[type]++;
                 
-                state.questions[state.currentIndex].showHint = false; // الإغلاق التلقائي للتلميح
+                state.feedbackAnimate = true; // تفعيل حركة ظهور النتيجة
+                
+                // تم حذف سطر إغلاق التلميح
                 
                 this.recordProgress('classify', isCorrect);
                 this.updateUI();
+                
+                state.feedbackAnimate = false; // إطفاء المفتاح فوراً لمنع التكرار لاحقاً
             },
 
             handleSortContinue() {
