@@ -43,6 +43,13 @@
             to { opacity: 1; }
         }
         
+        /* حركة التمدد السلس لمعالجة القفزة البصرية (الرعشة) */
+        .smooth-expand { animation: smoothExpand 0.5s ease-out forwards; overflow: hidden; }
+        @keyframes smoothExpand {
+            0% { max-height: 0; opacity: 0; }
+            100% { max-height: 500px; opacity: 1; }
+        }
+        
         button { outline: none; }
         
         /* إخفاء شريط التمرير للتبويبات لجمالية التصميم */
@@ -95,14 +102,9 @@
             { text: "«غردت هواتفنا برسائل النجاح»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه (الهواتف) بطيور تغرد، وحذف المشبه به وأبقى صفة التغريد.", hint: "ما الكائن الذي يغرد؟ لقد أخفيناه وأبقينا صفته." },
             { text: "قال المدير: «ودعنا أقمارًا تخرجوا من جامعتنا اليوم»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه (الطلاب) بالأقمار، وحذف المشبه وصرّح بالمشبه به.", hint: "من المقصود بالأقمار؟ لقد نطقنا بالمشبه به مباشرة." },
             { text: "لمن يعود لعادة سيئة تركها: «رجعت حليمة لعادتها القديمة»\nهذه الصورة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 2, explanation: "لأنه شبه موقف (من يعود لفعل تركه) بموقف المرأة (حليمة) في المثل الشهير.", hint: "هذا مثل شعبي، والأمثال دائمًا تمثل مواقف كاملة." },
-            { text: "«طارت الأخبار السعيدة في أرجاء المدينة»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه الأخبار السعيدة بطيور تطير، وحذف المشبه به (الطيور).", hint: "الأخبار لا تطير. ما الذي يطير وحذفناه من الجملة؟" },
-            { text: "تحدثت مع بحرٍ في الطب (تقصد طبيبًا بارعًا).\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه الطبيب العظيم بالبحر في علمه، فصرّح بالمشبه به (بحر).", hint: "لقد صرحنا بالمشبه به (بحر) وحذفنا المشبه (الطبيب)." },
             { text: "لمن يصنع الخير في غير أهله: «أنت تزرع في البحر»\nهذه الصورة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 2, explanation: "لأنه شبه حالة صانع الخير في غير أهله بمن يزرع في ماء البحر.", hint: "موقف يقابله موقف آخر بالكامل، لتوضيح سوء التصرف." },
-            { text: "«افترس المرض جسد الرجل الضعيف»\nما نوع الاستعارة؟", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه المرض بحيوان مفترس، وحذف الحيوان وأبقى صفة الافتراس.", hint: "الافتراس صفة لشيء محذوف." },
             { text: "قال تعالى: «واعتصموا بحبل الله جميعًا ولا تفرقوا» (يقصد دين الله).\nما نوع الاستعارة؟", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه (الدين) بالحبل، وحذف المشبه وصرّح بالمشبه به.", hint: "ما المشبه وما المشبه به؟" },
-            { text: "«نطق الجدار مبينًا أمجاد حضارتنا»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه (الجدار) بإنسان ينطق، وحذف المشبه به وأبقى صفة النطق.", hint: "الجدار لا ينطق. من الذي ينطق وحذفناه من الجملة؟" },
             { text: "لمن يحاول إخفاء الحقيقة: «أنت تحجب الشمس بغربال!»\nهذه الصورة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 2, explanation: "لأنه شبه موقف إخفاء الحقيقة بموقف تغطية نور الشمس بغربال.", hint: "صورة تمثيلية لحالة شخص يحاول فعل المستحيل." },
-            { text: "«رأيت أسدًا يطلق النار على الأعداء» (يقصد جنديًا)\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه الجندي بالأسد، وصرح بالمشبه به.", hint: "الأسد لا يطلق النار." },
             { text: "«بكى اليتيم فبكت معه الجدران»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه الجدران بإنسان يبكي، وحذف الإنسان.", hint: "أعطى الجدران صفة البكاء." }
         ];
 
@@ -113,13 +115,8 @@
             { text: "عضتنا الأيام بنابها القاسي", type: "makneya", explanation: "شبه الأيام بحيوان مفترس، وحذفه وأبقى صفة العض.", hint: "الأيام ليس لها ناب. من صاحب الناب الذي اختفى هنا؟" },
             { text: "قابلت كوكبًا في علوم الحاسوب", type: "tasreheya", explanation: "صرح بـ (كوكب) وقصد العالِم البارع.", hint: "نقصد العالِم." },
             { text: "لمن يتردد: «أراك تقدم رجلًا وتؤخر أخرى»", type: "tamtheleya", explanation: "تشبيه حالة المتردد بهذه الصورة.", hint: "هذه صورة حركية تمثل التردد وعدم الحسم." },
-            { text: "زأر الجندي في وجه الأعداء", type: "makneya", explanation: "شبه الجندي بأسد، وحذف المشبه به وأبقى صفة الزئير.", hint: "الزئير صفة لحيوان معين لم يذكر اسمه في الجملة." },
-            { text: "«نسورنا تحمي سماء الوطن في كل وقت»", type: "tasreheya", explanation: "شبه (الطيارين) بالنسور، وحذف المشبه وصرّح بلفظ المشبه به.", hint: "صرحنا بكلمة (النسور) مباشرة." },
             { text: "«عادت المياه إلى مجاريها» (بعد خصام)", type: "tamtheleya", explanation: "شبه حالة عودة العلاقات بحالة عودة المياه لمسارها.", hint: "مثل يقال عند الصلح بعد الخصام." },
-            { text: "«عضنا الفقر بنابه»", type: "makneya", explanation: "شبه الفقر بوحش له ناب، وحذف المشبه به.", hint: "هل الفقر له أسنان؟ ماذا حذفنا؟" },
             { text: "«ابتسم الصباح ووزع نوره»", type: "makneya", explanation: "شبه الصباح بإنسان يبتسم، وحذف المشبه به.", hint: "الصباح لا يبتسم، لمن هذه الصفة؟" },
-            { text: "«من تدخل فيما لا يعنيه لقي ما لا يرضيه»", type: "tamtheleya", explanation: "تشبيه موقف المتطفل بموقف من يلقى الأذى.", hint: "حكمة تقال في مواقف التطفل." },
-            { text: "«تبتسم الزهور في الربيع»", type: "makneya", explanation: "شبه الزهور بإنسان يبتسم.", hint: "أعطينا الزهور صفة بشرية." },
             { text: "«أضاءت النجوم سماء التفوق»", type: "tasreheya", explanation: "شبه الطلاب بالنجوم وصرح بالمشبه به.", hint: "نصرح بكلمة (النجوم) ونقصد الطلاب." },
             { text: "«أنت تبحث عن إبرة في كومة قش»", type: "tamtheleya", explanation: "شبه حالة من يبحث عن المستحيل بهذه الصورة.", hint: "موقف مشهور للبحث الصعب." }
         ];
@@ -428,8 +425,8 @@
                 const isSelectedCorrect = selectedOption && selectedOption.isCorrect;
                 
                 // التحكم الذكي في تطبيق كلاسات الحركات لتظهر مرة واحدة فقط
-                const hintFadeClass = qState.hintAnimate ? 'fade-opacity' : '';
-                const answerFadeClass = qState.answerAnimate ? 'fade-opacity' : '';
+                const hintFadeClass = qState.hintAnimate ? 'smooth-expand' : '';
+                const answerFadeClass = qState.answerAnimate ? 'smooth-expand' : '';
                 
                 let ringClass = '';
                 if (answered) {
@@ -489,8 +486,8 @@
                             <h3 class="text-2xl md:text-3xl font-bold text-slate-800 leading-snug whitespace-pre-line text-right">${q.text}</h3>
 
                             <!-- التلميح يظهر بحركة لمرة واحدة فقط ثم يثبت -->
-                            <div class="${showHint ? `block mt-4 ${hintFadeClass}` : 'hidden'}">
-                                <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
+                            <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
+                                <div class="mt-4 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                     <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
                                     <span class="leading-relaxed">${q.hint}</span>
                                 </div>
@@ -503,8 +500,8 @@
                         </div>
                         
                         <!-- التغذية الراجعة تظهر بحركة لمرة واحدة فقط ثم تثبت -->
-                        <div class="${answered ? `block mt-6 ${answerFadeClass}` : 'hidden'}">
-                            <div class="p-5 rounded-xl border text-right ${isSelectedCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
+                        <div class="${answered ? `block w-full ${answerFadeClass}` : 'hidden'}">
+                            <div class="mt-6 p-5 rounded-xl border text-right ${isSelectedCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                 <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${isSelectedCorrect ? 'text-emerald-700' : 'text-rose-700'}">
                                     ${isSelectedCorrect ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
                                     <span>${isSelectedCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
@@ -523,8 +520,8 @@
                 const isCorrectAnswer = selectedIndex === q.correctIndex;
                 
                 // التحكم الذكي في تطبيق كلاسات الحركات لتظهر مرة واحدة فقط
-                const hintFadeClass = qState.hintAnimate ? 'fade-opacity' : '';
-                const answerFadeClass = qState.answerAnimate ? 'fade-opacity' : '';
+                const hintFadeClass = qState.hintAnimate ? 'smooth-expand' : '';
+                const answerFadeClass = qState.answerAnimate ? 'smooth-expand' : '';
                 
                 let ringClass = answered ? (isCorrectAnswer ? 'ring-2 ring-emerald-400' : 'ring-2 ring-rose-400') : '';
 
@@ -569,8 +566,8 @@
                             <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl leading-snug">انقر على الكلمة التي تمثل <span class="text-${theme}-600 font-bold">الاستعارة</span> في الجملة الآتية:</p>
 
                             <!-- التلميح يظهر بحركة لمرة واحدة فقط ثم يثبت -->
-                            <div class="${showHint ? `block mt-4 ${hintFadeClass}` : 'hidden'}">
-                                <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
+                            <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
+                                <div class="mt-4 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                     <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
                                     <span class="leading-relaxed">${q.hint}</span>
                                 </div>
@@ -583,8 +580,8 @@
                         </div>
 
                         <!-- التغذية الراجعة تظهر بحركة لمرة واحدة فقط ثم تثبت -->
-                        <div class="${answered ? `block mt-6 ${answerFadeClass}` : 'hidden'}">
-                            <div class="p-5 rounded-xl border text-right ${isCorrectAnswer ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
+                        <div class="${answered ? `block w-full ${answerFadeClass}` : 'hidden'}">
+                            <div class="mt-6 p-5 rounded-xl border text-right ${isCorrectAnswer ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                 <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${isCorrectAnswer ? 'text-emerald-700' : 'text-rose-700'}">
                                     ${isCorrectAnswer ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
                                     <span>${isCorrectAnswer ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
@@ -611,8 +608,8 @@
                     const showHint = questions[currentIndex].showHint;
                     
                     // التحكم الذكي في تطبيق كلاسات الحركات لتظهر مرة واحدة فقط
-                    const hintFadeClass = questions[currentIndex].hintAnimate ? 'fade-opacity' : '';
-                    const feedbackFadeClass = state.feedbackAnimate ? 'fade-opacity' : '';
+                    const hintFadeClass = questions[currentIndex].hintAnimate ? 'smooth-expand' : '';
+                    const feedbackFadeClass = state.feedbackAnimate ? 'smooth-expand' : '';
                     
                     const boxes = [
                         { id: 'makneya', label: 'مكنية', colorClass: 'border-amber-200 text-amber-700 bg-amber-50', hoverClass: 'hover:border-amber-400 hover:bg-amber-100' },
@@ -661,8 +658,8 @@
                                     <h3 class="text-2xl md:text-3xl font-bold leading-snug text-slate-800 text-right">«${currentQuestion.text}»</h3>
 
                                     <!-- التلميح يظل مفتوحاً إذا تم النقر عليه مسبقاً بثبات -->
-                                    <div class="${showHint ? `block mt-4 ${hintFadeClass}` : 'hidden'}">
-                                        <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
+                                    <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
+                                        <div class="mt-4 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                             <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
                                             <span class="leading-relaxed">${currentQuestion.hint}</span>
                                         </div>
@@ -670,8 +667,8 @@
                                 </div>
 
                                 <!-- التغذية الراجعة -->
-                                <div class="${status !== 'idle' ? `block mt-2 mb-4 ${feedbackFadeClass}` : 'hidden'}">
-                                    <div class="p-5 rounded-2xl border text-right ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
+                                <div class="${status !== 'idle' ? `block w-full ${feedbackFadeClass}` : 'hidden'}">
+                                    <div class="mt-2 mb-4 p-5 rounded-2xl border text-right ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                         <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${status === 'correct' ? 'text-emerald-700' : 'text-rose-700'}">
                                             ${status === 'correct' ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
                                             <span>${status === 'correct' ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
@@ -1007,5 +1004,3 @@
     </script>
 </body>
 </html>
-
-
