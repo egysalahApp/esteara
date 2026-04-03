@@ -155,7 +155,7 @@
             { id: 'tf', label: 'صواب وخطأ', theme: 'rose' }
         ];
 
-        // ================= كائن التطبيق الرئيسي (Vanilla JS Controller) =================
+        // ================= كائن التطبيق الرئيسي =================
         const App = {
             state: {
                 activeTab: 'intro',
@@ -166,20 +166,18 @@
                     quiz: { answered: 0, total: QUIZ_QUESTIONS.length, score: 0 },
                     tf: { answered: 0, total: TF_QUESTIONS.length, score: 0 }
                 },
-                // مساحات تخزين بيانات الأقسام الديناميكية
                 quizData: [],
                 tfData: [],
                 spottingData: [],
                 classifyData: {
                     questions: [],
                     currentIndex: 0,
-                    status: 'idle', // idle, correct, incorrect
+                    status: 'idle',
                     boxCounts: { makneya: 0, tasreheya: 0, tamtheleya: 0 },
                     animatingOut: false
                 }
             },
 
-            // --- التهيئة ---
             init() {
                 this.initSectionData();
                 this.renderLayout();
@@ -187,53 +185,34 @@
             },
 
             initSectionData() {
-                // قسم اختر الإجابة
                 this.state.quizData = shuffleArray(QUIZ_QUESTIONS).map((q, idx) => {
                     const mappedOptions = q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correct }));
-                    return {
-                        originalQuestion: q,
-                        options: mappedOptions,
-                        answered: false,
-                        selectedOption: null,
-                        showHint: false
-                    };
+                    return { originalQuestion: q, options: mappedOptions, answered: false, selectedOption: null, showHint: false };
                 });
 
-                // قسم صواب وخطأ
                 this.state.tfData = shuffleArray(TF_QUESTIONS).map(q => ({
                     originalQuestion: q,
                     options: [
                         { text: "صواب", isCorrect: true === q.answer },
                         { text: "خطأ", isCorrect: false === q.answer }
                     ],
-                    answered: false,
-                    selectedOption: null,
-                    showHint: false
+                    answered: false, selectedOption: null, showHint: false
                 }));
 
-                // قسم صياد الكلمات
                 this.state.spottingData = shuffleArray(SPOTTING_QUESTIONS).map(q => ({
-                    originalQuestion: q,
-                    answered: false,
-                    selectedIndex: null,
-                    showHint: false
+                    originalQuestion: q, answered: false, selectedIndex: null, showHint: false
                 }));
 
-                // قسم لعبة التصنيف
                 this.state.classifyData = {
                     questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false })),
-                    currentIndex: 0,
-                    status: 'idle',
-                    boxCounts: { makneya: 0, tasreheya: 0, tamtheleya: 0 },
-                    animatingOut: false
+                    currentIndex: 0, status: 'idle', boxCounts: { makneya: 0, tasreheya: 0, tamtheleya: 0 }, animatingOut: false
                 };
             },
 
-            // --- بناء الهيكل الأساسي للصفحة ---
             renderLayout() {
                 const root = document.getElementById('app-root');
                 root.innerHTML = `
-                    <div class="w-full text-center py-6 bg-transparent">
+                    <div id="main-header" class="w-full text-center py-6 bg-transparent">
                         <a href="https://www.youtube.com/egysalah" target="_blank" rel="noopener noreferrer" 
                            class="inline-flex items-center justify-center gap-2 text-2xl font-bold text-slate-900 mb-1">
                             <span>العربية السهلة</span>
@@ -246,7 +225,6 @@
                         <div id="tabs-container" class="mx-auto w-max max-w-full overflow-x-auto px-4 no-scrollbar scroll-smooth">
                             <div id="tabs-wrapper" class="flex items-center gap-3 py-3 flex-nowrap"></div>
                         </div>
-                        <!-- شريط تقدم ديناميكي بارتفاع 4 بكسل (h-[4px]) -->
                         <div class="w-full h-[4px] bg-slate-200">
                             <div id="progress-bar" class="h-full transition-all duration-500 ease-out" style="width: 0%"></div>
                         </div>
@@ -276,12 +254,10 @@
                 `;
             },
 
-            // --- تحديث واجهة المستخدم (حسب الـ State) ---
             updateUI() {
                 this.updateTabs();
                 this.updateSectionsVisibility();
                 
-                // تحديث محتوى القسم النشط فقط (باستثناء المقدمة فهي ثابتة)
                 if (this.state.activeTab === 'classify') {
                     document.getElementById('section-classify').innerHTML = this.renderClassifySectionHTML();
                 } else if (this.state.activeTab === 'spotting') {
@@ -317,9 +293,7 @@
                 
                 wrapper.innerHTML = html;
 
-                // تحديث شريط التقدم للقسم الحالي
                 const currentProgress = this.state.progress[this.state.activeTab];
-                // حساب النسبة بناءً على عدد الأسئلة التي تم حلها في القسم الحالي
                 const progressPercent = currentProgress.total > 0 ? (currentProgress.answered / currentProgress.total) * 100 : 0;
                 const progressBar = document.getElementById('progress-bar');
                 const theme = SECTIONS.find(s => s.id === this.state.activeTab).theme;
@@ -331,14 +305,10 @@
             updateSectionsVisibility() {
                 SECTIONS.forEach(sec => {
                     const el = document.getElementById(`section-${sec.id}`);
-                    if (el) {
-                        el.className = this.state.activeTab === sec.id ? 'block' : 'hidden';
-                    }
+                    if (el) el.className = this.state.activeTab === sec.id ? 'block' : 'hidden';
                 });
             },
 
-            // --- مولدات نصوص HTML للأقسام ---
-            
             renderIntroSectionHTML() {
                 return `
                     <div class="max-w-3xl mx-auto space-y-6 fade-in">
@@ -391,16 +361,12 @@
                 const isComplete = progress.total > 0 && progress.answered === progress.total;
                 const questions = this.state[`${sectionId}Data`];
                 
-                // إضافة كلاس fade-in للحاوية الكلية لتجنب إعادة الحركة عند النقر داخل الأسئلة
                 let html = '<div class="fade-in">';
                 
                 questions.forEach((q, idx) => {
                     html += `<div id="${sectionId}-wrapper-${idx}">`;
-                    if (sectionId === 'spotting') {
-                        html += this.renderSpottingCard(q, idx, sectionData.theme, sectionId);
-                    } else {
-                        html += this.renderQuestionCard(q, idx, sectionId, sectionData.theme);
-                    }
+                    if (sectionId === 'spotting') html += this.renderSpottingCard(q, idx, sectionData.theme, sectionId);
+                    else html += this.renderQuestionCard(q, idx, sectionId, sectionData.theme);
                     html += `</div>`;
                 });
 
@@ -415,7 +381,7 @@
                     `;
                 }
                 
-                html += '</div>'; // إغلاق حاوية القسم
+                html += '</div>'; 
                 html += this.renderSectionFooterControls(sectionId, isComplete);
                 return html;
             },
@@ -424,14 +390,10 @@
                 const { originalQuestion: q, options, answered, selectedOption, showHint } = qState;
                 const isSelectedCorrect = selectedOption && selectedOption.isCorrect;
                 
-                // استخدام التمدد السلس للمعالجة
                 const hintFadeClass = qState.hintAnimate ? 'smooth-expand' : '';
                 const answerFadeClass = qState.answerAnimate ? 'smooth-expand' : '';
                 
-                let ringClass = '';
-                if (answered) {
-                    ringClass = isSelectedCorrect ? 'ring-2 ring-emerald-400' : 'ring-2 ring-rose-400';
-                }
+                let ringClass = answered ? (isSelectedCorrect ? 'ring-2 ring-emerald-400' : 'ring-2 ring-rose-400') : '';
 
                 let optionsHTML = '';
                 options.forEach((opt, optIdx) => {
@@ -446,15 +408,11 @@
                         btnClass += " cursor-default";
                     }
 
-                    // ترقيم ديناميكي لأسئلة الاختيار من متعدد فقط
                     let numberingHTML = '';
                     if (sectionId === 'quiz') {
                         let numClass = `w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-xl md:text-2xl font-bold shrink-0 transition-colors `;
-                        if (answered) {
-                            numClass += opt.isCorrect ? 'bg-emerald-200 text-emerald-800' : (selectedOption === opt ? 'bg-rose-200 text-rose-800' : 'bg-slate-200 text-slate-500');
-                        } else {
-                            numClass += `bg-${theme}-100 text-${theme}-700`;
-                        }
+                        if (answered) numClass += opt.isCorrect ? 'bg-emerald-200 text-emerald-800' : (selectedOption === opt ? 'bg-rose-200 text-rose-800' : 'bg-slate-200 text-slate-500');
+                        else numClass += `bg-${theme}-100 text-${theme}-700`;
                         numberingHTML = `<div class="${numClass}">${toArabicNum(optIdx + 1)}</div>`;
                     }
 
@@ -470,10 +428,7 @@
 
                 return `
                     <div id="${sectionId}-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative transition-colors duration-300 flex flex-col justify-start ${ringClass}">
-                        
-                        <!-- صندوق السؤال الأساسي متكامل العرض -->
                         <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-6 w-full mx-auto">
-                            <!-- السطر العلوي -->
                             <div class="flex items-center justify-between mb-2 md:mb-3">
                                 <span class="bg-${theme}-100 text-${theme}-700 font-bold px-4 py-1.5 rounded-full text-lg md:text-xl">
                                     السؤال ${toArabicNum(idx + 1)}
@@ -482,10 +437,8 @@
                                     💡 تلميح
                                 </button>
                             </div>
-                            <!-- نص السؤال -->
                             <h3 class="text-2xl md:text-3xl font-bold text-slate-800 leading-snug whitespace-pre-line text-right">${q.text}</h3>
 
-                            <!-- التلميح المعالج بالتمدد السلس -->
                             <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
                                 <div class="mt-4 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                     <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
@@ -494,12 +447,10 @@
                             </div>
                         </div>
                         
-                        <!-- الخيارات -->
                         <div class="grid gap-3 mx-auto w-full max-w-md flex-grow grid-cols-1 content-start">
                             ${optionsHTML}
                         </div>
                         
-                        <!-- التغذية الراجعة المعالجة بالتمدد السلس -->
                         <div class="${answered ? `block w-full ${answerFadeClass}` : 'hidden'}">
                             <div class="mt-6 p-5 rounded-xl border text-right ${isSelectedCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                 <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${isSelectedCorrect ? 'text-emerald-700' : 'text-rose-700'}">
@@ -548,8 +499,6 @@
 
                 return `
                     <div id="spotting-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative transition-colors duration-300 flex flex-col justify-start ${ringClass}">
-                        
-                        <!-- صندوق التعليمة -->
                         <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-6 w-full mx-auto">
                             <div class="flex items-center justify-between mb-2 md:mb-3">
                                 <span class="bg-${theme}-100 text-${theme}-700 font-bold px-4 py-1.5 rounded-full text-lg md:text-xl">
@@ -570,12 +519,10 @@
                             </div>
                         </div>
 
-                        <!-- منطقة الكلمات -->
                         <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 leading-loose mx-auto w-full max-w-lg">
                             ${wordsHTML}
                         </div>
 
-                        <!-- التغذية الراجعة -->
                         <div class="${answered ? `block w-full ${answerFadeClass}` : 'hidden'}">
                             <div class="mt-6 p-5 rounded-xl border text-right ${isCorrectAnswer ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                 <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${isCorrectAnswer ? 'text-emerald-700' : 'text-rose-700'}">
@@ -656,7 +603,6 @@
                                     </div>
                                 </div>
 
-                                <!-- التغذية الراجعة -->
                                 <div class="${status !== 'idle' ? `block w-full ${feedbackFadeClass}` : 'hidden'}">
                                     <div class="mt-2 mb-4 p-5 rounded-2xl border text-right ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                         <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${status === 'correct' ? 'text-emerald-700' : 'text-rose-700'}">
@@ -717,8 +663,6 @@
                 `;
             },
 
-            // --- المعالجات والأحداث (Event Handlers) ---
-            
             toggleHint(sectionId, idx) {
                 if (sectionId === 'classify') {
                     const q = this.state.classifyData.questions[idx];
@@ -826,7 +770,6 @@
                 if (isCorrect) this.state.progress[sectionId].score++;
             },
 
-            // --- منطق التمرير الاحترافي ---
             scrollToContent() {
                 requestAnimationFrame(() => {
                     setTimeout(() => {
@@ -857,8 +800,16 @@
                             const containerRect = container.getBoundingClientRect();
                             const btnRect = tabBtn.getBoundingClientRect();
                             
-                            const scrollDelta = (btnRect.left + btnRect.width / 2) - (containerRect.left + containerRect.width / 2);
-                            container.scrollBy({ left: scrollDelta, behavior: 'smooth' });
+                            if (tabId === SECTIONS[0].id) {
+                                // للتبويب الأول، نضمن محاذاته لأقصى يمين الحاوية تماماً 
+                                // (مع ترك مساحة px-4 أي 16 بكسل لتبدو المسافات متساوية ومرتبة)
+                                const scrollDelta = (btnRect.right - containerRect.right) + 16;
+                                container.scrollBy({ left: scrollDelta, behavior: 'smooth' });
+                            } else {
+                                // التوسيط التلقائي المعتاد لباقي التبويبات
+                                const scrollDelta = (btnRect.left + btnRect.width / 2) - (containerRect.left + containerRect.width / 2);
+                                container.scrollBy({ left: scrollDelta, behavior: 'smooth' });
+                            }
                         }
                     }, 30);
                 });
@@ -900,10 +851,7 @@
                 } else if (sectionId === 'classify') {
                     this.state.classifyData = {
                         questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false })),
-                        currentIndex: 0,
-                        status: 'idle',
-                        boxCounts: { makneya: 0, tasreheya: 0, tamtheleya: 0 },
-                        animatingOut: false
+                        currentIndex: 0, status: 'idle', boxCounts: { makneya: 0, tasreheya: 0, tamtheleya: 0 }, animatingOut: false
                     };
                 }
                 
@@ -924,8 +872,14 @@
                 this.state.activeTab = SECTIONS[0].id;
                 this.updateUI();
                 
+                // إعادة ضبط التمرير الأفقي للتبويبات لتعود لأقصى اليمين بشكل مرتب
+                this.scrollTabIntoView(SECTIONS[0].id);
+                
                 requestAnimationFrame(() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // التمرير لمستوى التبويبات مباشرة وإخفاء الترويسة العلوية
+                    const header = document.getElementById('main-header');
+                    const targetTop = header ? header.offsetHeight : 80;
+                    window.scrollTo({ top: targetTop, behavior: 'smooth' });
                 });
             },
 
@@ -961,19 +915,6 @@
                             </button>
                         </div>
                     `;
-
-                    requestAnimationFrame(() => {
-                        setTimeout(() => {
-                            const evalBox = document.getElementById('final-eval-box');
-                            if (evalBox) {
-                                const rect = evalBox.getBoundingClientRect();
-                                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                                const elementTop = rect.top + scrollTop;
-                                const offset = (window.innerHeight - rect.height) / 2;
-                                window.scrollTo({ top: elementTop - offset, behavior: 'smooth' });
-                            }
-                        }, 50);
-                    });
                 } else {
                     container.innerHTML = '';
                 }
@@ -982,13 +923,10 @@
 
         // تشغيل التطبيق فور تحميل المستند
         document.addEventListener('DOMContentLoaded', () => {
-            
             try {
-                // إيقاف استعادة التمرير التلقائي للمتصفح
                 if ('scrollRestoration' in history) {
                     history.scrollRestoration = 'manual';
                 }
-                // إجبار الصفحة على الصعود لأعلى نقطة عند بدء التحميل
                 window.scrollTo(0, 0);
             } catch (error) {
                 console.warn("تم تجاهل ضبط التمرير بسبب قيود البيئة المعزولة (iFrame).", error);
