@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الاستعارة | العربية السهلة</title>
+    <title>معاني حروف الجر | قالب ذكي</title>
     
     <!-- خط Readex Pro -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,7 @@
         
         html { scroll-behavior: smooth; }
         
-        /* حركات الظهور والسقوط للصناديق (لأول مرة فقط) */
+        /* حركات الظهور والسقوط للصناديق */
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(15px); }
@@ -36,18 +36,20 @@
             100% { transform: translateY(120px) scale(0.5); opacity: 0; }
         }
 
-        /* حركة الشفافية للثبات البصري (للتلميحات والإجابات) */
-        .fade-opacity { animation: fadeInOpacity 0.3s ease-out forwards; }
-        @keyframes fadeInOpacity {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* حركة التمدد السلس لمعالجة القفزة البصرية (الرعشة) */
+        /* حركة التمدد السلس للمعالجة البصرية */
         .smooth-expand { animation: smoothExpand 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; overflow: hidden; }
         @keyframes smoothExpand {
             0% { max-height: 0; opacity: 0; transform: translateY(-10px); }
-            100% { max-height: 400px; opacity: 1; transform: translateY(0); }
+            100% { max-height: 500px; opacity: 1; transform: translateY(0); }
+        }
+
+        /* تأثير الاهتزاز للإجابات الخاطئة */
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
         }
         
         button { outline: none; }
@@ -63,6 +65,174 @@
     <div id="app-root" class="flex-grow flex flex-col"></div>
 
     <script>
+        // ================= الأيقونات (SVG Strings) =================
+        const ICONS = {
+            youtube: `<svg class="w-7 h-7" fill="#FF0000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/></svg>`,
+            checkCircle: `<svg class="w-6 h-6 md:w-7 md:h-7 shrink-0 text-emerald-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+            checkCircleLarge: `<svg class="w-7 h-7 md:w-8 md:h-8 text-emerald-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+            xCircle: `<svg class="w-6 h-6 md:w-7 md:h-7 shrink-0 text-rose-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
+            xCircleLarge: `<svg class="w-7 h-7 md:w-8 md:h-8 text-rose-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
+            refresh: `<svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`,
+            arrowLeft: `<svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
+            medal: `<svg class="w-24 h-24 md:w-32 md:h-32 mx-auto text-amber-400 mb-6 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>`,
+            hidden: `<svg class="w-10 h-10 text-amber-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>`,
+            loud: `<svg class="w-10 h-10 text-violet-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
+            scene: `<svg class="w-10 h-10 text-cyan-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
+            tray: `<svg class="w-8 h-8 md:w-12 md:h-12 mb-2 opacity-80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>`
+        };
+
+        // ================= قاعدة البيانات المركزية (APP_DATA) =================
+        const APP_DATA = {
+            pageTitle: "معاني حروف الجر | قالب ذكي",
+            headerTitle: "العربية السهلة",
+            headerSubtitle: "محمود صلاح",
+            youtubeLink: "https://www.youtube.com/egysalah",
+            copyright: "جميع الحقوق محفوظة لقناة العربية السهلة",
+            
+            sections: [
+                {
+                    id: "intro",
+                    type: "intro",
+                    title: "قبل أن نبدأ",
+                    theme: "sky",
+                    description: "تتنوع معاني حروف الجر في لغتنا الجميلة حسب السياق. دعنا نستنتج أبرزها بأسلوبٍ ممتع",
+                    content: [
+                        { title: "🧭 المكان والاتجاه", text: "مِن (البداية)، إلَى (النهاية)، فِي (الظرفية)، عَلَى (الاستعلاء).", icon: ICONS.scene, theme: "blue" },
+                        { title: "⏱️ الزمان", text: "مِن، وإلَى، وفِي تُستخدم أيضًا للدلالة على الأوقات.", icon: ICONS.refresh, theme: "emerald" },
+                        { title: "⚙️ الآلة والوسيلة", text: "الباء تفيد الآلة (ماديًّا)، أو الوسيلة (معنويًّا كالعلم).", icon: ICONS.hidden, theme: "amber" },
+                        { title: "🔍 التشبيه والتفصيل", text: "الكاف تُستخدم للتشبيه وتأتي لضرب الأمثلة (التفصيل).", icon: ICONS.loud, theme: "purple" }
+                    ]
+                },
+                {
+                    id: "fill",
+                    type: "mcq",
+                    title: "الكلمة المفقودة",
+                    theme: "emerald",
+                    description: "اختر حرف الجر المناسب لملء الفراغِ ليعطي المعنى المطلوب بدقةٍ.",
+                    questions: [
+                        { text: 'خاتمُ المعلمِ مصنوعٌ [ ... ] فضةٍ. (بيان النوع)', options: ['مِنْ', 'فِي', 'بـِ'], correct: 0, hint: 'نحتاج حرفًا يبين المادة الخام.', explanation: '(مِنْ) تستخدم لبيان النوع والمادة المصنوع منها الشيء.' },
+                        { text: 'السفرُ أحبُّ [ ... ] من البقاءِ. (بمعنى عندي)', options: ['إلَيَّ', 'عَلَيَّ', 'فِيَّ'], correct: 0, hint: 'نحتاج حرفًا يفيد معنى (عند).', explanation: '(إلَى) تستخدم أحيانًا بمعنى (عند).' },
+                        { text: 'فاقَ المجتهدُ أقرانَهُ [ ... ] صغرِ سنِّهِ. (الرَّغم)', options: ['عَلَى', 'مِنْ', 'البَاء'], correct: 0, hint: 'أي: بالرغم من صغر سنه.', explanation: '(عَلَى) تفيد معنى (الرغم).' },
+                        { text: 'أخذتُ الخبرَ [ ... ] صديقي. (مصدر الشيء)', options: ['عَنْ', 'فِي', 'إلَى'], correct: 0, hint: 'الحرف يدل على الأصل والمصدر.', explanation: '(عَنْ) تدل على مصدر الشيء وأصله.' },
+                        { text: 'استمعتُ للدرسِ [ ... ] انتباهٍ. (الحال)', options: ['بـِ', 'فِي', 'كـَ'], correct: 0, hint: 'أي: استمعتُ مُنتبهًا.', explanation: 'الباء تدخل لتفيد وصف الحال.' },
+                        { text: 'وضعتُ الأقلامَ [ ... ] الطاولةِ. (الاستعلاء)', options: ['عَلَى', 'فِي', 'بـِ'], correct: 0, hint: 'أي: فوق الطاولة.', explanation: '(عَلَى) تفيد الاستعلاء الحقيقي والمكاني.' },
+                        { text: 'ينقسمُ الكلامُ [ ... ] ثلاثةِ أقسامٍ. (التقسيم)', options: ['إلَى', 'فِي', 'عَنْ'], correct: 0, hint: 'تجزئة الشيء لمكوناته.', explanation: '(إلَى) تفيد التقسيم والتفصيل.' },
+                        { text: 'خرجتُ [ ... ] البيتِ صباحًا. (ابتداء المكان)', options: ['مِنْ', 'عَنْ', 'فِي'], correct: 0, hint: 'نقطة الانطلاق المكانية.', explanation: '(مِنْ) تفيد ابتداء الغاية المكانية.' },
+                        { text: 'الفواكهُ صيفيةٌ [ ... ] العنبِ والبطيخِ. (التفصيل)', options: ['كـَ', 'لـِ', 'بـِ'], correct: 0, hint: 'لضرب الأمثلة التوضيحية.', explanation: 'الكاف تفيد التمثيل والتفصيل.' },
+                        { text: 'تهاجرُ الطيورُ [ ... ] فصلِ الخريفِ. (الزمان)', options: ['فِي', 'لـِ', 'مِنْ'], correct: 0, hint: 'الخريف يعبر عن وقت محدد.', explanation: '(فِي) تفيد الظرفية الزمانية.' },
+                        { text: 'أحبُّ العلمَ [ ... ] أهميتِهِ. (السببية)', options: ['لـِ', 'بـِ', 'فِي'], correct: 0, hint: 'لماذا تحب العلم؟', explanation: 'اللام تفيد التعليل والسببية.' },
+                        { text: 'تحدثنا طويلًا [ ... ] فضلِ الأمِ. (موضوع الكلام)', options: ['عَنْ', 'مِنْ', 'إلَى'], correct: 0, hint: 'عن ماذا كان الحديث؟', explanation: '(عَنْ) تدل على موضوع الحديث.' },
+                        { text: 'اشتكى المريضُ [ ... ] الألمِ. (سبب الشيء)', options: ['مِنْ', 'عَلَى', 'بـِ'], correct: 0, hint: 'العلة والسبب الذي أدى للشكوى.', explanation: '(مِنْ) تأتي لتفيد سبب الشيء والعلة.' },
+                        { text: 'العلمُ أنفعُ [ ... ] المالِ. (الربط في التفضيل)', options: ['مِنْ', 'عَنْ', 'بـِ'], correct: 0, hint: 'حرف يربط بين اسم التفضيل (أنفع) والمفضل عليه (المال).', explanation: 'تُستخدم (مِنْ) للربط بين اسم التفضيل والمفضل عليه.' },
+                        { text: 'مرَّ الفارسُ [ ... ] سرعةِ البرقِ. (الحال)', options: ['فِي', 'عَلَى', 'بـِ'], correct: 0, hint: 'تصف هيئة وحال الفارس عند مروره.', explanation: '(فِي) تأتي أحيانًا لتفيد وصف الحال.' },
+                        { text: 'يتكونُ المركزُ الثقافيُّ [ ... ] مكتبةٍ وعدةِ قاعاتٍ. (التفصيل)', options: ['مِنْ', 'إلَى', 'فِي'], correct: 0, hint: 'حرف يذكر لتفصيل وتبيين المكونات.', explanation: '(مِنْ) تأتي لتفصيل الشيء وتبيان مكوناته.' },
+                        { text: 'تغيبتُ [ ... ]ـمرضٍ أصابني. (السبب)', options: ['لـِ', 'بـِ', 'فِي'], correct: 0, hint: 'حرف يفيد العلة أو السبب الذي أدى للغياب.', explanation: 'اللام هنا تفيد السبب والعلة.' },
+                        { text: 'انطلقَ اللاعبُ [ ... ]ـالفهدِ. (التشبيه)', options: ['كـَ', 'بـِ', 'لـِ'], correct: 0, hint: 'حرف يستخدم للمماثلة والمقارنة.', explanation: 'الكاف تفيد التشبيه.' },
+                        { text: 'سافرتُ [ ... ] مهمةٍ رسميةٍ. (الغرض)', options: ['فِي', 'عَلَى', 'مِنْ'], correct: 0, hint: 'أي سافرت لأجل مهمة.', explanation: '(فِي) تأتي أحيانًا لتفيد الغرض أو التعليل.' },
+                        { text: 'وصلتُ [ ... ] المدرسةِ. (نهاية المكان)', options: ['إلَى', 'فِي', 'عَلَى'], correct: 0, hint: 'النقطة التي انتهى إليها الوصول.', explanation: '(إلَى) تفيد انتهاء الغاية المكانية.' }
+                    ]
+                },
+                {
+                    id: "sort",
+                    type: "sort",
+                    title: "فرز البطاقات",
+                    theme: "purple",
+                    description: "اختر الصندوق المناسب للمعنى الذي يؤديه الحرف الملون.",
+                    questions: [
+                        { text: 'شرّبت الأمُ ولدها الدواء <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">على</span> أنه ماء', options: ['معنى الوهم', 'الاستعلاء', 'الشرط'], correct: 0, hint: 'تصوير شيءٍ غير حقيقيٍ.', explanation: '(عَلَى) تفيد هنا التوهم.' },
+                        { text: '<span class="text-blue-700">بـ</span>سم الله الرحمن الرحيم', options: ['الاستعانة', 'القسم', 'السبب'], correct: 0, hint: 'طلب العون لعمل شيءٍ.', explanation: 'الباء هنا للاستعانة.' },
+                        { text: 'فرحَ الطفلُ <span class="text-blue-700">بـ</span>قدومِ العيدِ', options: ['السبب والعلة', 'الآلة', 'الثمن'], correct: 0, hint: 'ما الدافع وراء الفرح؟', explanation: 'الباء هنا تفيد السببية.' },
+                        { text: 'هذا البستانُ <span class="text-blue-700">لـ</span>أخي', options: ['الملكية المادية', 'الملكية المعنوية', 'التعليل'], correct: 0, hint: 'امتلاك شيءٍ ماديٍ (البستان).', explanation: 'اللام هنا للملكية المادية.' },
+                        { text: 'الوفاءُ <span class="text-blue-700">لـ</span>ـه أثرٌ طيبٌ', options: ['الملكية المعنوية', 'الملكية المادية', 'الإباحة'], correct: 0, hint: 'امتلاك شيء معنويّ (الأثر الطيب).', explanation: 'اللام هنا للملكية المعنوية.' },
+                        { text: 'اشتريتُ القلمَ <span class="text-blue-700">بـ</span>درهمٍ', options: ['التعويض والثمن', 'الآلة', 'الوسيلة'], correct: 0, hint: 'مبادلة مالٍ بسلعةٍ.', explanation: 'الباء تدخل على الأثمان.' },
+                        { text: 'سرتُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">إلى</span> مطلعِ الفجرِ', options: ['انتهاء الزمان', 'انتهاء المكان', 'الاتجاه'], correct: 0, hint: 'نهاية وقت الفعل.', explanation: '(إلَى) تفيد انتهاء الزمان.' },
+                        { text: 'ابتعدتُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">عن</span> رفقاءِ السوءِ', options: ['البعد والفصل حسًّا', 'البعد معنًى', 'موضوع الكلام'], correct: 0, hint: 'الابتعاد عن شيء ماديّ (رفقاء السوء).', explanation: '(عَنْ) تفيد التجاوز والبعد.' },
+                        { text: 'لعبنا <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">في</span> الحديقةِ', options: ['الظرفية المكانية', 'الظرفية الزمانية', 'السببية'], correct: 0, hint: 'أين حدث الفعل؟', explanation: '(فِي) تفيد المكان.' },
+                        { text: 'النجومُ <span class="text-blue-700">كـ</span>المصابيحِ ضياءً', options: ['التشبيه', 'التفصيل', 'التعليل'], correct: 0, hint: 'مماثلة بين شيئين.', explanation: 'الكاف تفيد التشبيه.' },
+                        { text: 'شرعت في العمل <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">من</span> الأسبوع الماضي', options: ['زمان الابتداء', 'السبب', 'بيان النوع'], correct: 0, hint: 'الحرف يحدد متى بدأ زمن الفعل.', explanation: '(مِنْ) هنا حددت نقطة انطلاق الزمن.' },
+                        { text: 'بقي جدي <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">على</span> نشاطِهِ', options: ['الحال', 'الاستعلاء', 'الوجوب'], correct: 0, hint: 'يمكن السؤال بكلمة كيف.', explanation: '(على) هنا تفيد الحال.' },
+                        { text: 'أعفو عنكَ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">على</span> أن تُحسّنَ سلوكَكَ', options: ['الشرط', 'معنى الوهم', 'القرب'], correct: 0, hint: 'يوجد التزام متبادل لحدوث العفو.', explanation: '(على) هنا تفيد الشرط.' },
+                        { text: 'تجتمعُ الأسرةُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">في</span> المساءِ', options: ['الزمان', 'المكان', 'الحال'], correct: 0, hint: 'المساء يعبر عن فترة ووقت.', explanation: '(في) تفيد الظرفية الزمانية.' },
+                        { text: 'قطعتُ الغصنَ <span class="text-blue-700">بـ</span>المنشارِ', options: ['الآلة', 'الوسيلة', 'المكان'], correct: 0, hint: 'أداة مادية ملموسة تُمسك باليد.', explanation: 'الباء تفيد الآلة (شيء ماديّ).' },
+                        { text: 'تتسعُ ثقافةُ الإنسانِ <span class="text-blue-700">بـ</span>المطالعةِ', options: ['الوسيلة', 'الآلة', 'الزمان'], correct: 0, hint: 'المطالعة اسم معنويٌ.', explanation: 'الباء تفيد الوسيلة (شيء معنوي).' },
+                        { text: 'عندي مصحفٌ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">من</span> مكةَ', options: ['مصدر الشيء', 'الزمان', 'الحال'], correct: 0, hint: 'مكة هي المصدر الذي جاء منه المصحف.', explanation: '(مِنْ) هنا تفيد مصدر الشيء وأصله.' },
+                        { text: 'جلستُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">إلى</span> المائدةِ', options: ['معنى القرب', 'النهاية في المكان', 'الاتجاه حسًّا'], correct: 0, hint: 'أي جلست بجوارها وقريبًا منها.', explanation: '(إلى) تأتي أحيانًا لتدل على القرب بمعنى (عند).' },
+                        { text: 'سافرَ أخي <span class="text-blue-700">لـ</span>طلبِ العلمِ', options: ['الغرض', 'الملكية المادية', 'الإباحة'], correct: 0, hint: 'الهدف الذي من أجله تم السفر.', explanation: 'اللام هنا تفيد الغرض.' },
+                        { text: 'جلستُ <span class="text-blue-700">بـ</span>مكانٍ هادئٍ', options: ['المكان (الظرفية)', 'الآلة', 'السبب'], correct: 0, hint: 'يدل على الحيز الذي تم فيه الجلوس.', explanation: 'الباء هنا تفيد الظرفية المكانية.' },
+                        { text: 'كافأ الوزيرُ مَنْ حضرَ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">مِنْ</span> الطلابِ', options: ['توضيح (مَنْ) الموصولة', 'الحال', 'تأكيد النفي'], correct: 0, hint: 'جاء حرف الجر ليبين المقصود بـ (مَنْ).', explanation: '(مِنْ) هنا تفيد توضيح الاسم الموصول (مَنْ).' },
+                        { text: 'اشتريتُ ما أريد <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">مِنْ</span> الطعامِ', options: ['توضيح (ما) الموصولة', 'الوجوب', 'مصدر الشيء'], correct: 0, hint: 'جاء حرف الجر ليبين الشيء الذي اشتريته (ما).', explanation: '(مِنْ) هنا توضح الاسم الموصول (ما).' }
+                    ]
+                },
+                {
+                    id: "mcq2",
+                    type: "mcq",
+                    title: "أسرار المعاني",
+                    theme: "amber",
+                    description: "تحديات لغوية دقيقة تختبر فهمك العميق لأسرار حروف الجر.",
+                    questions: [
+                        { text: 'ما معنى اللام في: "اللهمَّ اغفر لـنا ولوالدينا"؟', options: ['الدعاء بالخير', 'الملكية', 'التعليل'], correct: 0, hint: 'طلب الخير لشخصٍ ما.', explanation: 'اللام تستخدم للدعاء بالخير.' },
+                        { text: 'ما معنى (على) في: "دعا المظلومُ على مَن ظلمَهُ"؟', options: ['الدعاء بالشر', 'الاستعلاء', 'الرغم'], correct: 0, hint: 'طلب السوء لشخصٍ ما.', explanation: '(على) تستخدم للدعاء بالشر.' },
+                        { text: 'ماذا تفيد الباء في: "ليسَ النجاحُ بـمستحيلٍ"؟', options: ['تأكيد النفي', 'الوسيلة', 'السببية'], correct: 0, hint: 'جاءت لتقوية معنى (النفي) ويمكن الاستغناء عنها.', explanation: 'الباء الزائدة تفيد تأكيد النفي.' },
+                        { text: 'ما دلالة (من) في: "ما جاءنا من بشيرٍ"؟', options: ['تأكيد النفي', 'تأكيد الاستفهام', 'بيان النوع'], correct: 0, hint: 'جاءت لتقوية معنى (النفي) ويمكن الاستغناء عنها.', explanation: '(من) الزائدة تفيد تأكيد النفي.' },
+                        { text: 'ما دلالة (مِنْ) في: "هل رأيتَ مِنْ نباتٍ في الصحراءِ؟"؟', options: ['تأكيد معنى الاستفهام', 'السماح', 'بيان النوع'], correct: 0, hint: 'جاءت لتقوية معني (الاستفهام) ويمكن الاستغناء عنها.', explanation: '(مِنْ) الزائدة هنا سبقت باستفهام فتفيد تأكيد معنى الاستفهام.' },
+                        { text: 'ما معنى (في) في: "خرجَ القائدُ في جُندِهِ"؟', options: ['المعيّة (المصاحبة)', 'المكان', 'السبب'], correct: 0, hint: 'أي: خرج مع جنده.', explanation: '(فِي) تفيد المعيّة والمصاحبة.' },
+                        { text: 'ما دلالة (من) في قولنا: "اشتريتُ قميصًا من قطنٍ"؟', options: ['بيان النوع', 'تأكيد النفي', 'المكان'], correct: 0, hint: 'توضح المادة الخام التي صُنع منها.', explanation: '(مِنْ) تستخدم لبيان النوع والمادة.' },
+                        { text: 'ما معنى اللام في: "للأطفالِ أن يلعبوا في الساحةِ"؟', options: ['الإباحة (السماح)', 'الملكية', 'السببية'], correct: 0, hint: 'تعطي إذنًا بالقيام بالفعل.', explanation: 'اللام تفيد الإباحة والسماح.' },
+                        { text: 'ما معنى (على) في: "على أخي مائةُ دينارٍ"؟', options: ['الشيء المكروه (الدَّين)', 'الوجوب', 'الاستعلاء'], correct: 0, hint: 'تستخدم مع الديون والأعباء.', explanation: '(على) تفيد التحمل أو الدَّين.' },
+                        { text: 'ما دلالة (عن) في: "قمتُ بالفعل عن قصدٍ"؟', options: ['الحال', 'موضوع الكلام', 'المصدر'], correct: 0, hint: 'قمتُ بالفعل قاصدًا أم ناسيًا؟ (كيف كان حالي؟)', explanation: '(عن) هنا تفيد الحال.' },
+                        { text: 'ما دلالة اللام في: "حكمَ القاضي لـلمظلومِ"؟', options: ['حصول فائدة للاسم المجرور', 'الملكية المادية', 'الملكية المعنوية'], correct: 0, hint: 'الحكم كان في صالحه ومنفعته.', explanation: 'اللام تفيد حصول فائدة ومنفعة للاسم المجرور.' },
+                        { text: 'ما دلالة الباء في: "بـاللهِ ساعدني"؟', options: ['القسم', 'الوسيلة', 'تأكيد النفي'], correct: 0, hint: 'المتحدث يحلف بالله.', explanation: 'الباء هنا حرف جر تفيد القسم واليمين.' },
+                        { text: 'ما معنى (على) في: "على المريضِ اتباعُ نصائحِ الطبيبِ"؟', options: ['الوجوب والإلزام', 'الاستعلاء', 'السبب'], correct: 0, hint: 'أمر لابد من فعله كحق وواجب.', explanation: '(على) هنا تفيد الوجوب والإلزام.' }
+                    ]
+                },
+                {
+                    id: "search",
+                    type: "mcq",
+                    title: "البحث الدقيق",
+                    theme: "rose",
+                    description: "تحدي الدقة لترسيخ الفهم.",
+                    questions: [
+                        { text: 'هذه السيارةُ <span class="text-blue-700">لـ</span>جاري. اللام هنا تفيد:', options: ['الملكية المادية', 'الملكية المعنوية', 'التعليل'], correct: 0, hint: 'امتلاك شيء ماديّ (السيارة).', explanation: 'اللام للملكية المادية.' },
+                        { text: '<span class="text-blue-700">لـ</span>لحريةِ ثمنٌ غالٍ. ماذا تفيد اللام هنا؟', options: ['الملكية المادية', 'الملكية المعنوية', 'السبب'], correct: 1, hint: 'امتلاك شيء معنوي (ثمن الحرية قيمةٌ معنويةٌ).', explanation: 'اللام للملكية المعنوية.' },
+                        { text: 'نظرتُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">إلى</span> البحرِ. "إلى" تفيد:', options: ['الاتجاه حسًّا', 'الاتجاه معنًى', 'الزمان'], correct: 0, hint: 'اتجاه النظر نحو البحر، وليس بالضرورة "انتهاء" شيء عند البحر.', explanation: '(إلى) تفيد الاتجاه (حسًّا)، وهو التوجّه نحو شيء ملموس دون التأكيد على الوصول.' },
+                        { text: 'هدتني نصيحةُ المعلمِ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">إلى</span> الصوابِ والنجاحِ. "إلى" تفيد:', options: ['الاتجاه حسًّا', 'الاتجاه معنًى', 'الزمان'], correct: 1, hint: 'الصواب طريقٌ فكريٌ.', explanation: '(إلى) تفيد الاتجاه معنًى (نحو شيء غير ملموس).' },
+                        { text: 'حادَ المسافرُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">عن</span> طريقه. (عن) تفيد:', options: ['البعد حسًّا', 'البعد معنًى', 'الموضوع'], correct: 0, hint: 'الطريق شيء ماديّ ملموس.', explanation: '(عن) تفيد البعد والفصل الحسي.' },
+                        { text: 'عجز الطالب <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">عن</span> حل المشكلة. (عن) تفيد:', options: ['البعد حسًّا', 'البعد معنًى', 'المصدر'], correct: 1, hint: 'حل المشكلة عملية معنوية.', explanation: '(عن) تفيد البعد والفصل المعنوي.' },
+                        { text: 'الكتابُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">على</span> المكتبِ. (على) تفيد:', options: ['الاستعلاء الحقيقي', 'القرب', 'الوجوب'], correct: 0, hint: 'الكتاب فوق المكتب.', explanation: '(على) تفيد الاستعلاء الحقيقي.' },
+                        { text: 'جلستُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">على</span> النهرِ. (على) تفيد:', options: ['الاستعلاء الحقيقي', 'القرب', 'الوجوب'], correct: 1, hint: 'هل جلست فوق الماء؟', explanation: '(على) هنا تفيد القرب (بمعنى عند).' },
+                        { text: 'اشتريتُ كثيرًا <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">مِنْ</span> الكتبِ. "مِنْ" هنا تفيد:', options: ['توضيح اسم نكرة', 'توضيح (ما) الموصولة', 'التشبيه'], correct: 0, hint: 'جاءت لتفسير وتوضيح المقصود بكلمة "كثيرًا" النكرة.', explanation: '(مِنْ) هنا جاءت لتوضيح وتفسير اسم نكرة يسبقها.' }
+                    ]
+                },
+                {
+                    id: "boxes",
+                    type: "classify",
+                    title: "صناديق المعاني",
+                    theme: "blue",
+                    description: "التحدي الشامل: معانٍ متطابقة لحروف مختلفة! اقرأ الجملة وضعها في الصندوق المناسب.",
+                    categories: [
+                        { id: 'cat0', label: 'السببية والتعليل', theme: 'emerald' },
+                        { id: 'cat1', label: 'التفصيل', theme: 'purple' },
+                        { id: 'cat2', label: 'الحال', theme: 'amber' },
+                        { id: 'cat3', label: 'مصدر الشيء', theme: 'cyan' }
+                    ],
+                    questions: [
+                        { text: 'فرح الناسُ <span class="text-blue-700">بـ</span>قدومِ الربيع.', categoryId: 'cat0', explanation: 'الباء هنا تفيد السبب، أي: بسبب قدوم الربيع.', hint: 'الدافع وراء الفعل.' },
+                        { text: 'بكى الطفلُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">من</span> الجوعِ.', categoryId: 'cat0', explanation: '(مِنْ) هنا تفيد السببية، أي: بسبب الجوع.', hint: 'ما العلة التي جعلته يبكي؟' },
+                        { text: 'كافأ المعلمُ الطالبَ <span class="text-blue-700">لـ</span>تفوقهِ.', categoryId: 'cat0', explanation: 'اللام هنا تفيد التعليل والسبب.', hint: 'ما سبب المكافأة؟' },
+                        { text: 'تتألف اللجنةُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">من</span> رئيسٍ وعضوين.', categoryId: 'cat1', explanation: '(مِنْ) هنا تفيد التفصيل وتبيان المكونات.', hint: 'تجزئة الشيء لمكوناته.' },
+                        { text: 'يُقسَّم الكلامُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">إلى</span> اسمٍ وفعلٍ وحرفٍ.', categoryId: 'cat1', explanation: '(إلى) تفيد هنا التفصيل وتقسيم الشيء لأجزائه.', hint: 'تقسيم وتعداد.' },
+                        { text: 'الأزهارُ متنوعةٌ <span class="text-blue-700">كـ</span>الياسمينِ والوردِ.', categoryId: 'cat1', explanation: 'الكاف هنا تفيد ضرب الأمثلة والتفصيل.', hint: 'ضرب الأمثلة التوضيحية.' },
+                        { text: 'استقبلتُ الضيفَ <span class="text-blue-700">بـ</span>ابتسامةٍ.', categoryId: 'cat2', explanation: 'الباء تصف الهيئة والحالة عند الاستقبال (مبتسمًا).', hint: 'كيف كانت هيئتك عند الاستقبال؟' },
+                        { text: 'تحدثتُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">في</span> ثقةٍ تامةٍ.', categoryId: 'cat2', explanation: '(في) تصف حالته النفسية أثناء التحدث.', hint: 'وصف للحالة النفسية.' },
+                        { text: 'وافقتُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">عن</span> طيبِ خاطرٍ.', categoryId: 'cat2', explanation: '(عن) تصف حالة الرضا والقبول.', hint: 'كيف كان حالي عند الموافقة؟' },
+                        { text: 'بقيَ الرجلُ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">على</span> حزنه.', categoryId: 'cat2', explanation: '(على) تصف حال الرجل.', hint: 'تصف هيئة الرجل (كيف كان؟).' },
+                        { text: 'رويتُ القصةَ <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">عن</span> جدي.', categoryId: 'cat3', explanation: '(عن) توضح مصدر تلقي القصة وأصلها.', hint: 'ما مصدر القصة؟' },
+                        { text: 'استوردنا بضاعةً <span class="text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md leading-relaxed">من</span> الصينِ.', categoryId: 'cat3', explanation: '(مِنْ) توضح المصدر والمكان الذي جاءت منه البضاعة.', hint: 'المكان الذي صدرت منه.' }
+                    ]
+                }
+            ]
+        };
+
         // ================= الأداة اللغوية =================
         const toArabicNum = (num) => {
             const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
@@ -78,147 +248,116 @@
             return newArray;
         };
 
-        // ================= الأيقونات (SVG Strings) =================
-        const ICONS = {
-            youtube: `<svg class="w-7 h-7" fill="#FF0000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/></svg>`,
-            checkCircle: `<svg class="w-6 h-6 md:w-7 md:h-7 shrink-0 text-emerald-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
-            checkCircleLarge: `<svg class="w-7 h-7 md:w-8 md:h-8 text-emerald-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
-            xCircle: `<svg class="w-6 h-6 md:w-7 md:h-7 shrink-0 text-rose-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
-            xCircleLarge: `<svg class="w-7 h-7 md:w-8 md:h-8 text-rose-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
-            refresh: `<svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`,
-            arrowLeft: `<svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
-            medal: `<svg class="w-24 h-24 md:w-32 md:h-32 mx-auto text-amber-400 mb-6 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>`,
-            hidden: `<svg class="w-10 h-10 text-amber-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>`,
-            loud: `<svg class="w-10 h-10 text-violet-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
-            scene: `<svg class="w-10 h-10 text-cyan-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
-            tray: `<svg class="w-8 h-8 md:w-12 md:h-12 mb-2 md:mb-3 opacity-80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>`
-        };
-
-        // ================= قواعد البيانات (خالية من التكرار) =================
-        const QUIZ_QUESTIONS = [
-            { text: "«ابتسمت الفرصة للشاب الطموح»\nما نوع الاستعارة هنا؟", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه (الفرصة) بإنسان يبتسم، وحذف المشبه به وأبقى صفة من صفاته (الابتسام).", hint: "الفرصة لا تبتسم، من الذي يبتسم وحذفناه؟" },
-            { text: "قال المعلق: «سجل الصقر هدف الفوز لفريقنا» (يقصد اللاعب).\nما نوع الاستعارة؟", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه (اللاعب) بالصقر، وحذف المشبه وصرّح بلفظ المشبه به (الصقر).", hint: "من الذي يسجل الأهداف؟" },
-            { text: "لمن يبذل جهدًا بلا فائدة: «أنت تنفخ في رماد!»\nهذه الصورة تسمى:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 2, explanation: "لأنه شبه (حالة من يبذل جهدًا بلا فائدة) بـ(حالة من ينفخ في الرماد ليشعله).", hint: "الأمثال (والأقوال المشهورة) عند استخدامها في مواقف مشابهة." },
-            { text: "«غردت هواتفنا برسائل النجاح»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه (الهواتف) بطيور تغرد، وحذف المشبه به وأبقى صفة التغريد.", hint: "ما الكائن الذي يغرد؟ لقد أخفيناه وأبقينا صفته." },
-            { text: "قال المدير: «ودعنا أقمارًا تخرجوا من جامعتنا اليوم»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه (الطلاب) بالأقمار، وحذف المشبه وصرّح بالمشبه به.", hint: "من المقصود بالأقمار؟ لقد نطقنا بالمشبه به مباشرة." },
-            { text: "لمن يعود لعادة سيئة تركها: «رجعت حليمة لعادتها القديمة»\nهذه الصورة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 2, explanation: "لأنه شبه موقف (من يعود لفعل تركه) بموقف المرأة (حليمة) في المثل الشهير.", hint: "هذا مثل شعبي، والأمثال دائمًا تمثل مواقف كاملة." },
-            { text: "لمن يصنع الخير في غير أهله: «أنت تزرع في البحر»\nهذه الصورة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 2, explanation: "لأنه شبه حالة صانع الخير في غير أهله بمن يزرع في ماء البحر.", hint: "موقف يقابله موقف آخر بالكامل، لتوضيح سوء التصرف." },
-            { text: "قال تعالى: «واعتصموا بحبل الله جميعًا ولا تفرقوا» (يقصد دين الله).\nما نوع الاستعارة؟", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه (الدين) بالحبل، وحذف المشبه وصرّح بالمشبه به.", hint: "ما المشبه وما المشبه به؟" },
-            { text: "لمن يحاول إخفاء الحقيقة: «أنت تحجب الشمس بغربال!»\nهذه الصورة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 2, explanation: "لأنه شبه موقف إخفاء الحقيقة بموقف تغطية نور الشمس بغربال.", hint: "صورة تمثيلية لحالة شخص يحاول فعل المستحيل." },
-            { text: "«بكى اليتيم فبكت معه الجدران»\nنوع الاستعارة:", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه الجدران بإنسان يبكي، وحذف الإنسان.", hint: "أعطى الجدران صفة البكاء." }
-        ];
-
-        const CLASSIFY_PHRASES = [
-            { text: "بكى السحاب على الأرض العطشى", type: "makneya", explanation: "شبه السحاب بإنسان يبكي، وحذف المشبه به (الإنسان).", hint: "السحاب لا يبكي، هناك إنسان مخفي." },
-            { text: "شاهدت أسدًا يقود الطائرة الحربية", type: "tasreheya", explanation: "صرح بـ (أسد) وحذف المشبه وقصد الطيار الشجاع.", hint: "هل الأسد يقود طائرة؟" },
-            { text: "لمن يشتري المجهول: «أنت تشتري سمكًا في ماء»", type: "tamtheleya", explanation: "تشبيه حالة (شراء المجهول) بحالة (شراء السمك قبل صيده).", hint: "موقف يشبه موقفًا في الحياة." },
-            { text: "عضتنا الأيام بنابها القاسي", type: "makneya", explanation: "شبه الأيام بحيوان مفترس، وحذفه وأبقى صفة العض.", hint: "الأيام ليس لها ناب. من صاحب الناب الذي اختفى هنا؟" },
-            { text: "قابلت كوكبًا في علوم الحاسوب", type: "tasreheya", explanation: "صرح بـ (كوكب) وقصد العالِم البارع.", hint: "نقصد العالِم." },
-            { text: "لمن يتردد: «أراك تقدم رجلًا وتؤخر أخرى»", type: "tamtheleya", explanation: "تشبيه حالة المتردد بهذه الصورة.", hint: "هذه صورة حركية تمثل التردد وعدم الحسم." },
-            { text: "«عادت المياه إلى مجاريها» (بعد خصام)", type: "tamtheleya", explanation: "شبه حالة عودة العلاقات بحالة عودة المياه لمسارها.", hint: "مثل يقال عند الصلح بعد الخصام." },
-            { text: "«ابتسم الصباح ووزع نوره»", type: "makneya", explanation: "شبه الصباح بإنسان يبتسم، وحذف المشبه به.", hint: "الصباح لا يبتسم، لمن هذه الصفة؟" },
-            { text: "«أضاءت النجوم سماء التفوق»", type: "tasreheya", explanation: "شبه الطلاب بالنجوم وصرح بالمشبه به.", hint: "نصرح بكلمة (النجوم) ونقصد الطلاب." },
-            { text: "«أنت تبحث عن إبرة في كومة قش»", type: "tamtheleya", explanation: "شبه حالة من يبحث عن المستحيل بهذه الصورة.", hint: "موقف مشهور للبحث الصعب." }
-        ];
-
-        const SPOTTING_QUESTIONS = [
-            { words: ["تبتسم", "الزهور", "في", "الربيع"], correctIndex: 0, explanation: "الاستعارة في (تبتسم)، شبه الزهور بإنسان وحذف المشبه به.", hint: "صفة بشرية أُعطيت للزهور." },
-            { words: ["تحدثت", "مع", "بحرٍ", "في", "المستشفى"], correctIndex: 2, explanation: "الاستعارة في (بحرٍ)، يقصد الطبيب العالم واسع المعرفة.", hint: "كلمة تدل على الاتساع والعمق استُعيرت للطبيب." },
-            { words: ["افترس", "المرض", "جسد", "المريض"], correctIndex: 0, explanation: "الاستعارة في (افترس)، شبه المرض بوحش وأبقى صفة الافتراس.", hint: "صفة حيوانية لا تتناسب حقيقةً مع المرض." },
-            { words: ["نسورنا", "تحمي", "سماء", "الوطن"], correctIndex: 0, explanation: "الاستعارة في (نسورنا)، يقصد الطيارين البواسل فصرح بالمشبه به.", hint: "طائر جارح أطلقناه على الطيار الشجاع." },
-            { words: ["طارت", "الأخبار", "في", "المدينة"], correctIndex: 0, explanation: "الاستعارة في (طارت)، شبه الأخبار بطيور تطير.", hint: "الأخبار لا تملك أجنحة، فما الكلمة الخيالية؟" },
-            { words: ["شاهدت", "أسدًا", "يطلق", "النار"], correctIndex: 1, explanation: "الاستعارة في (أسدًا)، يقصد جنديًا شجاعًا فصرح بالمشبه به.", hint: "حيوان مفترس لا يمكنه إطلاق النار في الحقيقة!" },
-            { words: ["نطق", "الجدار", "بأمجادنا"], correctIndex: 0, explanation: "الاستعارة في (نطق)، شبه الجدار بإنسان يتكلم.", hint: "الجدار جماد، فما الكلمة التي جعلته كالبشر؟" },
-            { words: ["بكت", "السماء", "على", "الشهيد"], correctIndex: 0, explanation: "الاستعارة في (بكت)، شبه السماء بإنسان يبكي.", hint: "السماء تمطر ولا تفعل هذا الفعل البشري." },
-            { words: ["بكت", "العين", "لؤلؤًا"], correctIndex: 2, explanation: "الاستعارة في (لؤلؤًا)، يقصد الدموع الغالية.", hint: "ماذا يخرج من العين عند البكاء وشبهناه بحجر كريم؟" },
-            { words: ["زأر", "الجندي", "في", "المعركة"], correctIndex: 0, explanation: "الاستعارة في (زأر)، شبه الجندي بأسد وحذف الأسد وأبقى صوته.", hint: "صوت الأسد الذي استعرناه للجندي." }
-        ];
-
-        const TF_QUESTIONS = [
-            { text: "الاستعارة المكنية هي التي يُحذف فيها المشبه به، ونأتي بصفة من صفاته تدل عليه.", answer: true, explanation: "لأننا نُخفي المشبه به ونأتي بصفة من صفاته، مثل: (بكى السحاب).", hint: "تذكر: مكنية = مخفية (نخفي المشبه به)." },
-            { text: "الاستعارة التصريحية هي التي نُصرح فيها بلفظ المشبه، ونحذف المشبه به.", answer: false, explanation: "العكس هو الصحيح، فنحن نُصرح بلفظ (المشبه به) ونحذف (المشبه).", hint: "في التصريحية نصرّح بالمشبه به." },
-            { text: "عبارة «ألقى الخطيب دررًا» (ويقصد كلمات) تُعد استعارة مكنية.", answer: false, explanation: "هي استعارة تصريحية، لأنه صرّح بالمشبه به (دررًا).", hint: "هل الدرر مذكورة صراحة أم مخفية؟" },
-            { text: "الاستعارة التمثيلية غالبًا ما نجدها في الأمثال الشعبية والمواقف الحياتية.", answer: true, explanation: "لأنها تشبيه صورة كاملة بصورة وموقف بموقف.", hint: "الأمثال دائمًا تصور مواقف مركبة." },
-            { text: "في عبارة «طار قلبي من الفرح»، نوع الاستعارة هو استعارة مكنية.", answer: true, explanation: "لأنه شبه القلب بطائر يطير، وحذف الطائر وأبقى صفة الطيران.", hint: "هل ذكرنا الطائر؟ أم أخفيناه وأتينا بصفته؟" },
-            { text: "الاستعارة التصريحية تُبنى على الإبقاء على المشبه وحذف المشبه به.", answer: false, explanation: "هذا تعريف الاستعارة المكنية، أما التصريحية فنصرح بالمشبه به.", hint: "اقرأ العبارة جيدًا، هناك عكس للمفاهيم." },
-            { text: "الاستعارة هي في الأصل تشبيه بليغ حُذف أحد طرفيه.", answer: true, explanation: "هذه هي القاعدة الأساسية للاستعارة.", hint: "في الاستعارة نحذف المشبه أو المشبه به." },
-            { text: "في الاستعارة التمثيلية نشبه كلمة مفردة بكلمة مفردة أخرى.", answer: false, explanation: "الاستعارة التمثيلية نشبه فيها (حالة كاملة) بـ (حالة كاملة).", hint: "التمثيلية تحتاج لمشهد أو صورة مركبة." },
-            { text: "«رأيت بحرًا يتصدق على الفقراء» هي استعارة تصريحية.", answer: true, explanation: "لأنه صرح بالمشبه به (بحرًا) وحذف المشبه (الرجل الكريم).", hint: "كلمة (بحر) مذكورة صراحة مكان الرجل." },
-            { text: "الاستعارة يجب أن يرافقها دليل (قرينة) يمنع المعنى الحقيقي.", answer: true, explanation: "عندما نقول (تضحك الحياة) فكلمة الحياة دليل على أننا لا نقصد الضحك الحقيقي.", hint: "الاستعارة هي نوع من المجاز." }
-        ];
-
-        const SECTIONS = [
-            { id: 'intro', label: 'قبل أن نبدأ', theme: 'amber' },
-            { id: 'classify', label: 'التصنيف', theme: 'cyan' },
-            { id: 'spotting', label: 'صياد الكلمات', theme: 'indigo' },
-            { id: 'quiz', label: 'اختر الإجابة', theme: 'violet' },
-            { id: 'tf', label: 'صواب وخطأ', theme: 'rose' }
-        ];
-
         // ================= كائن التطبيق الرئيسي =================
         const App = {
             state: {
-                activeTab: 'intro',
-                progress: {
-                    intro: { answered: 0, total: 0, score: 0 },
-                    classify: { answered: 0, total: CLASSIFY_PHRASES.length, score: 0 },
-                    spotting: { answered: 0, total: SPOTTING_QUESTIONS.length, score: 0 },
-                    quiz: { answered: 0, total: QUIZ_QUESTIONS.length, score: 0 },
-                    tf: { answered: 0, total: TF_QUESTIONS.length, score: 0 }
-                },
-                quizData: [],
-                tfData: [],
-                spottingData: [],
-                classifyData: {
-                    questions: [],
-                    currentIndex: 0,
-                    status: 'idle',
-                    boxCounts: { makneya: 0, tasreheya: 0, tamtheleya: 0 },
-                    animatingOut: false
-                }
+                activeTab: '',
+                progress: {},
+                sectionData: {} 
             },
 
             init() {
+                // ضبط عنوان الصفحة من البيانات
+                document.title = APP_DATA.pageTitle;
+                
+                // تهيئة البيانات والتبويب الافتراضي
+                if (APP_DATA.sections.length > 0) {
+                    this.state.activeTab = APP_DATA.sections[0].id;
+                }
+                
                 this.initSectionData();
                 this.renderLayout();
                 this.updateUI();
             },
 
+            // تهيئة بيانات الحالة الديناميكية بناءً على APP_DATA
             initSectionData() {
-                this.state.quizData = shuffleArray(QUIZ_QUESTIONS).map((q, idx) => {
-                    const mappedOptions = q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correct }));
-                    return { originalQuestion: q, options: mappedOptions, answered: false, selectedOption: null, showHint: false };
+                this.state.progress = {};
+                this.state.sectionData = {};
+
+                APP_DATA.sections.forEach(sec => {
+                    if (sec.type === 'intro') {
+                        this.state.progress[sec.id] = { answered: 0, total: 0, score: 0 };
+                    } 
+                    else if (sec.type === 'mcq') {
+                        this.state.progress[sec.id] = { answered: 0, total: sec.questions.length, score: 0 };
+                        // الأسئلة ثابتة، الخيارات متغيرة
+                        this.state.sectionData[sec.id] = sec.questions.map(q => {
+                            let opts = q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correct }));
+                            return {
+                                originalQuestion: q,
+                                options: shuffleArray(opts),
+                                answered: false, selectedOption: null, showHint: false
+                            };
+                        });
+                    } 
+                    else if (sec.type === 'true_false') {
+                        this.state.progress[sec.id] = { answered: 0, total: sec.questions.length, score: 0 };
+                        this.state.sectionData[sec.id] = sec.questions.map(q => {
+                            let opts = [
+                                { text: "صواب", isCorrect: true === q.answer },
+                                { text: "خطأ", isCorrect: false === q.answer }
+                            ];
+                            return {
+                                originalQuestion: q,
+                                options: shuffleArray(opts),
+                                answered: false, selectedOption: null, showHint: false
+                            };
+                        });
+                    } 
+                    else if (sec.type === 'spotting') {
+                        this.state.progress[sec.id] = { answered: 0, total: sec.questions.length, score: 0 };
+                        // الأسئلة ثابتة
+                        this.state.sectionData[sec.id] = sec.questions.map(q => ({
+                            originalQuestion: q, answered: false, selectedIndex: null, showHint: false
+                        }));
+                    } 
+                    else if (sec.type === 'classify') {
+                        this.state.progress[sec.id] = { answered: 0, total: sec.questions.length, score: 0 };
+                        let placedItems = {};
+                        sec.categories.forEach(c => placedItems[c.id] = []);
+                        
+                        // القسم الوحيد الذي تتغير فيه الأسئلة عشوائياً
+                        this.state.sectionData[sec.id] = {
+                            questions: shuffleArray(sec.questions).map(q => ({ originalQuestion: q, showHint: false })),
+                            currentIndex: 0, 
+                            status: 'idle', 
+                            placedItems: placedItems, 
+                            animatingOut: false
+                        };
+                    }
+                    else if (sec.type === 'sort') {
+                        this.state.progress[sec.id] = { answered: 0, total: sec.questions.length, score: 0 };
+                        // الأسئلة ثابتة، الخيارات متغيرة
+                        this.state.sectionData[sec.id] = {
+                            questions: sec.questions.map(q => {
+                                let opts = q.options.map((opt, i) => ({ text: opt, isCorrect: i === q.correct }));
+                                return { originalQuestion: q, options: shuffleArray(opts), showHint: false };
+                            }),
+                            currentIndex: 0, status: 'idle', animatingOut: false
+                        };
+                    }
                 });
-
-                this.state.tfData = shuffleArray(TF_QUESTIONS).map(q => ({
-                    originalQuestion: q,
-                    options: [
-                        { text: "صواب", isCorrect: true === q.answer },
-                        { text: "خطأ", isCorrect: false === q.answer }
-                    ],
-                    answered: false, selectedOption: null, showHint: false
-                }));
-
-                this.state.spottingData = shuffleArray(SPOTTING_QUESTIONS).map(q => ({
-                    originalQuestion: q, answered: false, selectedIndex: null, showHint: false
-                }));
-
-                this.state.classifyData = {
-                    questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false })),
-                    currentIndex: 0, status: 'idle', boxCounts: { makneya: 0, tasreheya: 0, tamtheleya: 0 }, animatingOut: false
-                };
             },
 
+            // إنشاء الهيكل الأساسي للصفحة
             renderLayout() {
                 const root = document.getElementById('app-root');
+                
+                // توليد حاويات الأقسام ديناميكياً
+                let sectionsContainers = '';
+                APP_DATA.sections.forEach(sec => {
+                    sectionsContainers += `<div id="section-${sec.id}" class="hidden"></div>`;
+                });
+
                 root.innerHTML = `
                     <div id="main-header" class="w-full text-center py-6 bg-transparent">
-                        <a href="https://www.youtube.com/egysalah" target="_blank" rel="noopener noreferrer" 
+                        <a href="${APP_DATA.youtubeLink}" target="_blank" rel="noopener noreferrer" 
                            class="inline-flex items-center justify-center gap-2 text-2xl font-bold text-slate-900 mb-1">
-                            <span>العربية السهلة</span>
+                            <span>${APP_DATA.headerTitle}</span>
                             ${ICONS.youtube}
                         </a>
-                        <h2 class="text-lg font-bold text-slate-500">محمود صلاح</h2>
+                        <h2 class="text-lg font-bold text-slate-500">${APP_DATA.headerSubtitle}</h2>
                     </div>
                     
                     <div id="sticky-tabs-container" class="sticky top-0 z-50 bg-[#f8fafc]/95 backdrop-blur-md shadow-sm border-b border-slate-200">
@@ -230,29 +369,19 @@
                         </div>
                     </div>
                     
-                    <main class="container mx-auto px-4 pb-8 max-w-4xl flex-grow">
+                    <main class="container mx-auto px-4 pb-8 max-w-4xl flex-grow min-h-[75vh]">
                         <div id="scroll-target"></div>
-                        
-                        <div class="text-center pt-6 mb-8 w-full">
-                            <h1 class="text-2xl md:text-3xl font-semibold text-slate-600 mb-4 bg-transparent">الاستعارة</h1>
-                            <p id="section-subtitle" class="text-lg md:text-xl font-medium py-3 md:py-4 px-5 md:px-8 rounded-2xl block w-full fade-opacity leading-relaxed transition-colors duration-300"></p>
-                        </div>
-                        
-                        <div id="section-intro" class="hidden">
-                            ${this.renderIntroSectionHTML()}
-                        </div>
-                        
-                        <div id="section-classify" class="hidden"></div>
-                        <div id="section-spotting" class="hidden"></div>
-                        <div id="section-quiz" class="hidden"></div>
-                        <div id="section-tf" class="hidden"></div>
-                        
+                        <h1 class="text-center text-2xl md:text-3xl font-semibold text-slate-700 pt-6 mb-6 bg-transparent">
+                            ${APP_DATA.pageTitle.split('|')[0]}
+                        </h1>
+
+                        ${sectionsContainers}
                         <div id="final-evaluation-container"></div>
                     </main>
 
                     <footer class="mt-auto py-8 bg-white border-t border-slate-200 text-center">
-                        <a href="https://www.youtube.com/egysalah" target="_blank" rel="noopener noreferrer" class="text-slate-400 text-sm font-medium block w-full">
-                            جميع الحقوق محفوظة لقناة العربية السهلة
+                        <a href="${APP_DATA.youtubeLink}" target="_blank" rel="noopener noreferrer" class="text-slate-400 text-sm font-medium block w-full">
+                            ${APP_DATA.copyright}
                         </a>
                     </footer>
                 `;
@@ -260,17 +389,19 @@
 
             updateUI() {
                 this.updateTabs();
-                this.updateSectionsVisibility();
                 
-                if (this.state.activeTab === 'classify') {
-                    document.getElementById('section-classify').innerHTML = this.renderClassifySectionHTML();
-                } else if (this.state.activeTab === 'spotting') {
-                    document.getElementById('section-spotting').innerHTML = this.renderStandardSectionHTML('spotting');
-                } else if (this.state.activeTab === 'quiz') {
-                    document.getElementById('section-quiz').innerHTML = this.renderStandardSectionHTML('quiz');
-                } else if (this.state.activeTab === 'tf') {
-                    document.getElementById('section-tf').innerHTML = this.renderStandardSectionHTML('tf');
-                }
+                // إظهار القسم النشط وتحديث محتواه
+                APP_DATA.sections.forEach(sec => {
+                    const el = document.getElementById(`section-${sec.id}`);
+                    if (el) {
+                        if (this.state.activeTab === sec.id) {
+                            el.className = 'block';
+                            el.innerHTML = this.renderSection(sec);
+                        } else {
+                            el.className = 'hidden';
+                        }
+                    }
+                });
 
                 this.checkFinalEvaluation();
             },
@@ -279,7 +410,7 @@
                 const wrapper = document.getElementById('tabs-wrapper');
                 let html = '';
                 
-                SECTIONS.forEach(section => {
+                APP_DATA.sections.forEach(section => {
                     const isActive = this.state.activeTab === section.id;
                     const secProgress = this.state.progress[section.id];
                     const isDone = secProgress.total > 0 && secProgress.answered === secProgress.total;
@@ -289,7 +420,7 @@
                     html += `
                         <button id="tab-${section.id}" type="button" onclick="App.handleTabChange('${section.id}')" 
                                 class="shrink-0 whitespace-nowrap px-6 py-2 rounded-full font-semibold text-lg md:text-xl border-2 transition-all flex items-center justify-center gap-2 ${activeClass}">
-                            ${section.label}
+                            ${section.title}
                             ${isDone && !isActive ? ICONS.checkCircle : ''}
                         </button>
                     `;
@@ -298,110 +429,103 @@
                 wrapper.innerHTML = html;
 
                 const currentProgress = this.state.progress[this.state.activeTab];
-                const progressPercent = currentProgress.total > 0 ? (currentProgress.answered / currentProgress.total) * 100 : 0;
+                const progressPercent = currentProgress && currentProgress.total > 0 ? (currentProgress.answered / currentProgress.total) * 100 : 0;
                 const progressBar = document.getElementById('progress-bar');
-                const theme = SECTIONS.find(s => s.id === this.state.activeTab).theme;
+                const theme = APP_DATA.sections.find(s => s.id === this.state.activeTab).theme;
                 
                 progressBar.className = `h-full transition-all duration-500 ease-out bg-${theme}-500`;
                 progressBar.style.width = `${progressPercent}%`;
             },
 
-            updateSectionsVisibility() {
-                const subtitles = {
-                    intro: 'مراجعة سريعة ومبسطة لأنواع الاستعارة قبل بدء التدريبات',
-                    classify: 'اقرأ العبارة بدقة، ثم حدد نوع الاستعارة الصحيح لنقلها إلى الصندوق المناسب',
-                    spotting: 'ابحث عن الكلمة الخيالية! حدد الكلمة التي تمثل الاستعارة في كل جملة',
-                    quiz: 'اقرأ السؤال جيدًا، ثم اختر الإجابة الصحيحة من الخيارات المتاحة',
-                    tf: 'اختبر معلوماتك، هذه العبارات صحيحة أم خاطئة بناءً على ما تعلمته؟'
-                };
-                
-                const subtitleEl = document.getElementById('section-subtitle');
-                const currentSection = SECTIONS.find(s => s.id === this.state.activeTab);
-                const theme = currentSection ? currentSection.theme : 'slate';
-
-                if (subtitleEl) {
-                    // إعادة تشغيل الحركة (Animation) عند تغيير التبويب
-                    subtitleEl.classList.remove('fade-opacity');
-                    void subtitleEl.offsetWidth; // خدعة برمجية لإجبار المتصفح على إعادة رسم العنصر
-                    subtitleEl.innerHTML = subtitles[this.state.activeTab] || '';
-                    
-                    // تحديث ألوان الصندوق لتتماشى مع ثيم التبويب الحالي بشكل ديناميكي
-                    subtitleEl.className = `text-lg md:text-xl font-medium py-3 md:py-4 px-5 md:px-8 rounded-2xl block w-full fade-opacity leading-relaxed transition-colors duration-300 bg-${theme}-50 border border-${theme}-200 text-${theme}-800 shadow-sm`;
+            // ================= دوال التوليد (Rendering) =================
+            
+            // الدالة الموزعة للأنشطة بناء على النوع
+            renderSection(sectionData) {
+                switch(sectionData.type) {
+                    case 'intro': return this.renderIntro(sectionData);
+                    case 'mcq': 
+                    case 'true_false': return this.renderStandardSection(sectionData);
+                    case 'spotting': return this.renderStandardSection(sectionData);
+                    case 'classify': return this.renderClassify(sectionData);
+                    case 'sort': return this.renderSort(sectionData);
+                    default: return '';
                 }
-
-                SECTIONS.forEach(sec => {
-                    const el = document.getElementById(`section-${sec.id}`);
-                    if (el) el.className = this.state.activeTab === sec.id ? 'block' : 'hidden';
-                });
             },
 
-            renderIntroSectionHTML() {
+            renderIntro(sectionData) {
+                let blocksHTML = '';
+                
+                if (sectionData.description) {
+                    blocksHTML += `
+                        <div class="text-center mb-8 fade-in">
+                            <p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 p-4 md:p-5 rounded-2xl border border-${sectionData.theme}-200 shadow-sm inline-block w-full">
+                                ${sectionData.description}
+                            </p>
+                        </div>
+                    `;
+                }
+
+                sectionData.content.forEach(block => {
+                    blocksHTML += `
+                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-${block.theme}-100 shadow-sm flex flex-col md:flex-row items-start text-right gap-4 md:gap-6">
+                            <div class="bg-${block.theme}-100 p-4 rounded-full shrink-0 text-${block.theme}-600">${block.icon || ''}</div>
+                            <div>
+                                <h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-3">${block.title}</h3>
+                                <p class="text-xl md:text-2xl font-medium text-slate-600 leading-relaxed">${block.text}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
                 return `
                     <div class="max-w-3xl mx-auto space-y-6 fade-in">
-                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-amber-100 shadow-sm flex flex-col md:flex-row items-start text-right gap-4 md:gap-6">
-                            <div class="bg-amber-100 p-4 rounded-full shrink-0">${ICONS.hidden}</div>
-                            <div>
-                                <h3 class="text-2xl font-semibold text-slate-700 mb-3">١. الاستعارة المكنية</h3>
-                                <p class="text-xl text-slate-600 leading-relaxed">
-                                    هي التي نَحْذِفُ فيها (المشبه به) ونأتي بصفة من صفاته تدل عليه.<br/>
-                                    <span class="text-amber-600 font-semibold">مثال:</span> طار الخبر في المدينة. (شبهنا الخبر بطائر، وحذفنا الطائر وأبقينا صفة الطيران).
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-violet-100 shadow-sm flex flex-col md:flex-row items-start text-right gap-4 md:gap-6">
-                            <div class="bg-violet-100 p-4 rounded-full shrink-0">${ICONS.loud}</div>
-                            <div>
-                                <h3 class="text-2xl font-semibold text-slate-700 mb-3">٢. الاستعارة التصريحية</h3>
-                                <p class="text-xl text-slate-600 leading-relaxed">
-                                    هي التي نُصَرِّحُ فيها بلفظ (المشبه به) ونحذف (المشبه).<br/>
-                                    <span class="text-violet-600 font-semibold">مثال:</span> عبر أسودنا القناة. (شبهنا الجنود بالأسود، وصرّحنا بكلمة أسود).
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-cyan-100 shadow-sm flex flex-col md:flex-row items-start text-right gap-4 md:gap-6">
-                            <div class="bg-cyan-100 p-4 rounded-full shrink-0">${ICONS.scene}</div>
-                            <div>
-                                <h3 class="text-2xl font-semibold text-slate-700 mb-3">٣. الاستعارة التمثيلية</h3>
-                                <p class="text-xl text-slate-600 leading-relaxed">
-                                    هي تشبيه حالة كاملة بحالة أخرى كاملة، دون ذكر الحالتين معًا، والحالة الأولى تكون مفهومة من السياق (تكثر في الأمثال).<br/>
-                                    <span class="text-cyan-600 font-semibold">مثال:</span> لمن يبذل جهدًا بلا فائدة: "أنت تنفخ في رماد".
-                                </p>
-                            </div>
-                        </div>
-
+                        ${blocksHTML}
                         <div class="flex justify-center mt-10 pt-4">
                             <button onclick="App.handleNextSection()" class="bg-emerald-600 text-white font-semibold text-xl py-4 px-12 rounded-full shadow-md flex items-center gap-3 active:scale-95 transition-transform">
-                                هيا نبدأ التدريبات
-                                ${ICONS.arrowLeft}
+                                هيا نبدأ التدريبات ${ICONS.arrowLeft}
                             </button>
                         </div>
                     </div>
                 `;
             },
 
-            renderStandardSectionHTML(sectionId) {
-                const sectionData = SECTIONS.find(s => s.id === sectionId);
+            // تدير قسم الخيارات المتعددة، الصح والخطأ، وصياد الكلمات
+            renderStandardSection(sectionData) {
+                const sectionId = sectionData.id;
                 const progress = this.state.progress[sectionId];
                 const isComplete = progress.total > 0 && progress.answered === progress.total;
-                const questions = this.state[`${sectionId}Data`];
+                const questions = this.state.sectionData[sectionId];
                 
                 let html = '<div class="fade-in">';
+
+                if (sectionData.description) {
+                    html += `
+                        <div class="text-center mb-8">
+                            <p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 p-4 md:p-5 rounded-2xl border border-${sectionData.theme}-200 shadow-sm inline-block w-full">
+                                ${sectionData.description}
+                            </p>
+                        </div>
+                    `;
+                }
                 
-                questions.forEach((q, idx) => {
+                questions.forEach((qState, idx) => {
                     html += `<div id="${sectionId}-wrapper-${idx}">`;
-                    if (sectionId === 'spotting') html += this.renderSpottingCard(q, idx, sectionData.theme, sectionId);
-                    else html += this.renderQuestionCard(q, idx, sectionId, sectionData.theme);
+                    if (sectionData.type === 'spotting') {
+                        html += this.renderSpottingCard(qState, idx, sectionData.theme, sectionId);
+                    } else {
+                        html += this.renderQuestionCard(qState, idx, sectionId, sectionData.theme, sectionData.type);
+                    }
                     html += `</div>`;
                 });
 
                 if (isComplete) {
                     html += `
                         <div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full">
-                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.label})</h3>
-                            <div class="text-5xl font-bold text-${sectionData.theme}-600">
-                                ${toArabicNum(progress.score)} <span class="text-3xl text-slate-400 font-medium mx-2">من</span> ${toArabicNum(progress.total)}
+                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3>
+                            <div class="text-4xl md:text-5xl font-bold text-${sectionData.theme}-600 flex items-center justify-center gap-3">
+                                <span>${toArabicNum(progress.score)}</span>
+                                <span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span>
+                                <span>${toArabicNum(progress.total)}</span>
                             </div>
                         </div>
                     `;
@@ -412,7 +536,7 @@
                 return html;
             },
 
-            renderQuestionCard(qState, idx, sectionId, theme) {
+            renderQuestionCard(qState, idx, sectionId, theme, type) {
                 const { originalQuestion: q, options, answered, selectedOption, showHint } = qState;
                 const isSelectedCorrect = selectedOption && selectedOption.isCorrect;
                 
@@ -423,7 +547,7 @@
 
                 let optionsHTML = '';
                 options.forEach((opt, optIdx) => {
-                    let btnClass = `w-full p-4 md:p-5 rounded-xl border-2 transition-all font-semibold text-xl md:text-2xl flex items-center gap-3 ${sectionId === 'quiz' ? 'justify-start' : 'justify-center'} `;
+                    let btnClass = `w-full p-4 md:p-5 rounded-xl border-2 transition-all font-semibold text-xl md:text-2xl flex items-center gap-3 ${type === 'mcq' ? 'justify-start' : 'justify-center'} `;
                     
                     if (!answered) {
                         btnClass += `border-slate-200 bg-white text-slate-600 active:scale-95 hover:bg-slate-50 cursor-pointer`;
@@ -435,7 +559,7 @@
                     }
 
                     let numberingHTML = '';
-                    if (sectionId === 'quiz') {
+                    if (type === 'mcq') {
                         let numClass = `w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-xl md:text-2xl font-bold shrink-0 transition-colors `;
                         if (answered) numClass += opt.isCorrect ? 'bg-emerald-200 text-emerald-800' : (selectedOption === opt ? 'bg-rose-200 text-rose-800' : 'bg-slate-200 text-slate-500');
                         else numClass += `bg-${theme}-100 text-${theme}-700`;
@@ -495,18 +619,16 @@
             renderSpottingCard(qState, idx, theme, sectionId) {
                 const { originalQuestion: q, answered, selectedIndex, showHint } = qState;
                 const isCorrectAnswer = selectedIndex === q.correctIndex;
-                
                 const hintFadeClass = qState.hintAnimate ? 'smooth-expand' : '';
                 const answerFadeClass = qState.answerAnimate ? 'smooth-expand' : '';
-                
                 let ringClass = answered ? (isCorrectAnswer ? 'ring-2 ring-emerald-400' : 'ring-2 ring-rose-400') : '';
 
                 let wordsHTML = '';
                 q.words.forEach((word, wIdx) => {
                     const isSelected = selectedIndex === wIdx;
                     const isCorrect = wIdx === q.correctIndex;
-                    
                     let wordClass = "px-4 md:px-6 py-3 md:py-4 text-2xl md:text-3xl font-bold rounded-xl transition-all duration-300 select-none ";
+                    
                     if (!answered) {
                         wordClass += `bg-white border-2 border-slate-200 text-slate-700 hover:border-${theme}-300 hover:bg-${theme}-50 hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer`;
                     } else {
@@ -516,27 +638,21 @@
                         else wordClass += "bg-slate-50 border-2 border-slate-100 text-slate-400 opacity-50 cursor-default";
                     }
 
-                    wordsHTML += `
-                        <span onclick="App.handleSpottingClick(${idx}, ${wIdx})" class="${wordClass}">
-                            ${word}
-                        </span>
-                    `;
+                    wordsHTML += `<span onclick="App.handleSpottingClick('${sectionId}', ${idx}, ${wIdx})" class="${wordClass}">${word}</span>`;
                 });
 
                 return `
-                    <div id="spotting-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative transition-colors duration-300 flex flex-col justify-start ${ringClass}">
+                    <div id="${sectionId}-q-${idx}" class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 mb-8 relative transition-colors duration-300 flex flex-col justify-start ${ringClass}">
                         <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-6 w-full mx-auto">
                             <div class="flex items-center justify-between mb-2 md:mb-3">
                                 <span class="bg-${theme}-100 text-${theme}-700 font-bold px-4 py-1.5 rounded-full text-lg md:text-xl">
                                     السؤال ${toArabicNum(idx + 1)}
                                 </span>
-                                <button onclick="App.toggleHint('spotting', ${idx})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">
+                                <button onclick="App.toggleHint('${sectionId}', ${idx})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">
                                     💡 تلميح
                                 </button>
                             </div>
-                            
-                            <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl leading-snug">حدد الكلمة التي تُمثل <span class="text-${theme}-600 font-bold">الاستعارة</span> في الجملة الآتية:</p>
-
+                            <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl leading-snug">انقر على الكلمة الصحيحة في الجملة الآتية:</p>
                             <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
                                 <div class="mt-4 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                     <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
@@ -544,11 +660,9 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 leading-loose mx-auto w-full max-w-lg">
                             ${wordsHTML}
                         </div>
-
                         <div class="${answered ? `block w-full ${answerFadeClass}` : 'hidden'}">
                             <div class="mt-6 p-5 rounded-xl border text-right ${isCorrectAnswer ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                 <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${isCorrectAnswer ? 'text-emerald-700' : 'text-rose-700'}">
@@ -564,115 +678,238 @@
                 `;
             },
 
-            renderClassifySectionHTML() {
-                const theme = 'cyan';
-                const state = this.state.classifyData;
-                const { questions, currentIndex, status, boxCounts, animatingOut } = state;
+            renderClassify(sectionData) {
+                const sectionId = sectionData.id;
+                const theme = sectionData.theme;
+                const state = this.state.sectionData[sectionId];
+                const { questions, currentIndex, status, placedItems, animatingOut } = state;
                 const isComplete = currentIndex >= questions.length;
                 
                 let html = '';
 
-                if (!isComplete && questions[currentIndex]) {
-                    const currentQuestion = questions[currentIndex].originalQuestion;
-                    const showHint = questions[currentIndex].showHint;
-                    
-                    const hintFadeClass = questions[currentIndex].hintAnimate ? 'smooth-expand' : '';
-                    const feedbackFadeClass = state.feedbackAnimate ? 'smooth-expand' : '';
-                    
-                    const boxes = [
-                        { id: 'makneya', label: 'مكنية', colorClass: 'border-amber-200 text-amber-700 bg-amber-50', hoverClass: 'hover:border-amber-400 hover:bg-amber-100' },
-                        { id: 'tasreheya', label: 'تصريحية', colorClass: 'border-violet-200 text-violet-700 bg-violet-50', hoverClass: 'hover:border-violet-400 hover:bg-violet-100' },
-                        { id: 'tamtheleya', label: 'تمثيلية', colorClass: 'border-cyan-200 text-cyan-700 bg-cyan-50', hoverClass: 'hover:border-cyan-400 hover:bg-cyan-100' }
-                    ];
+                const currentQState = isComplete ? null : questions[currentIndex];
+                const currentQuestion = isComplete ? null : currentQState.originalQuestion;
+                const showHint = isComplete ? false : currentQState.showHint;
+                const hintFadeClass = (currentQState && currentQState.hintAnimate) ? 'smooth-expand' : '';
+                const shakeClass = status === 'incorrect' ? 'shake' : '';
 
-                    let boxesHTML = '';
-                    boxes.forEach(b => {
-                        let btnClass = `flex-1 flex flex-col items-center justify-center p-3 md:p-6 border-2 md:border-4 rounded-2xl md:rounded-3xl transition-all duration-300 ${b.colorClass} `;
-                        if (status === 'idle') {
-                            btnClass += `${b.hoverClass} hover:-translate-y-2 cursor-pointer shadow-sm hover:shadow-md`;
+                // بناء شبكة الصناديق
+                let boxesHTML = '';
+                sectionData.categories.forEach(cat => {
+                    const boxTheme = cat.theme || 'blue';
+                    
+                    // استعراض البطاقات التي وُضعت مسبقاً داخل هذا الصندوق
+                    const placedHtml = placedItems[cat.id].map(item => 
+                        `<div class="mt-2 p-3 rounded-lg text-sm md:text-base font-semibold border border-${boxTheme}-100 bg-white shadow-sm leading-snug fade-in text-right text-slate-700">
+                            ${item.text}
+                        </div>`
+                    ).join('');
+
+                    let boxClass = `flex flex-col w-full p-4 rounded-xl border-2 transition-all duration-300 min-h-[10rem] `;
+                    if (!isComplete && status !== 'correct' && !animatingOut) {
+                        boxClass += `border-${boxTheme}-300 bg-${boxTheme}-50 cursor-pointer hover:shadow-md hover:brightness-95 active:scale-[0.98]`;
+                    } else {
+                        // تم إزالة الشفافية لتظل الصناديق واضحة كخريطة ذهنية للطلاب
+                        boxClass += `border-${boxTheme}-300 bg-${boxTheme}-50 cursor-default`; 
+                    }
+
+                    boxesHTML += `
+                        <div ${(!isComplete && status !== 'correct' && !animatingOut) ? `onclick="App.handleClassifyClick('${sectionId}', '${cat.id}')"` : ''} class="${boxClass}">
+                            <h3 class="font-bold text-lg md:text-xl text-center text-${boxTheme}-800 border-b border-black/10 pb-3 flex items-center justify-center gap-2">
+                                ${ICONS.tray} ${cat.label}
+                            </h3>
+                            <div class="flex flex-col gap-1 flex-grow mt-1">
+                                ${placedHtml}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `<div class="flex flex-col items-center w-full gap-6 fade-in">`;
+                
+                if (sectionData.description) {
+                    html += `
+                        <div class="text-center w-full">
+                            <p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 p-4 md:p-5 rounded-2xl border border-${theme}-200 shadow-sm">
+                                ${sectionData.description}
+                            </p>
+                        </div>
+                    `;
+                }
+
+                // بناء حاوية الكارت العلوي
+                html += `
+                    <div class="relative w-full min-h-[12rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500">
+                        ${currentQuestion ? `
+                            <div id="classify-card" class="w-full max-w-2xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 transition-all transform leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${shakeClass}">
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="bg-${theme}-100 text-${theme}-700 font-bold px-4 py-1.5 rounded-full text-lg md:text-xl">
+                                        البطاقة ${toArabicNum(currentIndex + 1)}
+                                    </span>
+                                    <button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">
+                                        💡 تلميح
+                                    </button>
+                                </div>
+                                <span class="block mb-4 text-slate-500 text-sm md:text-base font-medium text-center">إلى أي صندوق تنتمي هذه الجملة؟ (انقر على الصندوق المناسب بالأسفل)</span>
+                                <h3 class="text-2xl md:text-3xl font-semibold leading-snug text-slate-800 text-center">«${currentQuestion.text}»</h3>
+                                
+                                <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'} mt-4">
+                                    <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
+                                        <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
+                                        <span class="leading-relaxed">${currentQuestion.hint}</span>
+                                    </div>
+                                </div>
+
+                                <div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5">
+                                    <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">
+                                        ⚠️ ${currentQuestion.explanation}
+                                    </div>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 fade-in py-6">
+                                <span class="text-6xl">🎉</span>
+                                <span>اكتملت الصناديق بنجاح!</span>
+                            </div>
+                        `}
+                    </div>
+                    
+                    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        ${boxesHTML}
+                    </div>
+                </div>`;
+
+                if (isComplete) {
+                    const progress = this.state.progress[sectionId];
+                    html += `
+                        <div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center fade-in max-w-2xl mx-auto w-full">
+                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3>
+                            <div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3">
+                                <span>${toArabicNum(progress.score)}</span>
+                                <span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span>
+                                <span>${toArabicNum(progress.total)}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                html += this.renderSectionFooterControls(sectionId, isComplete);
+                return html;
+            },
+
+            renderSort(sectionData) {
+                const sectionId = sectionData.id;
+                const theme = sectionData.theme;
+                const state = this.state.sectionData[sectionId];
+                const { questions, currentIndex, status, animatingOut } = state;
+                const isComplete = currentIndex >= questions.length;
+                
+                let html = '';
+
+                const currentQState = isComplete ? null : questions[currentIndex];
+                const currentQuestion = isComplete ? null : currentQState.originalQuestion;
+                const showHint = isComplete ? false : currentQState.showHint;
+                const hintFadeClass = (currentQState && currentQState.hintAnimate) ? 'smooth-expand' : '';
+                const shakeClass = status === 'incorrect' ? 'shake' : '';
+
+                // بناء أزرار الخيارات السفلية
+                let boxesHTML = '';
+                if (!isComplete) {
+                    const colors = ['emerald', 'purple', 'amber', 'blue', 'rose'];
+                    currentQState.options.forEach((opt, idx) => {
+                        const boxTheme = colors[idx % colors.length];
+                        let btnClass = `flex-1 flex flex-col items-center justify-center p-3 md:p-5 border-2 md:border-4 rounded-xl md:rounded-2xl transition-all duration-300 border-${boxTheme}-200 text-${boxTheme}-700 bg-${boxTheme}-50 `;
+                        
+                        if (!animatingOut && status !== 'correct') { // قابل للنقر
+                            btnClass += `hover:border-${boxTheme}-400 hover:bg-${boxTheme}-100 hover:-translate-y-1 cursor-pointer shadow-sm hover:shadow-md active:scale-95`;
                         } else {
                             btnClass += `opacity-60 cursor-default grayscale-[30%]`;
                         }
                         
                         boxesHTML += `
-                            <button ${status !== 'idle' ? 'disabled' : ''} onclick="App.handleSortClick('${b.id}')" class="${btnClass}">
-                                ${ICONS.tray}
-                                <span class="font-bold text-xl md:text-2xl mb-2 md:mb-3">${b.label}</span>
-                                <div class="bg-white/90 px-4 md:px-5 py-1 rounded-full shadow-inner font-black text-xl border border-white/50">
-                                    ${toArabicNum(boxCounts[b.id])}
-                                </div>
+                            <button ${(!animatingOut && status !== 'correct') ? `onclick="App.handleDynamicSortClick('${sectionId}', ${idx})"` : 'disabled'} class="${btnClass} min-w-[120px]">
+                                <span class="font-bold text-lg md:text-xl text-center leading-snug">${opt.text}</span>
                             </button>
                         `;
                     });
+                }
 
+                html += `<div class="flex flex-col items-center w-full gap-6 fade-in">`;
+                
+                if (sectionData.description) {
                     html += `
-                        <div class="flex flex-col items-center w-full">
-                            <div class="w-full bg-white p-5 md:p-6 rounded-3xl shadow-lg border-2 border-slate-200 transition-colors duration-300 relative z-10 flex flex-col justify-start ${animatingOut ? 'fly-out' : 'fade-in'}">
-                                
-                                <div class="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 mb-6 w-full mx-auto">
-                                    <div class="flex items-center justify-between mb-2 md:mb-3">
-                                        <span class="bg-${theme}-100 text-${theme}-700 font-bold px-4 py-1.5 rounded-full text-lg md:text-xl">
-                                            البطاقة ${toArabicNum(currentIndex + 1)}
-                                        </span>
-                                        <button onclick="App.toggleHint('classify', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">
-                                            💡 تلميح
-                                        </button>
-                                    </div>
-                                    
-                                    <h3 class="text-2xl md:text-3xl font-semibold leading-snug text-slate-800 text-right">«${currentQuestion.text}»</h3>
-
-                                    <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
-                                        <div class="mt-4 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
-                                            <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
-                                            <span class="leading-relaxed">${currentQuestion.hint}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="${status !== 'idle' ? `block w-full ${feedbackFadeClass}` : 'hidden'}">
-                                    <div class="mt-2 mb-4 p-5 rounded-2xl border text-right ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
-                                        <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${status === 'correct' ? 'text-emerald-700' : 'text-rose-700'}">
-                                            ${status === 'correct' ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
-                                            <span>${status === 'correct' ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
-                                        </div>
-                                        <div class="text-xl md:text-2xl font-semibold leading-relaxed mb-6 ${status === 'correct' ? 'text-emerald-800' : 'text-rose-800'} pr-1">
-                                            ${currentQuestion.explanation}
-                                        </div>
-                                        <div class="flex justify-center mt-4">
-                                            <button onclick="App.handleSortContinue()" class="px-10 py-3 text-white font-bold text-xl md:text-2xl rounded-full active:scale-95 transition-transform shadow-md ${status === 'correct' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-rose-600 hover:bg-rose-700'}">
-                                                متابعة
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex flex-row w-full max-w-lg mx-auto gap-2 md:gap-4 mt-2 relative z-0">
-                                    ${boxesHTML}
-                                </div>
-                            </div>
+                        <div class="text-center w-full">
+                            <p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 p-4 md:p-5 rounded-2xl border border-${theme}-200 shadow-sm">
+                                ${sectionData.description}
+                            </p>
                         </div>
                     `;
                 }
+
+                // بناء حاوية الكارت العلوي
+                html += `
+                    <div class="relative w-full min-h-[12rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500">
+                        ${currentQuestion ? `
+                            <div class="w-full max-w-2xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 transition-all transform leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${shakeClass}">
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="bg-${theme}-100 text-${theme}-700 font-bold px-4 py-1.5 rounded-full text-lg md:text-xl">
+                                        البطاقة ${toArabicNum(currentIndex + 1)}
+                                    </span>
+                                    <button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">
+                                        💡 تلميح
+                                    </button>
+                                </div>
+                                <h3 class="text-2xl md:text-3xl font-semibold leading-snug text-slate-800 text-center text-right">«${currentQuestion.text}»</h3>
+                                
+                                <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'} mt-4">
+                                    <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
+                                        <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
+                                        <span class="leading-relaxed">${currentQuestion.hint}</span>
+                                    </div>
+                                </div>
+
+                                <div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5">
+                                    <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">
+                                        ⚠️ إجابة خاطئة! ${currentQuestion.explanation}
+                                    </div>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 fade-in py-6">
+                                <span class="text-6xl">🎉</span>
+                                <span>اكتمل فرز البطاقات!</span>
+                            </div>
+                        `}
+                    </div>
+                    
+                    ${!isComplete ? `
+                    <div class="flex flex-row w-full max-w-2xl mx-auto gap-2 md:gap-4 mt-2 relative z-0 flex-wrap justify-center">
+                        ${boxesHTML}
+                    </div>
+                    ` : ''}
+                </div>`;
 
                 if (isComplete) {
-                    const progress = this.state.progress['classify'];
+                    const progress = this.state.progress[sectionId];
                     html += `
                         <div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center fade-in max-w-2xl mx-auto w-full">
-                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (لعبة التصنيف)</h3>
-                            <div class="text-5xl font-bold text-${theme}-600">
-                                ${toArabicNum(progress.score)} <span class="text-3xl text-slate-400 font-medium mx-2">من</span> ${toArabicNum(progress.total)}
+                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3>
+                            <div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3">
+                                <span>${toArabicNum(progress.score)}</span>
+                                <span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span>
+                                <span>${toArabicNum(progress.total)}</span>
                             </div>
                         </div>
                     `;
                 }
 
-                html += this.renderSectionFooterControls('classify', isComplete);
+                html += this.renderSectionFooterControls(sectionId, isComplete);
                 return html;
             },
 
             renderSectionFooterControls(sectionId, isComplete) {
-                const sectionData = SECTIONS.find(s => s.id === sectionId);
-                const isLast = sectionId === SECTIONS[SECTIONS.length - 1].id;
+                const sectionData = APP_DATA.sections.find(s => s.id === sectionId);
+                const isLast = sectionId === APP_DATA.sections[APP_DATA.sections.length - 1].id;
                 
                 return `
                     <div class="mt-8 flex flex-col md:flex-row justify-center items-center gap-4 mx-auto w-full">
@@ -689,21 +926,25 @@
                 `;
             },
 
+            // ================= دوال التفاعل (Event Handlers) =================
+
             toggleHint(sectionId, idx) {
-                if (sectionId === 'classify') {
-                    const q = this.state.classifyData.questions[idx];
+                const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
+                
+                if (sectionDef.type === 'classify' || sectionDef.type === 'sort') {
+                    const q = this.state.sectionData[sectionId].questions[idx];
                     q.showHint = !q.showHint;
                     q.hintAnimate = q.showHint; 
                     this.updateUI();
                     q.hintAnimate = false; 
                 } else {
-                    const qState = this.state[`${sectionId}Data`][idx];
+                    const qState = this.state.sectionData[sectionId][idx];
                     qState.showHint = !qState.showHint;
                     qState.hintAnimate = qState.showHint; 
                     
-                    const cardHtml = sectionId === 'spotting' ? 
-                        this.renderSpottingCard(qState, idx, SECTIONS.find(s=>s.id===sectionId).theme, sectionId) :
-                        this.renderQuestionCard(qState, idx, sectionId, SECTIONS.find(s=>s.id===sectionId).theme);
+                    const cardHtml = sectionDef.type === 'spotting' ? 
+                        this.renderSpottingCard(qState, idx, sectionDef.theme, sectionId) :
+                        this.renderQuestionCard(qState, idx, sectionId, sectionDef.theme, sectionDef.type);
                         
                     document.getElementById(`${sectionId}-wrapper-${idx}`).innerHTML = cardHtml;
                     qState.hintAnimate = false; 
@@ -711,7 +952,7 @@
             },
 
             handleAnswer(sectionId, qIndex, optIndex) {
-                const qState = this.state[`${sectionId}Data`][qIndex];
+                const qState = this.state.sectionData[sectionId][qIndex];
                 if (qState.answered) return;
                 
                 const selectedOption = qState.options[optIndex];
@@ -722,21 +963,19 @@
                 this.recordProgress(sectionId, selectedOption.isCorrect);
                 
                 const progress = this.state.progress[sectionId];
-                
                 if (progress.answered === progress.total) {
                     this.updateUI();
                 } else {
-                    const theme = SECTIONS.find(s => s.id === sectionId).theme;
-                    document.getElementById(`${sectionId}-wrapper-${qIndex}`).innerHTML = this.renderQuestionCard(qState, qIndex, sectionId, theme);
+                    const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
+                    document.getElementById(`${sectionId}-wrapper-${qIndex}`).innerHTML = this.renderQuestionCard(qState, qIndex, sectionId, sectionDef.theme, sectionDef.type);
                     this.updateTabs();
                     this.checkFinalEvaluation();
                 }
-                
                 qState.answerAnimate = false; 
             },
 
-            handleSpottingClick(qIndex, wIndex) {
-                const qState = this.state.spottingData[qIndex];
+            handleSpottingClick(sectionId, qIndex, wIndex) {
+                const qState = this.state.sectionData[sectionId][qIndex];
                 if (qState.answered) return;
                 
                 qState.answered = true;
@@ -744,57 +983,101 @@
                 qState.answerAnimate = true; 
                 
                 const isCorrect = wIndex === qState.originalQuestion.correctIndex;
-                this.recordProgress('spotting', isCorrect);
+                this.recordProgress(sectionId, isCorrect);
                 
-                const progress = this.state.progress['spotting'];
-
+                const progress = this.state.progress[sectionId];
                 if (progress.answered === progress.total) {
                     this.updateUI();
                 } else {
-                    const theme = SECTIONS.find(s => s.id === 'spotting').theme;
-                    document.getElementById(`spotting-wrapper-${qIndex}`).innerHTML = this.renderSpottingCard(qState, qIndex, theme, 'spotting');
+                    const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
+                    document.getElementById(`${sectionId}-wrapper-${qIndex}`).innerHTML = this.renderSpottingCard(qState, qIndex, sectionDef.theme, sectionId);
                     this.updateTabs();
                     this.checkFinalEvaluation();
                 }
-                
                 qState.answerAnimate = false; 
             },
 
-            handleSortClick(type) {
-                const state = this.state.classifyData;
-                if (state.status !== 'idle') return;
+            // آلية فرز البطاقات لصناديق المعاني
+            handleClassifyClick(sectionId, categoryId) {
+                const state = this.state.sectionData[sectionId];
+                
+                if (state.status === 'correct' || state.animatingOut) return;
 
-                const currentQ = state.questions[state.currentIndex].originalQuestion;
-                const isCorrect = type === currentQ.type;
+                const currentQState = state.questions[state.currentIndex];
+                const currentQ = currentQState.originalQuestion;
+                const isCorrect = categoryId === currentQ.categoryId;
                 
-                state.status = isCorrect ? 'correct' : 'incorrect';
-                if (isCorrect) state.boxCounts[type]++;
-                
-                state.feedbackAnimate = true; 
-                
-                this.recordProgress('classify', isCorrect);
-                this.updateUI();
-                
-                state.feedbackAnimate = false; 
+                if (isCorrect) {
+                    // إذا أتمها بنجاح من المحاولة الأولى يأخذ النقطة
+                    const isFirstAttempt = state.status === 'idle';
+                    
+                    this.state.progress[sectionId].answered++;
+                    if (isFirstAttempt) {
+                        this.state.progress[sectionId].score++;
+                    }
+
+                    state.status = 'correct';
+                    state.placedItems[categoryId].push(currentQ);
+                    
+                    // تحريك الكارت نحو الصندوق
+                    state.animatingOut = true;
+                    this.updateUI();
+                    
+                    setTimeout(() => {
+                        state.currentIndex++;
+                        state.status = 'idle';
+                        state.animatingOut = false;
+                        this.updateUI();
+                    }, 400); 
+                } else {
+                    state.status = 'incorrect';
+                    this.updateUI();
+                }
             },
 
-            handleSortContinue() {
-                const state = this.state.classifyData;
-                state.animatingOut = true;
-                this.updateUI();
+            // آلية فرز البطاقات الديناميكية
+            handleDynamicSortClick(sectionId, optIndex) {
+                const state = this.state.sectionData[sectionId];
                 
-                setTimeout(() => {
-                    state.currentIndex++;
-                    state.status = 'idle';
-                    state.animatingOut = false;
+                if (state.status === 'correct' || state.animatingOut) return;
+
+                const currentQState = state.questions[state.currentIndex];
+                const isCorrect = currentQState.options[optIndex].isCorrect;
+                
+                if (isCorrect) {
+                    // إذا أتمها بنجاح من المحاولة الأولى يأخذ النقطة
+                    const isFirstAttempt = state.status === 'idle';
+                    
+                    this.state.progress[sectionId].answered++;
+                    if (isFirstAttempt) {
+                        this.state.progress[sectionId].score++;
+                    }
+
+                    state.status = 'correct';
+                    
+                    // تحريك الكارت للاختفاء
+                    state.animatingOut = true;
                     this.updateUI();
-                }, 300);
+                    
+                    // تأخير بسيط للانتقال للبطاقة التالية
+                    setTimeout(() => {
+                        state.currentIndex++;
+                        state.status = 'idle';
+                        state.animatingOut = false;
+                        this.updateUI();
+                    }, 400); 
+                } else {
+                    state.status = 'incorrect';
+                    this.updateUI();
+                }
             },
 
             recordProgress(sectionId, isCorrect) {
                 this.state.progress[sectionId].answered++;
                 if (isCorrect) this.state.progress[sectionId].score++;
             },
+
+            // ================= دوال التصفح وإعادة الضبط =================
 
             scrollToContent() {
                 requestAnimationFrame(() => {
@@ -803,14 +1086,9 @@
                         if (target) {
                             const stickyTabs = document.getElementById('sticky-tabs-container');
                             const headerOffset = stickyTabs ? stickyTabs.offsetHeight : 80;
-                            
                             const elementPosition = target.getBoundingClientRect().top;
                             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                            
-                            window.scrollTo({
-                                top: offsetPosition,
-                                behavior: 'smooth'
-                            });
+                            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
                         }
                     }, 30); 
                 });
@@ -821,18 +1099,13 @@
                     setTimeout(() => {
                         const tabBtn = document.getElementById(`tab-${tabId}`);
                         const container = document.getElementById('tabs-container');
-                        
                         if (tabBtn && container) {
                             const containerRect = container.getBoundingClientRect();
                             const btnRect = tabBtn.getBoundingClientRect();
-                            
-                            if (tabId === SECTIONS[0].id) {
-                                // للتبويب الأول، نضمن محاذاته لأقصى يمين الحاوية تماماً 
-                                // (مع ترك مساحة px-4 أي 16 بكسل لتبدو المسافات متساوية ومرتبة)
+                            if (tabId === APP_DATA.sections[0].id) {
                                 const scrollDelta = (btnRect.right - containerRect.right) + 16;
                                 container.scrollBy({ left: scrollDelta, behavior: 'smooth' });
                             } else {
-                                // التوسيط التلقائي المعتاد لباقي التبويبات
                                 const scrollDelta = (btnRect.left + btnRect.width / 2) - (containerRect.left + containerRect.width / 2);
                                 container.scrollBy({ left: scrollDelta, behavior: 'smooth' });
                             }
@@ -849,35 +1122,53 @@
             },
 
             handleNextSection() {
-                const currentIndex = SECTIONS.findIndex(s => s.id === this.state.activeTab);
-                if (currentIndex < SECTIONS.length - 1) {
-                    this.handleTabChange(SECTIONS[currentIndex + 1].id);
+                const currentIndex = APP_DATA.sections.findIndex(s => s.id === this.state.activeTab);
+                if (currentIndex < APP_DATA.sections.length - 1) {
+                    this.handleTabChange(APP_DATA.sections[currentIndex + 1].id);
                 }
             },
 
             handleResetSection(sectionId) {
+                const secDef = APP_DATA.sections.find(s => s.id === sectionId);
                 this.state.progress[sectionId].answered = 0;
                 this.state.progress[sectionId].score = 0;
                 
-                if (sectionId === 'quiz' || sectionId === 'tf' || sectionId === 'spotting') {
-                    let sourceData = sectionId === 'quiz' ? QUIZ_QUESTIONS : (sectionId === 'tf' ? TF_QUESTIONS : SPOTTING_QUESTIONS);
-                    let newData = shuffleArray(sourceData).map(q => {
+                if (secDef.type === 'mcq' || secDef.type === 'true_false' || secDef.type === 'spotting') {
+                    // الأسئلة ثابتة، الخيارات متغيرة
+                    let newData = secDef.questions.map(q => {
                         let options = [];
-                        if (sectionId === 'quiz') {
+                        if (secDef.type === 'mcq') {
                             options = q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correct }));
-                        } else if (sectionId === 'tf') {
+                            options = shuffleArray(options);
+                        } else if (secDef.type === 'true_false') {
                             options = [
                                 { text: "صواب", isCorrect: true === q.answer },
                                 { text: "خطأ", isCorrect: false === q.answer }
                             ];
+                            options = shuffleArray(options);
                         }
                         return { originalQuestion: q, options, answered: false, selectedOption: null, selectedIndex: null, showHint: false };
                     });
-                    this.state[`${sectionId}Data`] = newData;
-                } else if (sectionId === 'classify') {
-                    this.state.classifyData = {
-                        questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false })),
-                        currentIndex: 0, status: 'idle', boxCounts: { makneya: 0, tasreheya: 0, tamtheleya: 0 }, animatingOut: false
+                    this.state.sectionData[sectionId] = newData;
+                } else if (secDef.type === 'classify') {
+                    let placedItems = {};
+                    secDef.categories.forEach(c => placedItems[c.id] = []);
+                    // القسم الوحيد الذي تتغير فيه الأسئلة عشوائياً
+                    this.state.sectionData[sectionId] = {
+                        questions: shuffleArray(secDef.questions).map(q => ({ originalQuestion: q, showHint: false })),
+                        currentIndex: 0, 
+                        status: 'idle', 
+                        placedItems: placedItems, 
+                        animatingOut: false
+                    };
+                } else if (secDef.type === 'sort') {
+                    // الأسئلة ثابتة، الخيارات متغيرة
+                    this.state.sectionData[sectionId] = {
+                        questions: secDef.questions.map(q => {
+                            let opts = q.options.map((opt, i) => ({ text: opt, isCorrect: i === q.correct }));
+                            return { originalQuestion: q, options: shuffleArray(opts), showHint: false };
+                        }),
+                        currentIndex: 0, status: 'idle', animatingOut: false
                     };
                 }
                 
@@ -886,23 +1177,11 @@
             },
 
             handleGlobalRestart() {
-                this.state.progress = {
-                    intro: { answered: 0, total: 0, score: 0 },
-                    classify: { answered: 0, total: CLASSIFY_PHRASES.length, score: 0 },
-                    spotting: { answered: 0, total: SPOTTING_QUESTIONS.length, score: 0 },
-                    quiz: { answered: 0, total: QUIZ_QUESTIONS.length, score: 0 },
-                    tf: { answered: 0, total: TF_QUESTIONS.length, score: 0 }
-                };
-                
                 this.initSectionData();
-                this.state.activeTab = SECTIONS[0].id;
+                if (APP_DATA.sections.length > 0) this.state.activeTab = APP_DATA.sections[0].id;
                 this.updateUI();
-                
-                // إعادة ضبط التمرير الأفقي للتبويبات لتعود لأقصى اليمين بشكل مرتب
-                this.scrollTabIntoView(SECTIONS[0].id);
-                
+                this.scrollTabIntoView(this.state.activeTab);
                 requestAnimationFrame(() => {
-                    // التمرير لمستوى التبويبات مباشرة وإخفاء الترويسة العلوية
                     const header = document.getElementById('main-header');
                     const targetTop = header ? header.offsetHeight : 80;
                     window.scrollTo({ top: targetTop, behavior: 'smooth' });
@@ -910,26 +1189,38 @@
             },
 
             checkFinalEvaluation() {
-                const isAllComplete = Object.values(this.state.progress).filter(p => p.total > 0).every(p => p.answered === p.total);
+                const scorableSections = APP_DATA.sections.filter(s => s.type !== 'intro');
+                if (scorableSections.length === 0) return;
+
+                const isAllComplete = scorableSections.every(s => {
+                    const p = this.state.progress[s.id];
+                    return p && p.total > 0 && p.answered === p.total;
+                });
+
                 const container = document.getElementById('final-evaluation-container');
+                const activeSecDef = APP_DATA.sections.find(s => s.id === this.state.activeTab);
                 
-                if (isAllComplete && this.state.activeTab !== 'intro') {
-                    const totalScore = Object.values(this.state.progress).reduce((acc, p) => acc + p.score, 0);
-                    const totalQuestions = Object.values(this.state.progress).reduce((acc, p) => acc + p.total, 0);
+                if (isAllComplete && activeSecDef.type !== 'intro') {
+                    let totalScore = 0, totalQuestions = 0;
+                    scorableSections.forEach(s => {
+                        totalScore += this.state.progress[s.id].score;
+                        totalQuestions += this.state.progress[s.id].total;
+                    });
+
                     const percentage = Math.round((totalScore / totalQuestions) * 100);
                     
                     let message = "", color = "";
                     if (percentage < 60) { message = "تحتاج إلى مزيد من التدريب، لا تيأس وحاول مرة أخرى!"; color = "text-rose-600"; }
-                    else if (percentage < 85) { message = "أداء رائع! مستواك جيد جدًا في البلاغة."; color = "text-violet-600"; }
-                    else { message = "أداء استثنائي! أنت بطل حقيقي وخبير في الاستعارة."; color = "text-emerald-600"; }
+                    else if (percentage < 85) { message = "أداء رائع! مستواك جيد جدًا."; color = "text-violet-600"; }
+                    else { message = "أداء استثنائي! أنت بطل حقيقي وخبير في هذا الدرس."; color = "text-emerald-600"; }
 
                     container.innerHTML = `
                         <div id="final-eval-box" class="mt-12 bg-white p-8 md:p-12 rounded-3xl shadow-lg border-2 border-amber-200 text-center fade-in">
                             ${ICONS.medal}
-                            <h2 class="text-3xl md:text-4xl font-bold text-slate-700 mb-4">التقييم النهائي</h2>
-                            <div class="text-6xl md:text-8xl font-bold mb-6 text-slate-700">
+                            <h2 class="text-3xl md:text-4xl font-bold text-slate-700 mb-6">التقييم النهائي</h2>
+                            <div class="text-6xl md:text-7xl font-bold mb-8 text-slate-700 flex items-center justify-center gap-4">
                                 <span class="${color}">${toArabicNum(totalScore)}</span>
-                                <span class="text-slate-400 text-4xl md:text-5xl font-medium mx-3">من</span>
+                                <span class="text-slate-400 text-3xl md:text-4xl font-medium mt-2">من</span>
                                 <span class="text-slate-500">${toArabicNum(totalQuestions)}</span>
                             </div>
                             <div class="inline-block bg-amber-100 text-amber-800 px-6 py-2 rounded-full font-semibold text-xl md:text-2xl mb-6">
@@ -955,7 +1246,7 @@
                 }
                 window.scrollTo(0, 0);
             } catch (error) {
-                console.warn("تم تجاهل ضبط التمرير بسبب قيود البيئة المعزولة (iFrame).", error);
+                console.warn("تم تجاهل ضبط التمرير.", error);
             }
 
             App.init();
