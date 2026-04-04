@@ -230,7 +230,7 @@
                         </div>
                     </div>
                     
-                    <main class="container mx-auto px-4 pb-8 max-w-4xl flex-grow">
+                    <main class="container mx-auto px-4 pb-8 max-w-5xl flex-grow">
                         <div id="scroll-target"></div>
                         
                         <div class="text-center pt-6 mb-8 w-full">
@@ -337,42 +337,65 @@
 
             renderIntroSectionHTML() {
                 return `
-                    <div class="max-w-3xl mx-auto space-y-6 fade-in">
-                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-amber-100 shadow-sm flex flex-col md:flex-row items-start text-right gap-4 md:gap-6">
-                            <div class="bg-amber-100 p-4 rounded-full shrink-0">${ICONS.hidden}</div>
-                            <div>
-                                <h3 class="text-2xl font-semibold text-slate-700 mb-3">١. الاستعارة المكنية</h3>
-                                <p class="text-xl text-slate-600 leading-relaxed">
-                                    هي التي نَحْذِفُ فيها (المشبه به) ونأتي بصفة من صفاته تدل عليه.<br/>
-                                    <span class="text-amber-600 font-semibold">مثال:</span> طار الخبر في المدينة. (شبهنا الخبر بطائر، وحذفنا الطائر وأبقينا صفة الطيران).
+                    <div class="w-full fade-in">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                            <!-- البطاقة الأولى: المكنية -->
+                            <div class="bg-white p-6 md:p-8 rounded-3xl border-2 border-amber-100 shadow-sm flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:border-amber-300 group">
+                                <div class="bg-amber-100 p-4 rounded-2xl mb-5 transition-transform group-hover:scale-110 duration-300 shadow-inner">
+                                    ${ICONS.hidden}
+                                </div>
+                                <h3 class="text-2xl font-bold text-slate-700 mb-4">١. المكنية</h3>
+                                <p class="text-lg text-slate-600 leading-relaxed flex-grow mb-6 px-1">
+                                    نَحْذِفُ فيها (المشبه به) ونأتي بصفة من صفاته تدل عليه.
                                 </p>
+                                <div class="w-full bg-amber-50 p-4 md:p-5 rounded-2xl border border-amber-100 text-right mt-auto transition-colors group-hover:bg-amber-100/50">
+                                    <span class="block text-amber-600 font-bold mb-1 text-sm md:text-base">مثال:</span>
+                                    <span class="text-slate-800 text-lg md:text-xl font-bold block mb-2 leading-snug">«طار الخبر في المدينة»</span>
+                                    <span class="text-sm md:text-base text-amber-800 leading-relaxed block">
+                                        شبهنا الخبر بطائر، وحذفنا الطائر وأبقينا صفة الطيران.
+                                    </span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-violet-100 shadow-sm flex flex-col md:flex-row items-start text-right gap-4 md:gap-6">
-                            <div class="bg-violet-100 p-4 rounded-full shrink-0">${ICONS.loud}</div>
-                            <div>
-                                <h3 class="text-2xl font-semibold text-slate-700 mb-3">٢. الاستعارة التصريحية</h3>
-                                <p class="text-xl text-slate-600 leading-relaxed">
-                                    هي التي نُصَرِّحُ فيها بلفظ (المشبه به) ونحذف (المشبه).<br/>
-                                    <span class="text-violet-600 font-semibold">مثال:</span> عبر أسودنا القناة. (شبهنا الجنود بالأسود، وصرّحنا بكلمة أسود).
+                            <!-- البطاقة الثانية: التصريحية -->
+                            <div class="bg-white p-6 md:p-8 rounded-3xl border-2 border-violet-100 shadow-sm flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:border-violet-300 group">
+                                <div class="bg-violet-100 p-4 rounded-2xl mb-5 transition-transform group-hover:scale-110 duration-300 shadow-inner">
+                                    ${ICONS.loud}
+                                </div>
+                                <h3 class="text-2xl font-bold text-slate-700 mb-4">٢. التصريحية</h3>
+                                <p class="text-lg text-slate-600 leading-relaxed flex-grow mb-6 px-1">
+                                    نُصَرِّحُ فيها بلفظ (المشبه به) ونحذف (المشبه).
                                 </p>
+                                <div class="w-full bg-violet-50 p-4 md:p-5 rounded-2xl border border-violet-100 text-right mt-auto transition-colors group-hover:bg-violet-100/50">
+                                    <span class="block text-violet-600 font-bold mb-1 text-sm md:text-base">مثال:</span>
+                                    <span class="text-slate-800 text-lg md:text-xl font-bold block mb-2 leading-snug">«عبر أسودنا القناة»</span>
+                                    <span class="text-sm md:text-base text-violet-800 leading-relaxed block">
+                                        شبهنا الجنود بالأسود، وصرّحنا بكلمة أسود.
+                                    </span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="bg-white p-6 md:p-8 rounded-2xl border-2 border-sky-100 shadow-sm flex flex-col md:flex-row items-start text-right gap-4 md:gap-6">
-                            <div class="bg-sky-100 p-4 rounded-full shrink-0">${ICONS.scene}</div>
-                            <div>
-                                <h3 class="text-2xl font-semibold text-slate-700 mb-3">٣. الاستعارة التمثيلية</h3>
-                                <p class="text-xl text-slate-600 leading-relaxed">
-                                    هي تشبيه حالة كاملة بحالة أخرى كاملة، دون ذكر الحالتين معًا، والحالة الأولى تكون مفهومة من السياق (تكثر في الأمثال).<br/>
-                                    <span class="text-sky-600 font-semibold">مثال:</span> لمن يبذل جهدًا بلا فائدة: "أنت تنفخ في رماد".
+                            <!-- البطاقة الثالثة: التمثيلية -->
+                            <div class="bg-white p-6 md:p-8 rounded-3xl border-2 border-sky-100 shadow-sm flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:border-sky-300 group">
+                                <div class="bg-sky-100 p-4 rounded-2xl mb-5 transition-transform group-hover:scale-110 duration-300 shadow-inner">
+                                    ${ICONS.scene}
+                                </div>
+                                <h3 class="text-2xl font-bold text-slate-700 mb-4">٣. التمثيلية</h3>
+                                <p class="text-lg text-slate-600 leading-relaxed flex-grow mb-6 px-1">
+                                    تشبيه حالة كاملة بحالة أخرى، وتُفهم من السياق (تكثر في الأمثال).
                                 </p>
+                                <div class="w-full bg-sky-50 p-4 md:p-5 rounded-2xl border border-sky-100 text-right mt-auto transition-colors group-hover:bg-sky-100/50">
+                                    <span class="block text-sky-600 font-bold mb-1 text-sm md:text-base">مثال:</span>
+                                    <span class="text-slate-800 text-lg md:text-xl font-bold block mb-2 leading-snug">«أنت تنفخ في رماد»</span>
+                                    <span class="text-sm md:text-base text-sky-800 leading-relaxed block">
+                                        لمن يبذل جهدًا بلا فائدة، شبّه حالته بمن ينفخ في رماد.
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
                         <div class="flex justify-center mt-10 pt-4">
-                            <button onclick="App.handleNextSection()" class="bg-emerald-600 text-white font-semibold text-xl py-4 px-12 rounded-full shadow-md flex items-center gap-3 active:scale-95 transition-transform">
+                            <button onclick="App.handleNextSection()" class="bg-emerald-600 text-white font-semibold text-xl py-4 px-12 rounded-full shadow-md flex items-center gap-3 active:scale-95 transition-transform hover:bg-emerald-700 hover:shadow-lg">
                                 هيا نبدأ التدريبات
                                 ${ICONS.arrowLeft}
                             </button>
