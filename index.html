@@ -152,7 +152,7 @@
             { id: 'classify', label: 'التصنيف', theme: 'amber' },
             { id: 'spotting', label: 'صياد الكلمات', theme: 'indigo' },
             { id: 'quiz', label: 'اختر الإجابة', theme: 'violet' },
-            { id: 'tf', label: 'صواب وخطأ', theme: 'rose' }
+            { id: 'tf', label: 'صواب وخطأ', theme: 'emerald' }
         ];
 
         // ================= كائن التطبيق الرئيسي =================
@@ -204,7 +204,7 @@
                 }));
 
                 this.state.classifyData = {
-                    questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false })),
+                    questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false, hasErrored: false })),
                     currentIndex: 0, status: 'idle', boxCounts: { makneya: 0, tasreheya: 0, tamtheleya: 0 }, animatingOut: false
                 };
             },
@@ -598,10 +598,11 @@
                 let html = '';
 
                 if (!isComplete && questions[currentIndex]) {
-                    const currentQuestion = questions[currentIndex].originalQuestion;
-                    const showHint = questions[currentIndex].showHint;
+                    const currentQuestionState = questions[currentIndex];
+                    const currentQuestion = currentQuestionState.originalQuestion;
+                    const showHint = currentQuestionState.showHint;
                     
-                    const hintFadeClass = questions[currentIndex].hintAnimate ? 'smooth-expand' : '';
+                    const hintFadeClass = currentQuestionState.hintAnimate ? 'smooth-expand' : '';
                     const feedbackFadeClass = state.feedbackAnimate ? 'smooth-expand' : '';
                     
                     const boxes = [
@@ -660,12 +661,14 @@
                                             ${status === 'correct' ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
                                             <span>${status === 'correct' ? 'إجابة صحيحة' : 'إجابة خاطئة'}</span>
                                         </div>
-                                        <div class="text-xl md:text-2xl font-semibold leading-relaxed mb-6 ${status === 'correct' ? 'text-emerald-800' : 'text-rose-800'} pr-1">
+                                        ${status === 'correct' ? `
+                                        <div class="text-xl md:text-2xl font-semibold leading-relaxed mb-6 text-emerald-800 pr-1">
                                             ${currentQuestion.explanation}
                                         </div>
-                                        <div class="flex justify-center mt-4">
-                                            <button onclick="App.handleSortContinue()" class="px-10 py-3 text-white font-bold text-xl md:text-2xl rounded-full active:scale-95 transition-transform shadow-md ${status === 'correct' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-rose-600 hover:bg-rose-700'}">
-                                                متابعة
+                                        ` : ''}
+                                        <div class="flex justify-center ${status === 'correct' ? 'mt-4' : 'mt-6'}">
+                                            <button onclick="${status === 'correct' ? 'App.handleSortContinue()' : 'App.handleSortRetry()'}" class="px-10 py-3 text-white font-bold text-xl md:text-2xl rounded-full active:scale-95 transition-transform shadow-md ${status === 'correct' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-rose-600 hover:bg-rose-700'}">
+                                                ${status === 'correct' ? 'متابعة' : 'حاول مرة أخرى'}
                                             </button>
                                         </div>
                                     </div>
@@ -789,18 +792,35 @@
                 const state = this.state.classifyData;
                 if (state.status !== 'idle') return;
 
-                const currentQ = state.questions[state.currentIndex].originalQuestion;
+                const currentQuestionState = state.questions[state.currentIndex];
+                const currentQ = currentQuestionState.originalQuestion;
                 const isCorrect = type === currentQ.type;
                 
                 state.status = isCorrect ? 'correct' : 'incorrect';
-                if (isCorrect) state.boxCounts[type]++;
-                
                 state.feedbackAnimate = true; 
                 
-                this.recordProgress('classify', isCorrect);
-                this.updateUI();
+                if (isCorrect) {
+                    state.boxCounts[type]++;
+                    // تسجيل التقدم يدوياً هنا لضمان عدم احتساب الأسئلة الخاطئة
+                    this.state.progress['classify'].answered++;
+                    // لا نعطيه الدرجة إلا إذا كان هذا السؤال لم يُسجل به خطأ مسبقاً
+                    if (!currentQuestionState.hasErrored) {
+                        this.state.progress['classify'].score++;
+                    }
+                } else {
+                    // تسجيل أن الطالب أخطأ في هذا السؤال حتى تُخصم درجته لاحقاً عند الإجابة الصحيحة
+                    currentQuestionState.hasErrored = true;
+                }
                 
+                this.updateUI();
                 state.feedbackAnimate = false; 
+            },
+
+            // دالة جديدة لإعادة المحاولة عند الخطأ
+            handleSortRetry() {
+                const state = this.state.classifyData;
+                state.status = 'idle';
+                this.updateUI();
             },
 
             handleSortContinue() {
@@ -901,7 +921,7 @@
                     this.state[`${sectionId}Data`] = newData;
                 } else if (sectionId === 'classify') {
                     this.state.classifyData = {
-                        questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false })),
+                        questions: shuffleArray(CLASSIFY_PHRASES).map(q => ({ originalQuestion: q, showHint: false, hasErrored: false })),
                         currentIndex: 0, status: 'idle', boxCounts: { makneya: 0, tasreheya: 0, tamtheleya: 0 }, animatingOut: false
                     };
                 }
@@ -989,3 +1009,5 @@
     </script>
 </body>
 </html>
+
+
