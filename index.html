@@ -53,7 +53,7 @@
         .smooth-expand { animation: smoothExpand 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; overflow: hidden; }
         @keyframes smoothExpand {
             0% { max-height: 0; opacity: 0; transform: translateY(-10px); }
-            100% { max-height: 400px; opacity: 1; transform: translateY(0); }
+            100% { max-height: 1000px; opacity: 1; transform: translateY(0); }
         }
         
         button { outline: none; }
@@ -339,6 +339,23 @@
                 });
             },
 
+            showSectionResult(sectionId, sectionDef, progress) {
+                const resultArea = document.getElementById(`section-result-area-${sectionId}`);
+                if (resultArea) {
+                    resultArea.innerHTML = `
+                        <div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionDef.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full smooth-expand">
+                            <h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionDef.label})</h3>
+                            <div class="text-5xl font-bold text-${sectionDef.theme}-${sectionDef.baseWeight}">
+                                ${toArabicNum(progress.score)} <span class="text-3xl text-slate-400 font-medium mx-2">من</span> ${toArabicNum(progress.total)}
+                            </div>
+                        </div>`;
+                }
+                const footerArea = document.getElementById(`section-footer-area-${sectionId}`);
+                if (footerArea) {
+                    footerArea.innerHTML = `<div class="smooth-expand w-full">${this.renderSectionFooterControls(sectionId, true)}</div>`;
+                }
+            },
+
             renderIntroSectionHTML() {
                 return `
                     <div class="w-full fade-in">
@@ -423,9 +440,10 @@
                     html += `</div>`;
                 });
 
+                html += `<div id="section-result-area-${sectionId}">`;
                 if (isComplete) {
                     html += `
-                        <div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full">
+                        <div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full smooth-expand">
                             <h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.label})</h3>
                             <div class="text-5xl font-bold text-${sectionData.theme}-${sectionData.baseWeight}">
                                 ${toArabicNum(progress.score)} <span class="text-3xl text-slate-400 font-medium mx-2">من</span> ${toArabicNum(progress.total)}
@@ -433,9 +451,10 @@
                         </div>
                     `;
                 }
-                
-                html += '</div>'; 
+                html += `</div><div id="section-footer-area-${sectionId}" class="w-full">`;
                 html += this.renderSectionFooterControls(sectionId, isComplete);
+                html += `</div></div>`;
+                
                 return html;
             },
 
@@ -505,7 +524,7 @@
                             </div>
                             <h3 class="text-2xl md:text-3xl font-semibold text-slate-800 leading-snug whitespace-pre-line text-right">${q.text}</h3>
 
-                            <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
+                            <div id="hint-area-${sectionId}-${idx}" class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
                                 <div class="mt-4 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                     <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
                                     <span class="leading-relaxed">${q.hint}</span>
@@ -513,11 +532,11 @@
                             </div>
                         </div>
                         
-                        <div class="grid gap-3 mx-auto w-full max-w-md flex-grow grid-cols-1 content-start">
+                        <div id="options-area-${sectionId}-${idx}" class="grid gap-3 mx-auto w-full max-w-md flex-grow grid-cols-1 content-start">
                             ${optionsHTML}
                         </div>
                         
-                        <div class="${answered ? `block w-full ${answerFadeClass}` : 'hidden'}">
+                        <div id="answer-area-${sectionId}-${idx}" class="${answered ? `block w-full ${answerFadeClass}` : 'hidden'}">
                             <div class="mt-6 p-5 rounded-xl border text-right ${isSelectedCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                 <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${isSelectedCorrect ? 'text-emerald-700' : 'text-rose-700'}">
                                     ${isSelectedCorrect ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
@@ -557,9 +576,9 @@
                     }
 
                     wordsHTML += `
-                        <span onclick="App.handleSpottingClick(${idx}, ${wIdx})" class="${wordClass}">
+                        <button ${answered ? 'disabled' : ''} onclick="App.handleSpottingClick('${sectionId}', ${idx}, ${wIdx})" class="${wordClass}">
                             ${word}
-                        </span>
+                        </button>
                     `;
                 });
 
@@ -577,7 +596,7 @@
                             
                             <p class="text-right text-slate-700 font-semibold text-xl md:text-2xl leading-snug">حدد الكلمة التي تُمثل <span class="text-${theme}-600 font-bold">الاستعارة</span> في الجملة الآتية:</p>
 
-                            <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
+                            <div id="hint-area-${sectionId}-${idx}" class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
                                 <div class="mt-4 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                     <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
                                     <span class="leading-relaxed">${q.hint}</span>
@@ -585,11 +604,11 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 leading-loose mx-auto w-full max-w-lg">
+                        <div id="options-area-${sectionId}-${idx}" class="flex flex-wrap justify-center items-center gap-3 md:gap-4 leading-loose mx-auto w-full max-w-lg">
                             ${wordsHTML}
                         </div>
 
-                        <div class="${answered ? `block w-full ${answerFadeClass}` : 'hidden'}">
+                        <div id="answer-area-${sectionId}-${idx}" class="${answered ? `block w-full ${answerFadeClass}` : 'hidden'}">
                             <div class="mt-6 p-5 rounded-xl border text-right ${isCorrectAnswer ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
                                 <div class="flex items-center justify-start gap-2 mb-3 font-bold text-xl md:text-2xl ${isCorrectAnswer ? 'text-emerald-700' : 'text-rose-700'}">
                                     ${isCorrectAnswer ? ICONS.checkCircleLarge : ICONS.xCircleLarge}
@@ -602,6 +621,32 @@
                         </div>
                     </div>
                 `;
+            },
+
+            updateStandardCardPartial(sectionId, qIndex, qState, theme, type) {
+                const isSpotting = type === 'spotting';
+                const newHTML = isSpotting ? this.renderSpottingCard(qState, qIndex, theme, sectionId) : this.renderQuestionCard(qState, qIndex, sectionId, theme);
+                const mainCard = document.getElementById(isSpotting ? `spotting-q-${qIndex}` : `${sectionId}-q-${qIndex}`);
+                
+                if (!mainCard) {
+                    document.getElementById(`${sectionId}-wrapper-${qIndex}`).innerHTML = newHTML;
+                    return;
+                }
+
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = newHTML;
+                
+                const areas = ['hint-area', 'options-area', 'answer-area'];
+                areas.forEach(area => {
+                    const oldEl = document.getElementById(`${area}-${sectionId}-${qIndex}`);
+                    const newEl = tempDiv.querySelector(`#${area}-${sectionId}-${qIndex}`);
+                    if (oldEl && newEl) {
+                        oldEl.innerHTML = newEl.innerHTML;
+                        oldEl.className = newEl.className;
+                    }
+                });
+                
+                mainCard.className = tempDiv.firstElementChild.className;
             },
 
             renderClassifySectionHTML() {
@@ -666,7 +711,7 @@
                                     
                                     <h3 class="text-2xl md:text-3xl font-semibold leading-snug text-slate-800 text-right">«${currentQuestion.text}»</h3>
 
-                                    <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
+                                    <div id="hint-area-classify-${currentIndex}" class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'}">
                                         <div class="mt-4 bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                             <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
                                             <span class="leading-relaxed">${currentQuestion.hint}</span>
@@ -701,10 +746,11 @@
                     `;
                 }
 
+                html += `<div id="section-result-area-classify">`;
                 if (isComplete) {
                     const progress = this.state.progress['classify'];
                     html += `
-                        <div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center fade-in max-w-2xl mx-auto w-full">
+                        <div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center smooth-expand max-w-2xl mx-auto w-full">
                             <h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (لعبة التصنيف)</h3>
                             <div class="text-5xl font-bold text-${theme}-600">
                                 ${toArabicNum(progress.score)} <span class="text-3xl text-slate-400 font-medium mx-2">من</span> ${toArabicNum(progress.total)}
@@ -712,8 +758,10 @@
                         </div>
                     `;
                 }
-
+                html += `</div><div id="section-footer-area-classify" class="w-full">`;
                 html += this.renderSectionFooterControls('classify', isComplete);
+                html += `</div>`;
+                
                 return html;
             },
 
@@ -737,24 +785,23 @@
             },
 
             toggleHint(sectionId, idx) {
-                if (sectionId === 'classify') {
-                    const q = this.state.classifyData.questions[idx];
-                    q.showHint = !q.showHint;
-                    q.hintAnimate = q.showHint; 
-                    this.updateUI();
-                    q.hintAnimate = false; 
+                const qState = sectionId === 'classify' ? this.state.classifyData.questions[idx] : this.state[`${sectionId}Data`][idx];
+                qState.showHint = !qState.showHint;
+                qState.hintAnimate = qState.showHint; 
+
+                const hintArea = document.getElementById(`hint-area-${sectionId}-${idx}`);
+                if (hintArea) {
+                    if (qState.showHint) {
+                        hintArea.className = 'block w-full smooth-expand';
+                    } else {
+                        hintArea.className = 'hidden';
+                    }
                 } else {
-                    const qState = this.state[`${sectionId}Data`][idx];
-                    qState.showHint = !qState.showHint;
-                    qState.hintAnimate = qState.showHint; 
-                    
-                    const cardHtml = sectionId === 'spotting' ? 
-                        this.renderSpottingCard(qState, idx, SECTIONS.find(s=>s.id===sectionId).theme, sectionId) :
-                        this.renderQuestionCard(qState, idx, sectionId, SECTIONS.find(s=>s.id===sectionId).theme);
-                        
-                    document.getElementById(`${sectionId}-wrapper-${idx}`).innerHTML = cardHtml;
-                    qState.hintAnimate = false; 
+                    // كخيار احتياطي إذا لم يُعثر على العنصر يتم التحديث الشامل
+                    this.updateUI();
                 }
+                
+                qState.hintAnimate = false; 
             },
 
             handleAnswer(sectionId, qIndex, optIndex) {
@@ -769,20 +816,20 @@
                 this.recordProgress(sectionId, selectedOption.isCorrect);
                 
                 const progress = this.state.progress[sectionId];
+                const sectionDef = SECTIONS.find(s => s.id === sectionId);
+                
+                this.updateStandardCardPartial(sectionId, qIndex, qState, sectionDef.theme, sectionId);
+                this.updateTabs();
                 
                 if (progress.answered === progress.total) {
-                    this.updateUI();
-                } else {
-                    const theme = SECTIONS.find(s => s.id === sectionId).theme;
-                    document.getElementById(`${sectionId}-wrapper-${qIndex}`).innerHTML = this.renderQuestionCard(qState, qIndex, sectionId, theme);
-                    this.updateTabs();
-                    this.checkFinalEvaluation();
-                }
+                    this.showSectionResult(sectionId, sectionDef, progress);
+                } 
+                this.checkFinalEvaluation();
                 
                 qState.answerAnimate = false; 
             },
 
-            handleSpottingClick(qIndex, wIndex) {
+            handleSpottingClick(sectionId, qIndex, wIndex) {
                 const qState = this.state.spottingData[qIndex];
                 if (qState.answered) return;
                 
@@ -791,18 +838,18 @@
                 qState.answerAnimate = true; 
                 
                 const isCorrect = wIndex === qState.originalQuestion.correctIndex;
-                this.recordProgress('spotting', isCorrect);
+                this.recordProgress(sectionId, isCorrect);
                 
-                const progress = this.state.progress['spotting'];
+                const progress = this.state.progress[sectionId];
+                const sectionDef = SECTIONS.find(s => s.id === sectionId);
+
+                this.updateStandardCardPartial(sectionId, qIndex, qState, sectionDef.theme, sectionId);
+                this.updateTabs();
 
                 if (progress.answered === progress.total) {
-                    this.updateUI();
-                } else {
-                    const theme = SECTIONS.find(s => s.id === 'spotting').theme;
-                    document.getElementById(`spotting-wrapper-${qIndex}`).innerHTML = this.renderSpottingCard(qState, qIndex, theme, 'spotting');
-                    this.updateTabs();
-                    this.checkFinalEvaluation();
-                }
+                    this.showSectionResult(sectionId, sectionDef, progress);
+                } 
+                this.checkFinalEvaluation();
                 
                 qState.answerAnimate = false; 
             },
@@ -958,7 +1005,7 @@
                     else if (percentage < 85) { message = "أداء رائع! مستواك جيد جدًا في البلاغة."; color = "text-violet-600"; }
                     else { message = "أداء استثنائي! أنت بطلٌ حقيقي وخبير في الاستعارة."; color = "text-emerald-600"; }
                     container.innerHTML = `
-                        <div id="final-eval-box" class="mt-12 bg-white p-8 md:p-12 rounded-3xl shadow-lg border-2 border-indigo-200 text-center fade-in">
+                        <div id="final-eval-box" class="mt-12 bg-white p-8 md:p-12 rounded-3xl shadow-lg border-2 border-indigo-200 text-center smooth-expand">
                             ${ICONS.medal}
                             <h2 class="text-3xl md:text-4xl font-bold text-slate-700 mb-4">التقييم النهائي</h2>
                             <div class="text-6xl md:text-8xl font-bold mb-6 text-slate-700">
