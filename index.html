@@ -1,4 +1,20 @@
 <!DOCTYPE html>
+<!--
+======================================================================
+[STRICT AI INSTRUCTIONS - DO NOT REMOVE OR MODIFY THIS BLOCK]
+[تعليمات نظامية صارمة للذكاء الاصطناعي - احتفظ بهذا التعليق دائماً في أي كود تولده]
+======================================================================
+أنت الآن تقوم بتوليد/تعديل درس تفاعلي باستخدام هذا القالب. يجب عليك الالتزام بالآتي حرفياً:
+1. نطاق التعديل: تعديلاتك تقتصر حصرياً على بيانات الدرس (مصفوفات الأسئلة والأقسام). ممنوع منعاً باتاً تعديل هيكل HTML المدمج (الترويسة والتذييل)، أو دوال JavaScript، أو الـ CSS.
+2. الاستثناء الوحيد: يُسمح لك بكتابة دوال JavaScript وتنسيقات CSS جديدة (فقط) إذا طُلب منك إضافة "نوع نشاط جديد كليًّا" غير مدعوم في الكود الحالي، على أن تدمجه بسلاسة دون كسر المنطق القديم.
+3. التبويب الأول: يجب أن يكون دائماً بعنوان "قبل أن نبدأ" (قسم الشرح intro) ويحتفظ بخصائصه وتصميمه.
+4. الألوان المسموحة (Themes) للتبويبات محصورة في: (emerald, indigo, amber, violet, sky, blue, slate, teal).
+5. قواعد لغوية إجبارية في المحتوى:
+   - امنع الضمائر الزائدة (اكتب "ما السبب" وليس "ما هو السبب").
+   - ضع تنوين الفتح على الحرف الذي يسبق الألف (مثل: كتابًا، قلمًا، جزءًا).
+   - استثناء إلزامي للتنوين: إذا انتهت الكلمة بألف مسبوقة بلام، ضع التنوين على الألف (مثل: أهلاً، أولاً، أملاً، بدلاً).
+======================================================================
+-->
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -99,7 +115,10 @@
             tray: `<svg class="w-8 h-8 md:w-12 md:h-12 mb-2 md:mb-3 opacity-80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>`
         };
 
-        // ================= قواعد البيانات =================
+        // =========================================================================
+        // 🔒 [AI GUARD START]: ابدأ تعديل محتوى الدرس من هنا (تعديل المصفوفات والبيانات فقط)
+        // تذكر: التزم بالقواعد اللغوية (التنوين والضمائر) المذكورة في أعلى الملف.
+        // =========================================================================
         const QUIZ_QUESTIONS = [
             { text: "«ابتسمت الفرصة للشاب الطموح»\nما نوع الاستعارة هنا؟", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 0, explanation: "لأنه شبه (الفرصة) بإنسان يبتسم، وحذف المشبه به وأبقى صفة من صفاته (الابتسام).", hint: "الفرصة لا تبتسم، من الذي يبتسم وحذفناه؟" },
             { text: "قال المعلق: «سجل الصقر هدف الفوز لفريقنا» (يقصد اللاعب).\nما نوع الاستعارة؟", options: ["مكنية", "تصريحية", "تمثيلية"], correct: 1, explanation: "لأنه شبه (اللاعب) بالصقر، وحذف المشبه وصرّح بلفظ المشبه به (الصقر).", hint: "من الذي يسجل الأهداف؟" },
@@ -159,6 +178,12 @@
             { id: 'quiz', label: 'اختر الإجابة', theme: 'violet', baseWeight: '600', hoverWeight: '700', progressWeight: '500' },
             { id: 'tf', label: 'صواب وخطأ', theme: 'emerald', baseWeight: '600', hoverWeight: '700', progressWeight: '500' }
         ];
+        // =========================================================================
+        // ⬆️ نهاية بيانات الدرس ⬆️
+        // =========================================================================
+        // 🛑 [AI GUARD WARNING]: توقف هنا! ممنوع منعاً باتاً تعديل أي سطر برمجي أو دالة JavaScript أو CSS أسفل هذا السطر نهائياً.
+        // مسموح بالتعديل هنا فقط إذا طلب منك المستخدم نصاً "إضافة نوع نشاط جديد كلياً".
+        // =========================================================================
 
         // ================= كائن التطبيق الرئيسي =================
         const App = {
@@ -215,6 +240,7 @@
             },
 
             renderLayout() {
+                // 🛑 [AI GUARD]: ممنوع تعديل الهيكل الأساسي أو الترويسة (Header) أو التذييل (Footer)
                 const root = document.getElementById('app-root');
                 root.innerHTML = `
                     <div id="main-header" class="w-full text-center py-6 bg-transparent flex flex-col items-center">
@@ -569,10 +595,9 @@
                     if (!answered) {
                         wordClass += `bg-white border-2 border-slate-200 text-slate-700 hover:border-${theme}-300 hover:bg-${theme}-50 hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer`;
                     } else {
-                        if (isSelected && isCorrect) wordClass += "bg-emerald-500 text-white border-2 border-emerald-600 shadow-md scale-105";
-                        else if (isSelected && !isCorrect) wordClass += "bg-rose-500 text-white border-2 border-rose-600 shadow-md scale-105";
-                        else if (!isSelected && isCorrect) wordClass += "bg-emerald-50 text-emerald-700 border-2 border-emerald-300 ring-2 ring-emerald-200";
-                        else wordClass += "bg-slate-50 border-2 border-slate-100 text-slate-400 opacity-50 cursor-default";
+                        if (isSelected && isCorrect) wordClass += "bg-emerald-500 text-white border-2 border-emerald-600 shadow-md z-10 cursor-default ";
+                        else if (isSelected && !isCorrect) wordClass += "bg-rose-500 text-white border-2 border-rose-600 shadow-md z-10 cursor-default ";
+                        else wordClass += "bg-white border-2 border-slate-200 text-slate-700 cursor-default ";
                     }
 
                     wordsHTML += `
